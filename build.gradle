@@ -1,0 +1,58 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        kotlinVersion = '1.0.3'
+        realmVersion = '1.1.0'
+        supportLibraryVersion = '24.1.1'
+        playServicesVersion = '9.2.1'
+        firebaseVersion = '9.2.1'
+        rxJavaVersion = '1.1.7'
+        rxKotlinVersion = '0.60.0'
+        rxAndroidVersion = '1.2.1'
+        kodeinAndroidVersion = '3.0.0'
+        timberVersion = '4.1.2'
+        chopsticksVersion = '0.3.0'
+        robolectricVersion = '3.1.2'
+        junitVersion = '4.12'
+        assertjVersion = '3.4.1'
+        mockitoVersion = '2.0.42-beta'
+        espressoVersion = '2.2.2'
+        supportTestRunnerVersion = '0.5'
+    }
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "io.realm:realm-gradle-plugin:$realmVersion"
+        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
+        classpath 'com.google.gms:google-services:3.0.0'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    compileSdkVersion = 24
+    buildToolsVersion = "24.0.1"
+
+    minSdkVersion = 21
+    targetSdkVersion = 24
+    versionCode = 1
+    versionName = "1.0"
+}

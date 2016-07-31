@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+apply plugin: 'realm-android'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
+    defaultConfig {
+        applicationId "com.droibit.autoggler"
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        debug {
+            minifyEnabled true
+            // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled true
+            useProguard true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+    compile "com.github.salomonbrys.kodein:kodein-android:$kodeinAndroidVersion"
+
+    compile "com.android.support:support-v4:$supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:preference-v14:$supportLibraryVersion"
+
+    // Play Services dependencies
+    compile "com.google.android.gms:play-services-maps:$playServicesVersion"
+    compile "com.google.android.gms:play-services-location:$playServicesVersion"
+
+    // Firebase dependencies
+    compile "com.google.firebase:firebase-crash:$firebaseVersion"
+
+    compile "io.reactivex:rxjava:$rxJavaVersion"
+    compile "io.reactivex:rxkotlin:$rxKotlinVersion"
+    compile "io.reactivex:rxandroid:$rxAndroidVersion"
+
+    compile "com.jakewharton.timber:timber:$timberVersion"
+    compile "com.github.droibit.chopsticks:chopstick:$chopsticksVersion"
+    compile "com.github.droibit.chopsticks:chopstick-preference:$chopsticksVersion"
+
+    // Dependencies for local unit tests
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.assertj:assertj-core:$assertjVersion"
+    testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "org.robolectric:robolectric:$robolectricVersion"
+
+    // Espresso UI Testing
+    androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoVersion"
+    androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"
+    androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
+}
+
+apply plugin: 'com.google.gms.google-services'
