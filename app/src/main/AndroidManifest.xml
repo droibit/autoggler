@@ -10,6 +10,7 @@
         android:required="true" />
 
     <application
+        android:name=".AutogglerApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +24,7 @@
             android:value="@string/google_maps_key" />
 
 
-        <activity android:name="com.droibit.autoggler.MainActivity">
+        <activity android:name="com.droibit.autoggler.toggles.TogglesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

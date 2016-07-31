@@ -34,3 +34,6 @@
 -keep class io.realm.** { *; }
 -dontwarn javax.**
 -dontwarn io.realm.**
+
+# Kodein
+-keepattributes Signature
