@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">AutoToggler</string>
+    <string name="app_name" translatable="false">AutoToggler</string>
+
+    <string name="toggles_menu_title_settings">Settings</string>
 </resources>

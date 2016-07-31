@@ -40,6 +40,11 @@
             android:parentActivityName=".toggles.TogglesActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:parentActivityName=".toggles.TogglesActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
