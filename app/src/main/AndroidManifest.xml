@@ -29,22 +29,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".edit.add.AddToggleActivity"
-            android:parentActivityName=".toggles.TogglesActivity"
-            android:exported="false" />
-
+            android:exported="false"
+            android:parentActivityName=".toggles.TogglesActivity" />
         <activity
             android:name=".edit.update.UpdateToggleActivity"
-            android:parentActivityName=".toggles.TogglesActivity"
-            android:exported="false" />
-
+            android:exported="false"
+            android:parentActivityName=".toggles.TogglesActivity" />
         <activity
             android:name=".settings.SettingsActivity"
-            android:parentActivityName=".toggles.TogglesActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".toggles.TogglesActivity" />
 
+        <service
+            android:name=".geofencing.GeofencingIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>
