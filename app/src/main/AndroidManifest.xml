@@ -22,7 +22,7 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".toggles.TogglesActivity">
+        <activity android:name=".geofences.GeofencesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,17 +30,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".edit.add.AddToggleActivity"
+            android:name=".edit.add.AddGeofenceActivity"
             android:exported="false"
-            android:parentActivityName=".toggles.TogglesActivity" />
+            android:parentActivityName=".geofences.GeofencesActivity" />
         <activity
-            android:name=".edit.update.UpdateToggleActivity"
+            android:name=".edit.update.UpdateGeofenceActivity"
             android:exported="false"
-            android:parentActivityName=".toggles.TogglesActivity" />
+            android:parentActivityName=".geofences.GeofencesActivity" />
         <activity
             android:name=".settings.SettingsActivity"
             android:exported="false"
-            android:parentActivityName=".toggles.TogglesActivity" />
+            android:parentActivityName=".geofences.GeofencesActivity" />
 
         <service
             android:name=".geofencing.GeofencingIntentService"
