@@ -11,7 +11,7 @@ class GeofenceRepositoryImpl(val realmProvider: RealmProvider) : GeofenceReposit
 
     @UiThread
     override fun loadGeofences(): Observable<RealmResults<Geofence>> {
-        val realm = realmProvider.getRealm()
+        val realm = realmProvider.get()
         return realm.where<Geofence>()
                 .findAllSortedAsync(COLUMN_NAME)
                 .asObservable()

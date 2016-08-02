@@ -2,12 +2,17 @@ package com.droibit.autoggler.data.repository.source
 
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import java.io.Closeable
 
-class RealmProvider(val config: RealmConfiguration) {
+class RealmProvider(config: RealmConfiguration) : Closeable {
 
     companion object {
-        const val FILE_NAME = "geofences.realm"
+        const val FILE_NAME = "autoggler.realm"
     }
 
-    fun getRealm(): Realm = Realm.getInstance(config)
+    val realm = Realm.getInstance(config)
+
+    fun get(): Realm = realm
+
+    override fun close() = realm.close()
 }
