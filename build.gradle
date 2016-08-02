@@ -5,9 +5,9 @@ buildscript {
         kotlinVersion = '1.0.3'
         realmVersion = '1.1.0'
         supportLibraryVersion = '24.1.1'
-        playServicesVersion = '9.2.1'
+        playServicesVersion = '9.4.0'
         firebaseVersion = '9.2.1'
-        rxJavaVersion = '1.1.7'
+        rxJavaVersion = '1.1.8'
         rxKotlinVersion = '0.60.0'
         rxAndroidVersion = '1.2.1'
         kodeinAndroidVersion = '3.0.0'
@@ -27,7 +27,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "io.realm:realm-gradle-plugin:$realmVersion"
-        classpath 'com.android.tools.build:gradle:2.2.0-alpha6'
+        classpath 'com.android.tools.build:gradle:2.2.0-alpha7'
         classpath 'com.google.gms:google-services:3.0.0'
 
         // NOTE: Do not place your application dependencies here; they belong
