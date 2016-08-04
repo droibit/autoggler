@@ -6,21 +6,22 @@ import com.droibit.autoggler.data.repository.geofence.GeofenceRepositoryImpl
 import com.droibit.autoggler.data.repository.source.RealmProvider
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.provider
 import com.github.salomonbrys.kodein.singleton
 import io.realm.RealmConfiguration
 
 fun repositoryModule() = Kodein.Module {
 
-    bind<RealmProvider>() with singleton {
+    bind<RealmConfiguration>() with singleton {
         val context: Context = instance()
-        val config = RealmConfiguration.Builder(context)
+        RealmConfiguration.Builder(context)
                 .name(RealmProvider.FILE_NAME)
                 .inMemory()
                 .build()
-        RealmProvider(config)
     }
 
-    bind<GeofenceRepository>() with singleton { GeofenceRepositoryImpl(instance()) }
+    bind<RealmProvider>() with provider { RealmProvider(instance()) }
+    bind<GeofenceRepository>() with provider { GeofenceRepositoryImpl(instance()) }
 }
 
 
