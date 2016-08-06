@@ -79,7 +79,7 @@ dependencies {
     compile "com.google.android.gms:play-services-location:$playServicesVersion"
 
     // Firebase dependencies
-    compile "com.google.firebase:firebase-crash:$firebaseVersion"
+    prodCompile "com.google.firebase:firebase-crash:$firebaseVersion"
 
     // Realm dependencies
     kapt "io.realm:realm-annotations:$realmVersion"
@@ -87,7 +87,7 @@ dependencies {
 
     // Stetho dependencies
     debugCompile "com.facebook.stetho:stetho:$stethoVersion"
-    debugCompile 'com.uphyca:stetho_realm:0.9.0'
+    debugCompile "com.uphyca:stetho_realm:$stethoRealmVersion"
 
     compile "io.reactivex:rxjava:$rxJavaVersion"
     compile "io.reactivex:rxkotlin:$rxKotlinVersion"
