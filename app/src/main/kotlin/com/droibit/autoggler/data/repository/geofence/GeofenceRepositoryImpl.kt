@@ -1,18 +1,36 @@
 package com.droibit.autoggler.data.repository.geofence
 
+import com.droibit.autoggler.data.repository.source.*
 import com.droibit.autoggler.data.repository.source.GeofencePersistenceContract.COLUMN_NAME
-import com.droibit.autoggler.data.repository.source.RealmProvider
-import com.droibit.autoggler.data.repository.source.where
 import rx.Observable
+import rx.Single
 
-class GeofenceRepositoryImpl(private val realmProvider: RealmProvider) : GeofenceRepository {
+class GeofenceRepositoryImpl(
+        private val realmProvider: RealmProvider,
+        private val autoIncrementor: AutoIncrementor) : GeofenceRepository {
 
-    override fun loadGeofences(): Observable<Geofence> {
-        return realmProvider.get().use { realm ->
-            realm.where<Geofence>()
-                .findAllSortedAsync(COLUMN_NAME)
-                .asObservable()
-                .flatMap { Observable.from(it.toList()) }
+    override fun loadGeofences(): Single<List<Geofence>> {
+        return Single.defer {
+            realmProvider.get().use { realm ->
+                val managedGeofences = realm.where<Geofence>().findAllSorted(COLUMN_NAME)
+                Single.just(realm.copyFromRealm(managedGeofences))
+            }
+        }
+    }
+
+    override fun addGeofence(name: String, circle: Circle, trigger: Trigger): Single<Geofence> {
+        return Single.defer {
+            realmProvider.get().use { realm ->
+                val managedGeofence = realm.useTransaction {
+                    realm.createObject<Geofence>().apply {
+                        this.id = autoIncrementor.newId<Geofence>(realm)
+                        this.name = name
+                        this.circle = realm.copyToRealm(circle)
+                        this.trigger = realm.copyToRealm(trigger)
+                    }
+                }
+                Single.just(realm.copyFromRealm(managedGeofence))
+            }
         }
     }
 }
