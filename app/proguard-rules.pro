@@ -29,11 +29,5 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
-# Realm
--keepnames public class * extends io.realm.RealmObject
--keep class io.realm.** { *; }
--dontwarn javax.**
--dontwarn io.realm.**
-
 # Kodein
 -keepattributes Signature
