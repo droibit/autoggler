@@ -33,4 +33,12 @@ class GeofenceRepositoryImpl(
             }
         }
     }
+
+    internal fun _deleteGeofences() {
+        realmProvider.get().use { realm ->
+            realm.executeTransaction {
+                realm.delete<Geofence>()
+            }
+        }
+    }
 }
