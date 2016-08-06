@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlinVersion = '1.0.3'
-        realmVersion = '1.1.0'
+        realmVersion = '1.1.1'
         supportLibraryVersion = '24.1.1'
         playServicesVersion = '9.2.1'
         firebaseVersion = '9.2.1'
