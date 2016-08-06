@@ -31,3 +31,6 @@
 
 # Kodein
 -keepattributes Signature
+
+# Setho
+-keep class com.facebook.stetho.** {*;}
