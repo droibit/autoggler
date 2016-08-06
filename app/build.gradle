@@ -77,6 +77,10 @@ dependencies {
     // Firebase dependencies
     compile "com.google.firebase:firebase-crash:$firebaseVersion"
 
+    // Realm dependencies
+    kapt "io.realm:realm-annotations:$realmVersion"
+    kapt "io.realm:realm-annotations-processor:$realmVersion"
+
     compile "io.reactivex:rxjava:$rxJavaVersion"
     compile "io.reactivex:rxkotlin:$rxKotlinVersion"
     compile "io.reactivex:rxandroid:$rxAndroidVersion"
