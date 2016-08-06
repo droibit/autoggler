@@ -2,6 +2,7 @@ package com.droibit.autoggler.data.repository.geofence
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import io.realm.annotations.Required
 
 open class Circle(
         open var lat: Double = 0.0,
@@ -16,7 +17,7 @@ open class Trigger(
 
 open class Geofence(
         @PrimaryKey open var id: Long = 0L,
-        open var name: String = "",
-        open var circle: Circle,
-        open var trigger: Trigger
+        @Required open var name: String = "",
+        open var circle: Circle = Circle(),
+        open var trigger: Trigger = Trigger()
 ) : RealmObject()
