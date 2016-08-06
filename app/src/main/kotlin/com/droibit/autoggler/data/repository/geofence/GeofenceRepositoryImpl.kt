@@ -1,19 +1,18 @@
 package com.droibit.autoggler.data.repository.geofence
 
-import android.support.annotation.UiThread
 import com.droibit.autoggler.data.repository.source.GeofencePersistenceContract.COLUMN_NAME
 import com.droibit.autoggler.data.repository.source.RealmProvider
 import com.droibit.autoggler.data.repository.source.where
-import io.realm.RealmResults
 import rx.Observable
 
-class GeofenceRepositoryImpl(val realmProvider: RealmProvider) : GeofenceRepository {
+class GeofenceRepositoryImpl(private val realmProvider: RealmProvider) : GeofenceRepository {
 
-    @UiThread
-    override fun loadGeofences(): Observable<RealmResults<Geofence>> {
-        val realm = realmProvider.get()
-        return realm.where<Geofence>()
+    override fun loadGeofences(): Observable<Geofence> {
+        return realmProvider.get().use { realm ->
+            realm.where<Geofence>()
                 .findAllSortedAsync(COLUMN_NAME)
                 .asObservable()
+                .flatMap { Observable.from(it.toList()) }
+        }
     }
 }
