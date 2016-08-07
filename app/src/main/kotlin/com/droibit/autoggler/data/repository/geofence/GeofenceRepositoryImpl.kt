@@ -27,6 +27,7 @@ class GeofenceRepositoryImpl(
                         this.name = name
                         this.circle = realm.copyToRealm(circle)
                         this.trigger = realm.copyToRealm(trigger)
+                        this.enabled = true
                     }
                 }
                 Single.just(realm.copyFromRealm(managedGeofence))
