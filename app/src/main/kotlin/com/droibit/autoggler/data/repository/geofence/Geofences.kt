@@ -9,8 +9,27 @@ open class Circle(
         open var lng: Double = 0.0,
         open var radius: Double = 0.0
 ) : RealmObject() {
-    override fun toString(): String{
+
+    override fun toString(): String {
         return "Circle(lat=$lat, lng=$lng, radius=$radius)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Circle) return false
+
+        if (lat != other.lat) return false
+        if (lng != other.lng) return false
+        if (radius != other.radius) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = lat.hashCode()
+        result = 31 * result + lng.hashCode()
+        result = 31 * result + radius.hashCode()
+        return result
     }
 }
 
@@ -18,8 +37,25 @@ open class Trigger(
         open var toggleWifi: Boolean = false,
         open var toggleVibration: Boolean = false
 ) : RealmObject() {
-    override fun toString(): String{
+
+    override fun toString(): String {
         return "Trigger(toggleWifi=$toggleWifi, toggleVibration=$toggleVibration)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Trigger) return false
+
+        if (toggleWifi != other.toggleWifi) return false
+        if (toggleVibration != other.toggleVibration) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = toggleWifi.hashCode()
+        result = 31 * result + toggleVibration.hashCode()
+        return result
     }
 }
 
@@ -30,7 +66,27 @@ open class Geofence(
         open var trigger: Trigger = Trigger()
 ) : RealmObject() {
 
-    override fun toString(): String{
+    override fun toString(): String {
         return "Geofence(id=$id, name='$name', circle=$circle, trigger=$trigger)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Geofence) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (circle != other.circle) return false
+        if (trigger != other.trigger) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + circle.hashCode()
+        result = 31 * result + trigger.hashCode()
+        return result
     }
 }
