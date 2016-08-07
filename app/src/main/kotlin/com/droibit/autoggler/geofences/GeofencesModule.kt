@@ -5,9 +5,20 @@ import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
 
 
-fun geofencesModule(view: GeofencesContract.View) = Kodein.Module {
+fun geofencesModule(view: GeofencesContract.View, navigator: GeofencesContract.Navigator) = Kodein.Module {
 
     bind<GeofencesContract.View>() with instance(view)
 
-    bind<GeofencesContract.Presenter>() with provider { GeofencesPresenter(instance()) }
+    bind<GeofencesContract.Navigator>() with instance(navigator)
+
+    bind<GeofencesContract.LoadTask>() with provider { LoadTask(geofenceRepository = instance()) }
+
+    bind<GeofencesContract.Presenter>() with provider {
+        GeofencesPresenter(
+                view = instance(),
+                navigator = instance(),
+                loadTask = instance(),
+                subscriptions = instance()
+        )
+    }
 }
