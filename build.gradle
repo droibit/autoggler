@@ -19,6 +19,7 @@ buildscript {
         junitVersion = '4.12'
         assertjVersion = '3.4.1'
         mockitoVersion = '2.0.42-beta'
+        mockitoKotinVersion = '0.5.2'
         espressoVersion = '2.2.2'
         supportTestRunnerVersion = '0.5'
     }

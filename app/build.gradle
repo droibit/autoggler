@@ -101,6 +101,7 @@ dependencies {
     testCompile "junit:junit:$junitVersion"
     testCompile "org.assertj:assertj-core:$assertjVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
+    testCompile "com.nhaarman:mockito-kotlin:$mockitoKotinVersion"
     //testCompile "org.robolectric:robolectric:$robolectricVersion"
 
     // Espresso UI Testing
