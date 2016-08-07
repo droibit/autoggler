@@ -9,8 +9,10 @@ import com.droibit.autoggler.data.repository.source.RealmProvider
 import com.droibit.autoggler.data.repository.source.RealmProvider.Companion.FILE_NAME
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.provider
 import com.github.salomonbrys.kodein.singleton
 import io.realm.RealmConfiguration
+import rx.subscriptions.CompositeSubscription
 
 fun repositoryModule() = Kodein.Module {
 
@@ -29,6 +31,8 @@ fun repositoryModule() = Kodein.Module {
             _deleteGeofences()
         }
     }
+
+    bind<CompositeSubscription>() with provider { CompositeSubscription() }
 }
 
 
