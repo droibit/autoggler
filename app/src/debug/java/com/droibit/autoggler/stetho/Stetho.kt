@@ -2,21 +2,20 @@ package com.droibit.autoggler.stetho
 
 import android.content.Context
 import com.uphyca.stetho_realm.RealmInspectorModulesProvider
-import java.util.regex.Pattern
-import com.facebook.stetho.Stetho as RawStetho
+import com.facebook.stetho.Stetho as StethoOrigin
 
 class Stetho(private val context: Context) {
 
     fun initialize() {
         val initializer = buildInitializer()
-        RawStetho.initialize(initializer)
+        StethoOrigin.initialize(initializer)
     }
 
-    private fun buildInitializer(): RawStetho.Initializer {
+    private fun buildInitializer(): StethoOrigin.Initializer {
         val inspector = RealmInspectorModulesProvider.builder(context)
-                .databaseNamePattern(Pattern.compile(".+\\.realm"))
                 .build()
-        return RawStetho.newInitializerBuilder(context)
+        return StethoOrigin.newInitializerBuilder(context)
+                .enableDumpapp(StethoOrigin.defaultDumperPluginsProvider(context))
                 .enableWebKitInspector(inspector)
                 .build()
     }
