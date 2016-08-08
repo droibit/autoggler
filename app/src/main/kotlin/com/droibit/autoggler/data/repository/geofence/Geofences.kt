@@ -71,11 +71,11 @@ open class Geofence(
         open var trigger: Trigger = Trigger()
 ) : RealmModel {
 
-    override fun toString(): String{
+    override fun toString(): String {
         return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, trigger=$trigger)"
     }
 
-    override fun equals(other: Any?): Boolean{
+    override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Geofence) return false
 
@@ -88,7 +88,7 @@ open class Geofence(
         return true
     }
 
-    override fun hashCode(): Int{
+    override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + enabled.hashCode()

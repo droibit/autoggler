@@ -2,7 +2,6 @@ package com.droibit.autoggler.geofences
 
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
-import rx.Scheduler
 import rx.Single
 import rx.schedulers.Schedulers
 

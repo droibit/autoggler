@@ -2,7 +2,6 @@ package com.droibit.autoggler.data.repository.geofence
 
 import com.droibit.autoggler.data.repository.source.*
 import com.droibit.autoggler.data.repository.source.GeofencePersistenceContract.COLUMN_NAME
-import rx.Observable
 import rx.Single
 
 class GeofenceRepositoryImpl(
