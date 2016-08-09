@@ -4,13 +4,14 @@ import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
+import java.io.Serializable
 
 @RealmClass
 open class Circle(
         open var lat: Double = 0.0,
         open var lng: Double = 0.0,
         open var radius: Double = 0.0
-) : RealmModel {
+) : RealmModel, Serializable {
 
     override fun toString(): String {
         return "Circle(lat=$lat, lng=$lng, radius=$radius)"
@@ -39,7 +40,7 @@ open class Circle(
 open class Trigger(
         open var toggleWifi: Boolean = false,
         open var toggleVibration: Boolean = false
-) : RealmModel {
+) : RealmModel, Serializable {
 
     override fun toString(): String {
         return "Trigger(toggleWifi=$toggleWifi, toggleVibration=$toggleVibration)"
@@ -69,7 +70,7 @@ open class Geofence(
         open var enabled: Boolean = true,
         open var circle: Circle = Circle(),
         open var trigger: Trigger = Trigger()
-) : RealmModel {
+) : RealmModel, Serializable {
 
     override fun toString(): String {
         return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, trigger=$trigger)"
