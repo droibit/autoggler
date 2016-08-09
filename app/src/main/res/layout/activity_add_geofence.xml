@@ -8,53 +8,17 @@
              tools:context="com.droibit.autoggler.edit.add.AddGeofenceActivity"
         >
 
-    <ListView
-            android:id="@+id/list"
+    <Button
+            android:text="Add"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/list_item_geofence"
-            />
-
-    <LinearLayout
-            android:id="@+id/empty"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            tools:visibility="visible"
-            >
+            android:onClick="onClickAdd" />
 
-        <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/ic_no_geofences"
-                tools:ignore="ContentDescription"
-                />
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:maxLines="1"
-                android:text="@string/no_geofences"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                />
-
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
+    <Button
+            android:text="Count"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_fab_add"
-            tools:ignore="RtlHardcoded"
-            />
+            android:onClick="onClickCount" />
 
 </FrameLayout>
