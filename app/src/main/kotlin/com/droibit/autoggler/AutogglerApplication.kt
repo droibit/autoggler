@@ -1,6 +1,7 @@
 package com.droibit.autoggler
 
 import android.app.Application
+import com.droibit.autoggler.data.geometory.geometryModule
 import com.droibit.autoggler.data.repository.repositoryModule
 import com.droibit.autoggler.stetho.Stetho
 import com.droibit.autoggler.stetho.stethoModule
@@ -13,6 +14,7 @@ class AutogglerApplication : Application(), KodeinAware {
     override val kodein: Kodein by Kodein.lazy {
         import(applicationModule(this@AutogglerApplication, BuildConfig.DEBUG))
         import(repositoryModule())
+        import(geometryModule())
         import(stethoModule())
     }
 
