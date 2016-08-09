@@ -4,7 +4,7 @@
         >
     <solid android:color="@color/appGrey" />
     <size
-            android:width="@dimen/material_list_item_width"
-            android:height="@dimen/material_list_item_height"
+            android:width="32dp"
+            android:height="32dp"
             />
 </shape>
