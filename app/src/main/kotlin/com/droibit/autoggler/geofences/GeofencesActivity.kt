@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ListView
 import android.widget.Toast
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
@@ -29,6 +30,8 @@ class GeofencesActivity : AppCompatActivity(),
     private val injector = KodeinInjector()
 
     private val presenter: GeofencesContract.Presenter by injector.instance()
+
+    private val geometryProvider: GeometryProvider by injector.instance()
 
     private val repository: GeofenceRepository by injector.instance()
 
@@ -51,7 +54,7 @@ class GeofencesActivity : AppCompatActivity(),
             import(geofencesModule(view = self, navigator = self))
         })
 
-        listView.adapter = GeofencesAdapter(this).apply {
+        listView.adapter = GeofencesAdapter(this, geometryProvider).apply {
             listAdapter = this
         }
     }

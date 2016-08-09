@@ -1,5 +1,6 @@
 package com.droibit.autoggler.data.repository.geofence
 
+import com.google.android.gms.maps.model.LatLng
 import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
@@ -98,3 +99,6 @@ open class Geofence(
         return result
     }
 }
+
+val Circle.latLong: LatLng
+    get() = LatLng(lat, lng)

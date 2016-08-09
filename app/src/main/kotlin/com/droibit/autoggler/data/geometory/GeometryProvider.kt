@@ -15,10 +15,10 @@ class GeometryProvider(private val context: Context) {
 
     fun newCircle(src: Circle): CircleOptions {
         return CircleOptions()
-            .center(src.latLong)
-            .radius(src.radius)
-            .strokeColor(ContextCompat.getColor(context, R.color.colorCircleStroke))
-            .strokeWidth(CIRCLE_STROKE_WIDTH)
-            .fillColor(ContextCompat.getColor(context, R.color.colorCircleFill))
+                .center(src.latLong)
+                .radius(src.radius)
+                .strokeColor(ContextCompat.getColor(context, R.color.colorCircleStroke))
+                .strokeWidth(CIRCLE_STROKE_WIDTH)
+                .fillColor(ContextCompat.getColor(context, R.color.colorCircleFill))
     }
 }
