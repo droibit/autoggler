@@ -1,10 +1,12 @@
 package com.droibit.autoggler.geofences
 
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ListView
 import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Circle
@@ -12,6 +14,7 @@ import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.data.repository.geofence.Trigger
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
+import com.github.droibit.chopstick.bindView
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
@@ -29,6 +32,14 @@ class GeofencesActivity : AppCompatActivity(),
 
     private val repository: GeofenceRepository by injector.instance()
 
+    private val listView: ListView by bindView(R.id.list)
+
+    private val emptyView: View by bindView(R.id.empty)
+
+    private val fab: FloatingActionButton by bindView(R.id.fab)
+
+    private lateinit var listAdapter: GeofencesAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_geofences)
@@ -39,6 +50,10 @@ class GeofencesActivity : AppCompatActivity(),
             val self = this@GeofencesActivity
             import(geofencesModule(view = self, navigator = self))
         })
+
+        listView.adapter = GeofencesAdapter(this).apply {
+            listAdapter = this
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
