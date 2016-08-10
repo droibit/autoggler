@@ -100,5 +100,5 @@ open class Geofence(
     }
 }
 
-val Circle.latLong: LatLng
+val Circle.latLng: LatLng
     get() = LatLng(lat, lng)
