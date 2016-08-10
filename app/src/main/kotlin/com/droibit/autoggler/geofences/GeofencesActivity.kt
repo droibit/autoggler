@@ -3,6 +3,8 @@ package com.droibit.autoggler.geofences
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -35,7 +37,7 @@ class GeofencesActivity : AppCompatActivity(),
 
     private val repository: GeofenceRepository by injector.instance()
 
-    private val listView: ListView by bindView(R.id.list)
+    private val recyclerView: RecyclerView by bindView(R.id.list)
 
     private val emptyView: View by bindView(R.id.empty)
 
@@ -54,8 +56,17 @@ class GeofencesActivity : AppCompatActivity(),
             import(geofencesModule(view = self, navigator = self))
         })
 
-        listView.adapter = GeofencesAdapter(this, geometryProvider).apply {
-            listAdapter = this
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(this@GeofencesActivity)
+
+            adapter = GeofencesAdapter(this@GeofencesActivity, geometryProvider).apply {
+                listAdapter = this
+            }
+        }
+
+        listAdapter.itemClickListener = { geofence ->
+            Toast.makeText(this@GeofencesActivity, "$geofence", Toast.LENGTH_SHORT).show()
         }
 
         listAdapter.addAll(

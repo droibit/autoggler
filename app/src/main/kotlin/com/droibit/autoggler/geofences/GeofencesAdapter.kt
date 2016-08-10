@@ -1,55 +1,73 @@
 package com.droibit.autoggler.geofences
 
 import android.content.Context
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.data.repository.geofence.latLong
+import com.droibit.autoggler.data.repository.geofence.latLng
 import com.github.droibit.chopstick.bindView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import java.util.*
 import com.google.android.gms.maps.model.Circle as CircleGeometry
 
 class GeofencesAdapter(context: Context, private val geometryProvider: GeometryProvider) :
-        ArrayAdapter<Geofence>(context, R.layout.list_item_geofence) {
+        RecyclerView.Adapter<ViewHolder>() {
+
+    private val geofences = ArrayList<Geofence>()
 
     private val inflater = LayoutInflater.from(context)
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view = convertView ?: inflateView(parent).apply { tag = ViewHolder(geometryProvider, view = this) }
-        return view.apply {
-            val viewHolder = tag as ViewHolder
-            viewHolder.bind(geofence = getItem(position))
+    var itemClickListener: ((Geofence)->Unit)? = null
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(geofences[position])
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = inflater.inflate(R.layout.list_item_geofence, parent, false)
+        return ViewHolder(view, geometryProvider).apply {
+            clickListener { itemClickListener?.invoke(geofences[adapterPosition]) }
         }
     }
 
-    private fun inflateView(parent: ViewGroup) = inflater.inflate(R.layout.list_item_geofence, parent, false)
+    override fun getItemCount() = geofences.size
+
+    fun addAll(vararg geofences: Geofence) {
+        this.geofences.clear()
+        this.geofences.addAll(geofences)
+        this.notifyDataSetChanged()
+    }
 }
 
 /**
  * [LiteListDemoActivity#ViewHolder](https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/LiteListDemoActivity.java)
  */
-private class ViewHolder(private val provider: GeometryProvider, view: View) : OnMapReadyCallback {
+class ViewHolder(view: View,
+                 private val provider: GeometryProvider) :
+        RecyclerView.ViewHolder(view), OnMapReadyCallback {
 
     companion object {
         private val KEY_CIRCLE = R.id.key_circle
         private val KEY_CIRCLE_GEO = R.id.key_circle_geometry
     }
 
-    private val mapView: MapView by view.bindView(R.id.map)
+    private val mapOverlay: View by bindView(R.id.map_overlay)
 
-    private val iconView: ImageView by view.bindView(R.id.enabled_icon)
+    private val mapView: MapView by bindView(R.id.map)
 
-    private val nameView: TextView by view.bindView(R.id.genfence_name)
+    private val iconView: ImageView by bindView(R.id.enabled_icon)
+
+    private val nameView: TextView by bindView(R.id.genfence_name)
 
     private var googleMap: GoogleMap? = null
 
@@ -60,8 +78,14 @@ private class ViewHolder(private val provider: GeometryProvider, view: View) : O
         }
     }
 
+    fun clickListener(listener: (View)->Unit) = mapOverlay.setOnClickListener(listener)
+
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
+
+        googleMap.uiSettings.apply {
+            isMapToolbarEnabled = false
+        }
 
         val circle = mapView.getTag(KEY_CIRCLE) as? Circle
         if (circle != null) {
@@ -89,11 +113,11 @@ private class ViewHolder(private val provider: GeometryProvider, view: View) : O
             googleMap.addCircle(provider.newCircle(src)).apply {
                 mapView.setTag(KEY_CIRCLE_GEO, this)
             }
-            return
+        } else {
+            circleGeo.center = src.latLng
         }
-        circleGeo.center = src.latLong
 
-        CameraUpdateFactory.newLatLng(src.latLong).apply {
+        CameraUpdateFactory.newLatLng(src.latLng).apply {
             googleMap.moveCamera(this)
         }
     }
