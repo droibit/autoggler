@@ -41,8 +41,8 @@ class GeofencesAdapter(context: Context, private val geometryProvider: GeometryP
 private class ViewHolder(private val provider: GeometryProvider, view: View) : OnMapReadyCallback {
 
     companion object {
-        private val KEY_CIRCLE = 0
-        private val KEY_CIRCLE_GEO = 1
+        private val KEY_CIRCLE = R.id.key_circle
+        private val KEY_CIRCLE_GEO = R.id.key_circle_geometry
     }
 
     private val mapView: MapView by view.bindView(R.id.map)

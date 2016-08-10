@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="key_circle" type="id" />
+    <item name="key_circle_geometry" type="id" />
+</resources>
