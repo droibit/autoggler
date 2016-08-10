@@ -13,11 +13,14 @@ fun geofencesModule(view: GeofencesContract.View, navigator: GeofencesContract.N
 
     bind<GeofencesContract.LoadTask>() with provider { LoadTask(geofenceRepository = instance()) }
 
+    bind<GeofencesContract.DeleteTask>() with provider { DeleteTask(geofenceRepository = instance()) }
+
     bind<GeofencesContract.Presenter>() with provider {
         GeofencesPresenter(
                 view = instance(),
                 navigator = instance(),
                 loadTask = instance(),
+                deleteTask = instance(),
                 subscriptions = instance()
         )
     }

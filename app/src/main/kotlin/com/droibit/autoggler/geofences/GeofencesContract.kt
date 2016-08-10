@@ -16,11 +16,21 @@ interface GeofencesContract {
         }
     }
 
+    enum class GeofenceMenuItem {
+        DELETE
+    }
+
     interface View {
 
         fun showGeofences(geofences: List<Geofence>)
 
         fun showNoGeofences()
+
+        fun hideGeofence(geofence: Geofence): Int
+
+        fun showDeleteConfirmDialog(targetId: Long)
+
+        // TODO: showProgressDialog
     }
 
     interface Navigator {
@@ -43,10 +53,19 @@ interface GeofencesContract {
         fun onGeofenceAddButtonClicked()
 
         fun onGeofenceSelected(geofence: Geofence)
+
+        fun onGeofenceMenuItemSelected(menuItem: GeofenceMenuItem)
+
+        fun onDeleteConfirmDialogOkClicked(targetId: Long)
     }
 
     interface LoadTask {
 
         fun loadGeofences(): Single<List<Geofence>>
+    }
+
+    interface DeleteTask {
+
+        fun deleteGeofence(targetId: Long): Single<Geofence?>
     }
 }

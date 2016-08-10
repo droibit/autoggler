@@ -12,6 +12,7 @@ class GeofencesPresenter(
         private val view: GeofencesContract.View,
         private val navigator: GeofencesContract.Navigator,
         private val loadTask: GeofencesContract.LoadTask,
+        private val deleteTask: GeofencesContract.DeleteTask,
         private val subscriptions: CompositeSubscription) : GeofencesContract.Presenter {
 
     override fun subscribe() {
@@ -56,5 +57,13 @@ class GeofencesPresenter(
                             Timber.d(e.message)
                         }
                 ).addTo(subscriptions)
+    }
+
+    override fun onGeofenceMenuItemSelected(menuItem: GeofencesContract.GeofenceMenuItem) {
+        TODO()
+    }
+
+    override fun onDeleteConfirmDialogOkClicked(targetId: Long) {
+        TODO()
     }
 }

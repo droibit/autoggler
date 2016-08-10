@@ -113,15 +113,27 @@ class GeofencesActivity : AppCompatActivity(),
         return presenter.onMenuItemSelected(navItem)
     }
 
-    override fun navigateSettings() {
-        TODO()
-    }
+    // GeofencesContract.View
 
     override fun showGeofences(geofences: List<Geofence>) {
         TODO()
     }
 
     override fun showNoGeofences() {
+        TODO()
+    }
+
+    override fun hideGeofence(geofence: Geofence): Int {
+        TODO()
+    }
+
+    override fun showDeleteConfirmDialog(targetId: Long) {
+        TODO()
+    }
+
+    // GeofenceContract.Navigator
+
+    override fun navigateSettings() {
         TODO()
     }
 
