@@ -78,7 +78,7 @@ class GeofencesActivity : AppCompatActivity(),
                 ),
                 Geofence(id = 1L,
                         name = "テスト",
-                        enabled = true,
+                        enabled = false,
                         circle = Circle(35.3121228,139.7740507, 500.0),
                         trigger = Trigger()
                 ),
@@ -96,7 +96,7 @@ class GeofencesActivity : AppCompatActivity(),
                 ),
                 Geofence(id = 1L,
                         name = "テスト",
-                        enabled = true,
+                        enabled = false,
                         circle = Circle(35.6121228,139.7740507, 500.0),
                         trigger = Trigger()
                 )

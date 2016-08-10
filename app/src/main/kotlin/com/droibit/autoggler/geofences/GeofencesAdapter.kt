@@ -1,6 +1,7 @@
 package com.droibit.autoggler.geofences
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -27,7 +28,7 @@ class GeofencesAdapter(context: Context, private val geometryProvider: GeometryP
 
     private val inflater = LayoutInflater.from(context)
 
-    var itemClickListener: ((Geofence)->Unit)? = null
+    var itemClickListener: ((Geofence) -> Unit)? = null
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(geofences[position])
@@ -78,7 +79,7 @@ class ViewHolder(view: View,
         }
     }
 
-    fun clickListener(listener: (View)->Unit) = mapOverlay.setOnClickListener(listener)
+    fun clickListener(listener: (View) -> Unit) = mapOverlay.setOnClickListener(listener)
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
@@ -95,9 +96,16 @@ class ViewHolder(view: View,
     }
 
     fun bind(geofence: Geofence) {
-        // TODO: geofence.enabled
+        val (icon, textColor) = if (geofence.enabled)
+            Pair(R.drawable.ciecled_geofenceing_enabled, android.R.color.black)
+        else
+            Pair(R.drawable.ciecled_geofenceing_disabled, R.color.appGrey)
+        iconView.setImageResource(icon)
 
-        nameView.text = geofence.name
+        nameView.apply {
+            this.text = geofence.name
+            this.setTextColor(ContextCompat.getColor(context, textColor))
+        }
 
         val googleMap = googleMap
         if (googleMap != null) {
