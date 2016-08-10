@@ -57,6 +57,39 @@ class GeofencesActivity : AppCompatActivity(),
         listView.adapter = GeofencesAdapter(this, geometryProvider).apply {
             listAdapter = this
         }
+
+        listAdapter.addAll(
+                Geofence(id = 1L,
+                        name = "テスト",
+                        enabled = true,
+                        circle = Circle(35.7121228,139.7740507, 500.0),
+                        trigger = Trigger()
+                ),
+                Geofence(id = 1L,
+                        name = "テスト",
+                        enabled = true,
+                        circle = Circle(35.3121228,139.7740507, 500.0),
+                        trigger = Trigger()
+                ),
+                Geofence(id = 1L,
+                        name = "テスト",
+                        enabled = true,
+                        circle = Circle(35.4121228,139.7740507, 500.0),
+                        trigger = Trigger()
+                ),
+                Geofence(id = 1L,
+                        name = "テスト",
+                        enabled = true,
+                        circle = Circle(35.5121228,139.7740507, 500.0),
+                        trigger = Trigger()
+                ),
+                Geofence(id = 1L,
+                        name = "テスト",
+                        enabled = true,
+                        circle = Circle(35.6121228,139.7740507, 500.0),
+                        trigger = Trigger()
+                )
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -87,23 +120,5 @@ class GeofencesActivity : AppCompatActivity(),
 
     override fun navigateUpdateGeofence(id: Long) {
         TODO()
-    }
-
-    fun onClickCount(v: View) {
-        repository.loadGeofences()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Toast.makeText(this@GeofencesActivity, "Count: ${it.size}", Toast.LENGTH_SHORT).show()
-                }
-    }
-
-    fun onClickAdd(v: View) {
-        repository.addGeofence(name = "hoge", circle = Circle(1.0, 2.0, 3.0), trigger = Trigger(true, false))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    Toast.makeText(this@GeofencesActivity, "$it", Toast.LENGTH_SHORT).show()
-                }
     }
 }
