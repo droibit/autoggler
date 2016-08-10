@@ -2,4 +2,5 @@
 <resources>
     <string name="toggles_menu_title_settings">設定</string>
     <string name="no_geofences">ジオフェンスがありません</string>
+    <string name="item_geofence_menu_delete">削除</string>
 </resources>
