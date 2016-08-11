@@ -2,6 +2,7 @@ package com.droibit.autoggler.geofences
 
 import android.support.annotation.VisibleForTesting
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.geofences.GeofencesContract.GeofenceMenuItem
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import rx.android.schedulers.AndroidSchedulers
 import rx.lang.kotlin.addTo
@@ -40,6 +41,26 @@ class GeofencesPresenter(
         navigator.navigateUpdateGeofence(geofence.id)
     }
 
+    override fun onGeofenceMenuItemSelected(menuItem: GeofenceMenuItem, targetId: Long) {
+        when (menuItem) {
+            GeofenceMenuItem.DELETE -> view.showDeleteConfirmDialog(targetId)
+        }
+    }
+
+    override fun onDeleteConfirmDialogOkClicked(targetId: Long) {
+        deleteTask.deleteGeofence(targetId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { geofence ->
+                            view.hideGeofence(geofence)
+                        },
+                        { e ->
+                            Timber.e(e, "Delete Geofence:")
+                            view.showGeofenceErrorToast()
+                        }
+                )
+    }
+
     @VisibleForTesting
     internal fun loadGeofences() {
         loadTask.loadGeofences()
@@ -53,17 +74,9 @@ class GeofencesPresenter(
                             }
                         },
                         { e ->
+                            Timber.d(e, "Load Gefence:")
                             view.showNoGeofences()
-                            Timber.d(e.message)
                         }
                 ).addTo(subscriptions)
-    }
-
-    override fun onGeofenceMenuItemSelected(menuItem: GeofencesContract.GeofenceMenuItem) {
-        TODO()
-    }
-
-    override fun onDeleteConfirmDialogOkClicked(targetId: Long) {
-        TODO()
     }
 }

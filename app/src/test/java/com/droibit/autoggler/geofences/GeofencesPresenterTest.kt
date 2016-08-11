@@ -1,6 +1,7 @@
 package com.droibit.autoggler.geofences
 
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.geofences.GeofencesContract.GeofenceMenuItem
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.droibit.autoggler.test
@@ -37,6 +38,9 @@ class GeofencesPresenterTest {
     @Mock
     lateinit var loadTask: GeofencesContract.LoadTask
 
+    @Mock
+    lateinit var deleteTask: GeofencesContract.DeleteTask
+
     lateinit var subscriptions: CompositeSubscription
 
     lateinit var presenter: GeofencesPresenter
@@ -44,7 +48,7 @@ class GeofencesPresenterTest {
     @Before
     fun setUp() {
         subscriptions = CompositeSubscription()
-        presenter = GeofencesPresenter(view, navigator, loadTask, subscriptions)
+        presenter = GeofencesPresenter(view, navigator, loadTask, deleteTask, subscriptions)
     }
 
     //@Test
@@ -82,6 +86,43 @@ class GeofencesPresenterTest {
     }
 
     @Test
+    fun onGeofenceMenuItemSelected_showDeleteConfirmDialog() {
+        val expectId = 1L
+        presenter.onGeofenceMenuItemSelected(GeofenceMenuItem.DELETE, targetId = expectId)
+
+        verify(view).showDeleteConfirmDialog(expectId)
+    }
+
+    @Test
+    fun onDeleteConfirmDialogOkClicked_deleteGeofence() {
+
+        test {
+            val expectId = 1L
+            val expectGeofence: Geofence = mock()
+            val single = Single.just(expectGeofence)
+            doReturn(single).whenever(deleteTask).deleteGeofence(targetId = expectId)
+
+            presenter.onDeleteConfirmDialogOkClicked(targetId = expectId)
+
+            verify(view).hideGeofence(expectGeofence)
+            verify(view, never()).showGeofenceErrorToast()
+        }
+
+        reset(view)
+
+        test {
+            val expectId = 1L
+            val error: Single<Geofence> = Single.error(IllegalArgumentException(""))
+            doReturn(error).whenever(deleteTask).deleteGeofence(targetId = expectId)
+
+            presenter.onDeleteConfirmDialogOkClicked(targetId = expectId)
+
+            verify(view).showGeofenceErrorToast()
+            verify(view, never()).hideGeofence(any())
+        }
+    }
+
+    @Test
     fun loadGeofences_showGeofences() {
         // Returned geofences
         test {
@@ -89,8 +130,7 @@ class GeofencesPresenterTest {
             doReturn(false).whenever(mockList).isEmpty()
             doReturn(Single.just(mockList)).whenever(loadTask).loadGeofences()
 
-            val subscription = presenter.loadGeofences()
-            assertThat(subscription).isNotNull()
+            presenter.loadGeofences()
 
             verify(view).showGeofences(mockList)
             verify(view, never()).showNoGeofences()
@@ -104,8 +144,7 @@ class GeofencesPresenterTest {
             doReturn(true).whenever(mockList).isEmpty()
             doReturn(Single.just(mockList)).whenever(loadTask).loadGeofences()
 
-            val subscription = presenter.loadGeofences()
-            assertThat(subscription).isNotNull()
+            presenter.loadGeofences()
 
             verify(view).showNoGeofences()
             verify(view, never()).showGeofences(anyList())
@@ -118,8 +157,7 @@ class GeofencesPresenterTest {
             val error: Single<Geofence> = Single.error(RealmException(""))
             doReturn(error).whenever(loadTask).loadGeofences()
 
-            val subscription = presenter.loadGeofences()
-            assertThat(subscription).isNotNull()
+            presenter.loadGeofences()
 
             verify(view).showNoGeofences()
             verify(view, never()).showGeofences(anyList())

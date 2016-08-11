@@ -26,9 +26,11 @@ interface GeofencesContract {
 
         fun showNoGeofences()
 
-        fun hideGeofence(geofence: Geofence): Int
+        fun hideGeofence(geofence: Geofence)
 
         fun showDeleteConfirmDialog(targetId: Long)
+
+        fun showGeofenceErrorToast()
 
         // TODO: showProgressDialog
     }
@@ -54,7 +56,7 @@ interface GeofencesContract {
 
         fun onGeofenceSelected(geofence: Geofence)
 
-        fun onGeofenceMenuItemSelected(menuItem: GeofenceMenuItem)
+        fun onGeofenceMenuItemSelected(menuItem: GeofenceMenuItem, targetId: Long)
 
         fun onDeleteConfirmDialogOkClicked(targetId: Long)
     }
@@ -66,6 +68,6 @@ interface GeofencesContract {
 
     interface DeleteTask {
 
-        fun deleteGeofence(targetId: Long): Single<Geofence?>
+        fun deleteGeofence(targetId: Long): Single<Geofence>
     }
 }

@@ -123,11 +123,15 @@ class GeofencesActivity : AppCompatActivity(),
         TODO()
     }
 
-    override fun hideGeofence(geofence: Geofence): Int {
+    override fun hideGeofence(geofence: Geofence) {
         TODO()
     }
 
     override fun showDeleteConfirmDialog(targetId: Long) {
+        TODO()
+    }
+
+    override fun showGeofenceErrorToast() {
         TODO()
     }
 
