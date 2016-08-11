@@ -80,7 +80,7 @@ dependencies {
     compile "com.google.android.gms:play-services-location:$playServicesVersion"
 
     // Firebase dependencies
-    prodCompile "com.google.firebase:firebase-crash:$firebaseVersion"
+    releaseCompile "com.google.firebase:firebase-crash:$firebaseVersion"
 
     // Realm dependencies
     kapt "io.realm:realm-annotations:$realmVersion"
