@@ -16,8 +16,12 @@ interface GeofencesContract {
         }
     }
 
-    enum class GeofenceMenuItem {
-        DELETE
+    enum class GeofenceMenuItem(@IdRes val id: Int) {
+        DELETE(R.id.delete);
+
+        companion object {
+            fun from(@IdRes id: Int) = values().first { it.id == id }
+        }
     }
 
     interface View {

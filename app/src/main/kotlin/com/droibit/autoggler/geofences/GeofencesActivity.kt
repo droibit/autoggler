@@ -56,17 +56,19 @@ class GeofencesActivity : AppCompatActivity(),
             import(geofencesModule(view = self, navigator = self))
         })
 
-        recyclerView.apply {
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@GeofencesActivity)
-
-            adapter = GeofencesAdapter(this@GeofencesActivity, geometryProvider).apply {
-                listAdapter = this
+        listAdapter = GeofencesAdapter(this, geometryProvider).apply {
+            itemClickListener = { geofence ->
+                Toast.makeText(this@GeofencesActivity, "$geofence", Toast.LENGTH_SHORT).show()
+            }
+            popupItemClickListener = { menuItem, geofence ->
+                Toast.makeText(this@GeofencesActivity, "Delete: ${geofence.id}", Toast.LENGTH_SHORT).show()
             }
         }
 
-        listAdapter.itemClickListener = { geofence ->
-            Toast.makeText(this@GeofencesActivity, "$geofence", Toast.LENGTH_SHORT).show()
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@GeofencesActivity)
+            adapter = listAdapter
+            setHasFixedSize(true)
         }
 
         listAdapter.addAll(
@@ -76,25 +78,25 @@ class GeofencesActivity : AppCompatActivity(),
                         circle = Circle(35.7121228,139.7740507, 500.0),
                         trigger = Trigger()
                 ),
-                Geofence(id = 1L,
+                Geofence(id = 2L,
                         name = "テスト",
                         enabled = false,
                         circle = Circle(35.3121228,139.7740507, 500.0),
                         trigger = Trigger()
                 ),
-                Geofence(id = 1L,
+                Geofence(id = 3L,
                         name = "テスト",
                         enabled = true,
                         circle = Circle(35.4121228,139.7740507, 500.0),
                         trigger = Trigger()
                 ),
-                Geofence(id = 1L,
+                Geofence(id = 4L,
                         name = "テスト",
                         enabled = true,
                         circle = Circle(35.5121228,139.7740507, 500.0),
                         trigger = Trigger()
                 ),
-                Geofence(id = 1L,
+                Geofence(id = 5L,
                         name = "テスト",
                         enabled = false,
                         circle = Circle(35.6121228,139.7740507, 500.0),

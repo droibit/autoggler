@@ -1,18 +1,21 @@
 package com.droibit.autoggler.geofences
 
 import android.content.Context
+import android.support.annotation.MenuRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.latLng
+import com.droibit.autoggler.geofences.GeofencesContract.GeofenceMenuItem
 import com.github.droibit.chopstick.bindView
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,6 +33,8 @@ class GeofencesAdapter(context: Context, private val geometryProvider: GeometryP
 
     var itemClickListener: ((Geofence) -> Unit)? = null
 
+    var popupItemClickListener: ((GeofenceMenuItem, Geofence) -> Unit)? = null
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(geofences[position])
     }
@@ -37,7 +42,12 @@ class GeofencesAdapter(context: Context, private val geometryProvider: GeometryP
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = inflater.inflate(R.layout.list_item_geofence, parent, false)
         return ViewHolder(view, geometryProvider).apply {
-            clickListener { itemClickListener?.invoke(geofences[adapterPosition]) }
+            clickListener {
+                itemClickListener?.invoke(geofences[adapterPosition])
+            }
+            popupItemClickListener { menuItem ->
+                popupItemClickListener?.invoke(menuItem, geofences[adapterPosition])
+            }
         }
     }
 
@@ -70,6 +80,8 @@ class ViewHolder(view: View,
 
     private val nameView: TextView by bindView(R.id.genfence_name)
 
+    private val moreView: ImageView by bindView(R.id.more)
+
     private var googleMap: GoogleMap? = null
 
     init {
@@ -80,6 +92,12 @@ class ViewHolder(view: View,
     }
 
     fun clickListener(listener: (View) -> Unit) = mapOverlay.setOnClickListener(listener)
+
+    fun popupItemClickListener(listener: (GeofenceMenuItem)->Unit) {
+        moreView.setOnClickListener { anchor ->
+            anchor.showPopup(menuRes = R.menu.item_geofence) { listener(it) }
+        }
+    }
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
@@ -129,4 +147,12 @@ class ViewHolder(view: View,
             googleMap.moveCamera(this)
         }
     }
+}
+
+private fun View.showPopup(@MenuRes menuRes: Int, onItemClick: (GeofenceMenuItem) -> Unit) {
+    val popup = PopupMenu(context, this).apply {
+        inflate(R.menu.item_geofence)
+        setOnMenuItemClickListener { onItemClick(GeofenceMenuItem.from(it.itemId)); true }
+    }
+    popup.show()
 }
