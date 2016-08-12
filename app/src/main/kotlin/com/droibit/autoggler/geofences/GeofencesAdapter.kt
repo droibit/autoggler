@@ -2,6 +2,8 @@ package com.droibit.autoggler.geofences
 
 import android.content.Context
 import android.support.annotation.MenuRes
+import android.support.annotation.ColorRes
+import android.support.annotation.DrawableRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -114,15 +116,12 @@ class ViewHolder(view: View,
     }
 
     fun bind(geofence: Geofence) {
-        val (icon, textColor) = if (geofence.enabled)
-            Pair(R.drawable.ciecled_geofenceing_enabled, android.R.color.black)
-        else
-            Pair(R.drawable.ciecled_geofenceing_disabled, R.color.appGrey)
-        iconView.setImageResource(icon)
+        val status = if (geofence.enabled) Status.ENABLED else Status.DISABLED
+        iconView.setImageResource(status.iconRes)
 
         nameView.apply {
             this.text = geofence.name
-            this.setTextColor(ContextCompat.getColor(context, textColor))
+            this.setTextColor(ContextCompat.getColor(context, status.textColorRes))
         }
 
         val googleMap = googleMap
@@ -155,4 +154,14 @@ private fun View.showPopup(@MenuRes menuRes: Int, onItemClick: (GeofenceMenuItem
         setOnMenuItemClickListener { onItemClick(GeofenceMenuItem.from(it.itemId)); true }
     }
     popup.show()
+}
+
+private enum class Status(
+        @DrawableRes val iconRes: Int,
+        @ColorRes val textColorRes: Int) {
+
+    ENABLED(iconRes = R.drawable.ciecled_geofenceing_enabled,
+            textColorRes = android.R.color.black),
+    DISABLED(iconRes = R.drawable.ciecled_geofenceing_disabled,
+            textColorRes = R.color.appGrey);
 }

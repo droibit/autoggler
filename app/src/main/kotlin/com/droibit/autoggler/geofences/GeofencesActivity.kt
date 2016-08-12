@@ -75,31 +75,31 @@ class GeofencesActivity : AppCompatActivity(),
                 Geofence(id = 1L,
                         name = "テスト",
                         enabled = true,
-                        circle = Circle(35.7121228,139.7740507, 500.0),
+                        circle = Circle(35.7121228, 139.7740507, 500.0),
                         trigger = Trigger()
                 ),
                 Geofence(id = 2L,
                         name = "テスト",
                         enabled = false,
-                        circle = Circle(35.3121228,139.7740507, 500.0),
+                        circle = Circle(35.3121228, 139.7740507, 500.0),
                         trigger = Trigger()
                 ),
                 Geofence(id = 3L,
                         name = "テスト",
                         enabled = true,
-                        circle = Circle(35.4121228,139.7740507, 500.0),
+                        circle = Circle(35.4121228, 139.7740507, 500.0),
                         trigger = Trigger()
                 ),
                 Geofence(id = 4L,
                         name = "テスト",
                         enabled = true,
-                        circle = Circle(35.5121228,139.7740507, 500.0),
+                        circle = Circle(35.5121228, 139.7740507, 500.0),
                         trigger = Trigger()
                 ),
                 Geofence(id = 5L,
                         name = "テスト",
                         enabled = false,
-                        circle = Circle(35.6121228,139.7740507, 500.0),
+                        circle = Circle(35.6121228, 139.7740507, 500.0),
                         trigger = Trigger()
                 )
         )
