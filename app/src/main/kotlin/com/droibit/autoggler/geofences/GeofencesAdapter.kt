@@ -151,7 +151,7 @@ class ViewHolder(view: View,
 
 private fun View.showPopup(@MenuRes menuRes: Int, onItemClick: (GeofenceMenuItem) -> Unit) {
     val popup = PopupMenu(context, this).apply {
-        inflate(R.menu.item_geofence)
+        inflate(menuRes)
         setOnMenuItemClickListener { onItemClick(GeofenceMenuItem.from(it.itemId)); true }
     }
     popup.show()
