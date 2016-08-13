@@ -12,7 +12,7 @@ class GeofenceRepositoryImpl(
 
     override fun loadGeofences(): Single<List<Geofence>> {
         return Single.defer {
-            realmProvider.get().use { realm ->
+            realmProvider.use { realm ->
                 val managedGeofences = realm.where<Geofence>().findAllSorted(COLUMN_NAME)
                 Single.just(realm.copyFromRealm(managedGeofences))
             }
@@ -21,7 +21,7 @@ class GeofenceRepositoryImpl(
 
     override fun addGeofence(name: String, circle: Circle, trigger: Trigger): Single<Geofence> {
         return Single.defer {
-            realmProvider.get().use { realm ->
+            realmProvider.use { realm ->
                 val managedGeofence = realm.useTransaction {
                     realm.createObject<Geofence>().apply {
                         this.id = autoIncrementor.newId<Geofence>(realm)
@@ -38,7 +38,7 @@ class GeofenceRepositoryImpl(
 
     override fun deleteGeofence(targetId: Long): Single<Geofence> {
         return Single.defer {
-            realmProvider.get().use { realm ->
+            realmProvider.use { realm ->
                 val managedGeofence = realm.where<Geofence>()
                         .equalTo(COLUMN_ID, targetId)
                         .findFirst() ?: throw IllegalArgumentException("Geofence of the specified id($targetId) does not exist.")
@@ -53,7 +53,7 @@ class GeofenceRepositoryImpl(
     }
 
     internal fun _deleteGeofences() {
-        realmProvider.get().use { realm ->
+        realmProvider.use { realm ->
             realm.executeTransaction {
                 realm.delete<Geofence>()
             }
