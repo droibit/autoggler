@@ -9,7 +9,13 @@ interface GeofenceRepository {
     fun loadGeofences(): Single<List<Geofence>>
 
     @WorkerThread
+    fun loadGeofence(targetId: Long): Single<Geofence?>
+
+    @WorkerThread
     fun addGeofence(name: String, circle: Circle, trigger: Trigger): Single<Geofence>
+
+    @WorkerThread
+    fun updateGeofence(srcGeofence: Geofence): Single<Geofence>
 
     @WorkerThread
     fun deleteGeofence(targetId: Long): Single<Geofence>
