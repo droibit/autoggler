@@ -44,8 +44,7 @@ class DeleteTaskTest {
         test {
             val id = 1L
             val expect: Geofence = mock()
-            val single: Single<Geofence> = Single.just(expect)
-            doReturn(single).whenever(geofenceRepository).deleteGeofence(id)
+            doReturn(expect).whenever(geofenceRepository).deleteGeofence(id)
 
             val subscriber = TestSubscriber<Geofence>()
             task.deleteGeofence(targetId = id)
@@ -63,8 +62,7 @@ class DeleteTaskTest {
         test {
             val id = -1L
             val throwable = IllegalArgumentException("")
-            val single: Single<Geofence> = Single.error(throwable)
-            doReturn(single).whenever(geofenceRepository).deleteGeofence(id)
+            doThrow(throwable).whenever(geofenceRepository).deleteGeofence(id)
 
             val subscriber = TestSubscriber<Geofence>()
             task.deleteGeofence(targetId = id)

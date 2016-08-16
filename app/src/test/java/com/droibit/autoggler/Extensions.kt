@@ -1,3 +1,3 @@
 package com.droibit.autoggler
 
-fun Any.test(test: ()->Unit) = test()
+fun test(test: ()->Unit) = test()

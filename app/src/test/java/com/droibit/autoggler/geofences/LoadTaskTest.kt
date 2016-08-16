@@ -39,8 +39,7 @@ class LoadTaskTest {
     @Test
     fun loadGeofences() {
         val expect: List<Geofence> = mock()
-        val single: Single<List<Geofence>> = Single.just(expect)
-        doReturn(single).whenever(geofenceRepository).loadGeofences()
+        doReturn(expect).whenever(geofenceRepository).loadGeofences()
 
         val subscriber = TestSubscriber<List<Geofence>>()
         task.loadGeofences()

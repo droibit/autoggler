@@ -6,19 +6,19 @@ import rx.Single
 interface GeofenceRepository {
 
     @WorkerThread
-    fun loadGeofences(): Single<List<Geofence>>
+    fun loadGeofences(): List<Geofence>
 
     @WorkerThread
-    fun loadGeofence(targetId: Long): Single<Geofence?>
+    fun loadGeofence(targetId: Long): Geofence?
 
     @WorkerThread
-    fun addGeofence(name: String, circle: Circle, trigger: Trigger): Single<Geofence>
+    fun addGeofence(name: String, circle: Circle, trigger: Trigger): Geofence
 
     @WorkerThread
-    fun updateGeofence(srcGeofence: Geofence): Single<Geofence>
+    fun updateGeofence(srcGeofence: Geofence): Geofence
 
     @WorkerThread
-    fun deleteGeofence(targetId: Long): Single<Geofence>
+    fun deleteGeofence(targetId: Long): Geofence
 
     // TODO: registerGeofenceing
 
