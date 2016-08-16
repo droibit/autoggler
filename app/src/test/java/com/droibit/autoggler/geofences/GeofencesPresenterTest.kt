@@ -4,16 +4,12 @@ import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.geofences.GeofencesContract.GeofenceMenuItem
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
-import com.droibit.autoggler.test
 import com.nhaarman.mockito_kotlin.*
-import io.realm.exceptions.RealmError
 import io.realm.exceptions.RealmException
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import rx.Single
@@ -96,7 +92,7 @@ class GeofencesPresenterTest {
     @Test
     fun onDeleteConfirmDialogOkClicked_deleteGeofence() {
 
-        test {
+        run {
             val expectId = 1L
             val expectGeofence: Geofence = mock()
             val single = Single.just(expectGeofence)
@@ -110,7 +106,7 @@ class GeofencesPresenterTest {
 
         reset(view)
 
-        test {
+        run {
             val expectId = 1L
             val error: Single<Geofence> = Single.error(IllegalArgumentException(""))
             doReturn(error).whenever(deleteTask).deleteGeofence(targetId = expectId)
@@ -125,7 +121,7 @@ class GeofencesPresenterTest {
     @Test
     fun loadGeofences_showGeofences() {
         // Returned geofences
-        test {
+        run {
             val mockList: List<Geofence> = mock()
             doReturn(false).whenever(mockList).isEmpty()
             doReturn(Single.just(mockList)).whenever(loadTask).loadGeofences()
@@ -139,7 +135,7 @@ class GeofencesPresenterTest {
         reset(view)
 
         // Returned empty geofences
-        test {
+        run {
             val mockList: List<Geofence> = mock()
             doReturn(true).whenever(mockList).isEmpty()
             doReturn(Single.just(mockList)).whenever(loadTask).loadGeofences()
@@ -153,7 +149,7 @@ class GeofencesPresenterTest {
         reset(view)
 
         // error occur
-        test {
+        run {
             val error: Single<Geofence> = Single.error(RealmException(""))
             doReturn(error).whenever(loadTask).loadGeofences()
 
