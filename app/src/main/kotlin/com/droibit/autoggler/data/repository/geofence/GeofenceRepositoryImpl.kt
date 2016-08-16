@@ -38,7 +38,7 @@ class GeofenceRepositoryImpl(
     override fun addGeofence(name: String, circle: Circle, trigger: Trigger): Single<Geofence> {
         return Single.defer {
             realmProvider.use { realm ->
-                val managedGeofence = realm.useTransaction {
+                val managedGeofence = realm.runTransaction {
                     realm.createObject<Geofence>().apply {
                         this.id = autoIncrementor.newId<Geofence>(realm)
                         this.name = name
@@ -56,7 +56,7 @@ class GeofenceRepositoryImpl(
     override fun updateGeofence(srcGeofence: Geofence): Single<Geofence> {
         return Single.defer {
             realmProvider.use { realm ->
-                val managedGeofence = realm.useTransaction {
+                val managedGeofence = realm.runTransaction {
                     realm.copyToRealmOrUpdate(srcGeofence)
                 }
                 Single.just(realm.copyFromRealm(managedGeofence))

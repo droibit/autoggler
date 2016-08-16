@@ -9,7 +9,7 @@ inline fun <reified T : RealmModel> Realm.createObject() = createObject(T::class
 
 inline fun <reified T : RealmModel> Realm.delete() = delete(T::class.java)
 
-inline fun <reified T : RealmModel> Realm.useTransaction(execute: () -> T): T {
+inline fun <reified T : RealmModel> Realm.runTransaction(execute: () -> T): T {
     beginTransaction()
     try {
         val managedObject = execute()
