@@ -16,6 +16,7 @@ import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.data.repository.geofence.Trigger
+import com.droibit.autoggler.edit.add.AddGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.github.droibit.chopstick.bindView
 import com.github.salomonbrys.kodein.Kodein
@@ -55,6 +56,8 @@ class GeofencesActivity : AppCompatActivity(),
             val self = this@GeofencesActivity
             import(geofencesModule(view = self, navigator = self))
         })
+
+        fab.setOnClickListener { presenter.onGeofenceAddButtonClicked() }
 
         listAdapter = GeofencesAdapter(this, geometryProvider).apply {
             itemClickListener = { geofence ->
@@ -144,7 +147,8 @@ class GeofencesActivity : AppCompatActivity(),
     }
 
     override fun navigateAddGeofence() {
-        TODO()
+        // FIXME: startActivityForResult
+        startActivity(AddGeofenceActivity.createIntent(this))
     }
 
     override fun navigateUpdateGeofence(id: Long) {

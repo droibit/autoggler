@@ -2,23 +2,19 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:app="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
-             android:id="@+id/activity_add_toggle"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="com.droibit.autoggler.edit.add.AddGeofenceActivity"
         >
 
-    <Button
-            android:text="Add"
+    <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onClickAdd" />
-
-
-    <Button
-            android:text="Count"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onClickCount" />
+            android:layout_height="match_parent"
+            app:cameraZoom="13"
+            app:mapType="normal"
+            app:uiCompass="true"
+            app:uiTiltGestures="false"
+            />
 
 </FrameLayout>
