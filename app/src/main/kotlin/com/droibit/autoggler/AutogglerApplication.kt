@@ -1,6 +1,7 @@
 package com.droibit.autoggler
 
 import android.app.Application
+import com.droibit.autoggler.data.checker.checkerModule
 import com.droibit.autoggler.data.geometory.geometryModule
 import com.droibit.autoggler.data.repository.repositoryModule
 import com.droibit.autoggler.stetho.Stetho
@@ -12,8 +13,10 @@ import timber.log.Timber
 class AutogglerApplication : Application(), KodeinAware {
 
     override val kodein: Kodein by Kodein.lazy {
-        import(applicationModule(this@AutogglerApplication, BuildConfig.DEBUG))
+        val context = this@AutogglerApplication
+        import(applicationModule(context, BuildConfig.DEBUG))
         import(repositoryModule())
+        import(checkerModule())
         import(geometryModule())
         import(stethoModule())
     }

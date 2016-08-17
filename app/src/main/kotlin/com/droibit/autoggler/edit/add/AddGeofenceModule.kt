@@ -14,6 +14,8 @@ fun addGeofenceModule(view: AddGeofenceContract.View, navigator: AddGeofenceCont
     bind<AddGeofenceContract.Presenter>() with provider {
         AddGeofencePresenter(
                 view = instance(),
-                navigator = instance())
+                navigator = instance(),
+                permissionChecker = instance()
+        )
     }
 }
