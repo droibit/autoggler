@@ -13,9 +13,10 @@ class DeleteTask(private val geofenceRepository: GeofenceRepository) :
         // TODO unregisterGeofencing
         return single<Geofence> { subscriber ->
             try {
-                val geofence = geofenceRepository.deleteGeofence(targetId)
-                if (!subscriber.isUnsubscribed) {
-                    subscriber.onSuccess(geofence)
+                geofenceRepository.deleteGeofence(targetId).apply {
+                    if (!subscriber.isUnsubscribed) {
+                        subscriber.onSuccess(this)
+                    }
                 }
             } catch (e: RuntimeException) {
                 subscriber.onError(e)

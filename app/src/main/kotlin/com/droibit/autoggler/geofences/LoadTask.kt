@@ -12,9 +12,10 @@ class LoadTask(private val geofenceRepository: GeofenceRepository) :
 
     override fun loadGeofences(): Single<List<Geofence>> {
         return single<List<Geofence>> { subscriber ->
-            val geofences = geofenceRepository.loadGeofences()
-            if (!subscriber.isUnsubscribed) {
-                subscriber.onSuccess(geofences)
+            geofenceRepository.loadGeofences().apply {
+                if (!subscriber.isUnsubscribed) {
+                    subscriber.onSuccess(this)
+                }
             }
         }.subscribeOn(Schedulers.io())
     }

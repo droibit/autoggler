@@ -96,7 +96,7 @@ class GeofencesPresenterTest {
             val expectId = 1L
             val expectGeofence: Geofence = mock()
             val single = Single.just(expectGeofence)
-            doReturn(single).whenever(deleteTask).deleteGeofence(targetId = expectId)
+            whenever(deleteTask.deleteGeofence(targetId = expectId)).thenReturn(single)
 
             presenter.onDeleteConfirmDialogOkClicked(targetId = expectId)
 
@@ -109,7 +109,7 @@ class GeofencesPresenterTest {
         run {
             val expectId = 1L
             val error: Single<Geofence> = Single.error(IllegalArgumentException(""))
-            doReturn(error).whenever(deleteTask).deleteGeofence(targetId = expectId)
+            whenever(deleteTask.deleteGeofence(targetId = expectId)).thenReturn(error)
 
             presenter.onDeleteConfirmDialogOkClicked(targetId = expectId)
 
@@ -123,8 +123,8 @@ class GeofencesPresenterTest {
         // Returned geofences
         run {
             val mockList: List<Geofence> = mock()
-            doReturn(false).whenever(mockList).isEmpty()
-            doReturn(Single.just(mockList)).whenever(loadTask).loadGeofences()
+            whenever(mockList.isEmpty()).thenReturn(false)
+            whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
 
             presenter.loadGeofences()
 
@@ -137,8 +137,8 @@ class GeofencesPresenterTest {
         // Returned empty geofences
         run {
             val mockList: List<Geofence> = mock()
-            doReturn(true).whenever(mockList).isEmpty()
-            doReturn(Single.just(mockList)).whenever(loadTask).loadGeofences()
+            whenever(mockList.isEmpty()).thenReturn(true)
+            whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
 
             presenter.loadGeofences()
 
@@ -150,8 +150,8 @@ class GeofencesPresenterTest {
 
         // error occur
         run {
-            val error: Single<Geofence> = Single.error(RealmException(""))
-            doReturn(error).whenever(loadTask).loadGeofences()
+            val error: Single<List<Geofence>> = Single.error(RealmException(""))
+            whenever(loadTask.loadGeofences()).thenReturn(error)
 
             presenter.loadGeofences()
 

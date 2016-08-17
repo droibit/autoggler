@@ -3,17 +3,13 @@ package com.droibit.autoggler.geofences
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
-import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
-import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.Rule
+import org.junit.Test
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
-import rx.Single
 import rx.observers.TestSubscriber
 
 class LoadTaskTest {
@@ -39,11 +35,11 @@ class LoadTaskTest {
     @Test
     fun loadGeofences() {
         val expect: List<Geofence> = mock()
-        doReturn(expect).whenever(geofenceRepository).loadGeofences()
+        whenever(geofenceRepository.loadGeofences()).thenReturn(expect)
 
         val subscriber = TestSubscriber<List<Geofence>>()
         task.loadGeofences()
-            .subscribe(subscriber)
+                .subscribe(subscriber)
 
         subscriber.run {
             assertNoErrors()

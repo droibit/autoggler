@@ -3,8 +3,6 @@ package com.droibit.autoggler.geofences
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
-import com.nhaarman.mockito_kotlin.doReturn
-import com.nhaarman.mockito_kotlin.doThrow
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Before
@@ -42,11 +40,11 @@ class DeleteTaskTest {
         run {
             val id = 1L
             val expect: Geofence = mock()
-            doReturn(expect).whenever(geofenceRepository).deleteGeofence(id)
+            whenever(geofenceRepository.deleteGeofence(id)).thenReturn(expect)
 
             val subscriber = TestSubscriber<Geofence>()
             task.deleteGeofence(targetId = id)
-                .subscribe(subscriber)
+                    .subscribe(subscriber)
 
             subscriber.run {
                 assertNoErrors()
@@ -60,7 +58,7 @@ class DeleteTaskTest {
         run {
             val id = -1L
             val throwable = IllegalArgumentException("")
-            doThrow(throwable).whenever(geofenceRepository).deleteGeofence(id)
+            whenever(geofenceRepository.deleteGeofence(id)).thenThrow(throwable)
 
             val subscriber = TestSubscriber<Geofence>()
             task.deleteGeofence(targetId = id)
