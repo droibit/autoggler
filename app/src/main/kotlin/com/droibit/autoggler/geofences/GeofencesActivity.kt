@@ -8,27 +8,30 @@ import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ListView
 import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.data.repository.geofence.Trigger
 import com.droibit.autoggler.edit.add.AddGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.github.droibit.chopstick.bindView
+import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import rx.subjects.PublishSubject
 
 class GeofencesActivity : AppCompatActivity(),
         GeofencesContract.View,
         GeofencesContract.Navigator {
+
+    companion object {
+        @JvmStatic
+        private val REQUEST_ADD_GEOFENCE = 1
+    }
 
     private val injector = KodeinInjector()
 
@@ -36,9 +39,9 @@ class GeofencesActivity : AppCompatActivity(),
 
     private val geometryProvider: GeometryProvider by injector.instance()
 
-    private val repository: GeofenceRepository by injector.instance()
-
     private val recyclerView: RecyclerView by bindView(R.id.list)
+
+    private val activityLauncher: RxActivityLauncher by injector.instance()
 
     private val emptyView: View by bindView(R.id.empty)
 
@@ -53,11 +56,24 @@ class GeofencesActivity : AppCompatActivity(),
         injector.inject(Kodein {
             extend(appKodein())
 
-            val self = this@GeofencesActivity
-            import(geofencesModule(view = self, navigator = self))
+            import(geofencesModule(
+                    view = this@GeofencesActivity,
+                    navigator = this@GeofencesActivity
+            ))
         })
 
-        fab.setOnClickListener { presenter.onGeofenceAddButtonClicked() }
+        fab.apply {
+            val clickObservable: PublishSubject<Any> = PublishSubject.create()
+            tag = clickObservable
+
+            setOnClickListener { presenter.onGeofenceAddButtonClicked() }
+
+            val intent = AddGeofenceActivity.createIntent(this@GeofencesActivity)
+            activityLauncher.from(this@GeofencesActivity)
+                .on(clickObservable)
+                .startActivityForResult(intent, REQUEST_ADD_GEOFENCE, null)
+                .subscribe {  }
+        }
 
         listAdapter = GeofencesAdapter(this, geometryProvider).apply {
             itemClickListener = { geofence ->
@@ -147,8 +163,9 @@ class GeofencesActivity : AppCompatActivity(),
     }
 
     override fun navigateAddGeofence() {
-        // FIXME: startActivityForResult
-        startActivity(AddGeofenceActivity.createIntent(this))
+        @Suppress("UNCHECKED_CAST")
+        val subject = fab.tag as PublishSubject<Any>
+        subject.onNext(null)
     }
 
     override fun navigateUpdateGeofence(id: Long) {

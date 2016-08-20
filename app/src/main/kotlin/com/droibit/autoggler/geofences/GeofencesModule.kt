@@ -1,5 +1,6 @@
 package com.droibit.autoggler.geofences
 
+import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
@@ -10,6 +11,8 @@ fun geofencesModule(view: GeofencesContract.View, navigator: GeofencesContract.N
     bind<GeofencesContract.View>() with instance(view)
 
     bind<GeofencesContract.Navigator>() with instance(navigator)
+
+    bind<RxActivityLauncher>() with provider { RxActivityLauncher() }
 
     bind<GeofencesContract.LoadTask>() with provider { LoadTask(geofenceRepository = instance()) }
 
