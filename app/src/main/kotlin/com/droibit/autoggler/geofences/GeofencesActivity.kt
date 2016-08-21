@@ -22,7 +22,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import rx.subjects.PublishSubject
+import com.jakewharton.rxrelay.PublishRelay
 
 class GeofencesActivity : AppCompatActivity(),
         GeofencesContract.View,
@@ -63,7 +63,7 @@ class GeofencesActivity : AppCompatActivity(),
         })
 
         fab.apply {
-            val clickObservable: PublishSubject<Any> = PublishSubject.create()
+            val clickObservable = PublishRelay.create<Any>()
             tag = clickObservable
 
             setOnClickListener { presenter.onGeofenceAddButtonClicked() }
@@ -164,8 +164,8 @@ class GeofencesActivity : AppCompatActivity(),
 
     override fun navigateAddGeofence() {
         @Suppress("UNCHECKED_CAST")
-        val subject = fab.tag as PublishSubject<Any>
-        subject.onNext(null)
+        val subject = fab.tag as PublishRelay<Any>
+        subject.call(null)
     }
 
     override fun navigateUpdateGeofence(id: Long) {

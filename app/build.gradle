@@ -94,6 +94,7 @@ dependencies {
     compile "io.reactivex:rxkotlin:$rxKotlinVersion"
     compile "io.reactivex:rxandroid:$rxAndroidVersion"
 
+    compile "com.jakewharton.rxrelay:rxrelay:$rxRelayVersion"
     compile "com.github.droibit:rxactivitylauncher:$rxactivitylauncherVersion"
 
     compile "com.jakewharton.timber:timber:$timberVersion"
