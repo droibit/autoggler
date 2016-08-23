@@ -7,7 +7,7 @@ import android.support.annotation.WorkerThread
 interface LocationRepository {
 
     @WorkerThread
-    fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, locationTimeoutMillis: Long): Location?
+    fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location?
 
     @WorkerThread
     fun getLocationAvailableStatus(): LocationAvailableStatus
