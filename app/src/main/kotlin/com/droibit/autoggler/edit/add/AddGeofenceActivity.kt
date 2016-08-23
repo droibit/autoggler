@@ -45,14 +45,18 @@ class AddGeofenceActivity : AppCompatActivity(),
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync {
         }
+
+        presenter.onCreate()
     }
 
     override fun onResume() {
         super.onResume()
+        presenter.subscribe()
         mapView.onResume()
     }
 
     override fun onPause() {
+        presenter.unsubscribe()
         mapView.onPause()
         super.onPause()
     }
