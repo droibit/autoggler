@@ -1,0 +1,8 @@
+box: droibit/android-build-env
+
+build:
+    steps:
+        - script:
+            name: run assembleDebug
+            code: |
+                ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR --info assembleDebug
