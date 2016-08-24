@@ -41,9 +41,6 @@ class GetCurrentLocationTask(
             }
 
             val availableStatus = locationRepository.getLocationAvailableStatus()
-            if (subscriber.isUnsubscribed) {
-                return@single
-            }
             when {
                 availableStatus.isEnabled -> {
                     // TODO: specify timeout(millis)
