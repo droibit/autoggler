@@ -2,6 +2,7 @@ package com.droibit.autoggler.edit.add
 
 import android.location.Location
 import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
+import com.google.android.gms.common.api.Status
 import rx.Observable
 
 
@@ -12,6 +13,8 @@ interface AddGeofenceContract {
     }
 
     interface Navigator {
+
+        fun showLocationResolutionDialog(status: Status)
 
         fun navigationToUp()
     }
