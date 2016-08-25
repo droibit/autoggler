@@ -10,6 +10,9 @@ interface AddGeofenceContract {
 
     interface View {
 
+        fun enableMyLocationButton(enable: Boolean)
+
+        fun showLocation(location: Location)
     }
 
     interface Navigator {

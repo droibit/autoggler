@@ -2,6 +2,7 @@ package com.droibit.autoggler.edit.add
 
 import android.content.Context
 import android.content.Intent
+import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -86,9 +87,19 @@ class AddGeofenceActivity : AppCompatActivity(),
         }
     }
 
+    // AddGeofenceContract.View
+
     override fun showLocationResolutionDialog(status: Status) {
         // TODO: status.startResolutionForResult()
     }
+
+    override fun enableMyLocationButton(enable: Boolean) {
+    }
+
+    override fun showLocation(location: Location) {
+    }
+
+    // AddGeofenceContract.Navigator
 
     override fun navigationToUp() {
         finish()
