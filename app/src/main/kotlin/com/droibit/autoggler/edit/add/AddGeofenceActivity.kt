@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import com.droibit.autoggler.R
+import com.droibit.autoggler.edit.GoogleMapView
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
 import com.github.droibit.chopstick.bindView
+import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjector
@@ -33,7 +35,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val activityLauncher: RxActivityLauncher by injector.instance()
 
-    private val mapView: MapView by bindView(R.id.map)
+    private val googleMapView: GoogleMapView by injector.instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +49,8 @@ class AddGeofenceActivity : AppCompatActivity(),
             import(addGeofenceModule(view = self, navigator = self))
         })
 
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync {
-        }
+        val mapView: MapView = findView(R.id.map)
+        googleMapView.onCreate(mapView, savedInstanceState)
 
         presenter.onCreate()
     }
@@ -61,18 +62,18 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun onResume() {
         super.onResume()
+        googleMapView.onResume()
         presenter.subscribe()
-        mapView.onResume()
     }
 
     override fun onPause() {
+        googleMapView.onPause()
         presenter.unsubscribe()
-        mapView.onPause()
         super.onPause()
     }
 
     override fun onDestroy() {
-        mapView.onDestroy()
+        googleMapView.onDestroy()
         super.onDestroy()
     }
 
