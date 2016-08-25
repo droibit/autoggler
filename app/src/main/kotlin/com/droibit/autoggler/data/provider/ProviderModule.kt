@@ -1,10 +1,11 @@
-package com.droibit.autoggler.data.geometory
+package com.droibit.autoggler.data.provider
 
+import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 
-fun geometryModule() = Kodein.Module {
+fun providerModule() = Kodein.Module {
 
     bind<GeometryProvider>() with singleton { GeometryProvider(instance()) }
 }

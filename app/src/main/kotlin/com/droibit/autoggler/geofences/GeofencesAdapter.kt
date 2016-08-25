@@ -13,7 +13,7 @@ import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
 import com.droibit.autoggler.R
-import com.droibit.autoggler.data.geometory.GeometryProvider
+import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.latLng

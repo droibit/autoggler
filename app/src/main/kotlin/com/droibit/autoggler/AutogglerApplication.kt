@@ -2,7 +2,7 @@ package com.droibit.autoggler
 
 import android.app.Application
 import com.droibit.autoggler.data.checker.checkerModule
-import com.droibit.autoggler.data.geometory.geometryModule
+import com.droibit.autoggler.data.provider.providerModule
 import com.droibit.autoggler.data.repository.repositoryModule
 import com.droibit.autoggler.stetho.Stetho
 import com.droibit.autoggler.stetho.stethoModule
@@ -17,7 +17,7 @@ class AutogglerApplication : Application(), KodeinAware {
         import(applicationModule(context, BuildConfig.DEBUG))
         import(repositoryModule())
         import(checkerModule())
-        import(geometryModule())
+        import(providerModule())
         import(stethoModule())
     }
 
