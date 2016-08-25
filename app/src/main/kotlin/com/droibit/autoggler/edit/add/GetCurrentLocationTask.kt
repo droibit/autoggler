@@ -3,6 +3,7 @@ package com.droibit.autoggler.edit.add
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.repository.location.LocationRepository
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
@@ -16,7 +17,8 @@ import rx.schedulers.Schedulers
 class GetCurrentLocationTask(
         private val relay: BehaviorRelay<Event>,
         private val locationRepository: LocationRepository,
-        private val permissionChecker: RuntimePermissionChecker) : AddGeofenceContract.GetCurrentLocationTask {
+        private val permissionChecker: RuntimePermissionChecker,
+        private val config: ApplicationConfig) : AddGeofenceContract.GetCurrentLocationTask {
 
 
     override fun asObservable(): Observable<Event> {
@@ -45,8 +47,8 @@ class GetCurrentLocationTask(
                 availableStatus.isEnabled -> {
                     // TODO: specify timeout(millis)
                     val location = locationRepository.getCurrentLocation(
-                            maxLastLocationElapsedTimeMillis = 0L,
-                            timeoutMillis = 0L
+                            config.maxLastLocationElapsedTimeMillis,
+                            config.currentLocationTimeoutMillis
                     )
                     subscriber.onSuccess(location)
                 }

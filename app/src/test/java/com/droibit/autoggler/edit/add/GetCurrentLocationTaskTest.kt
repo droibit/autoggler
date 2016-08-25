@@ -3,6 +3,7 @@ package com.droibit.autoggler.edit.add
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
 import com.droibit.autoggler.data.repository.location.LocationRepository
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
@@ -40,6 +41,9 @@ class GetCurrentLocationTaskTest {
     @Mock
     lateinit var permissionChecker: RuntimePermissionChecker
 
+    @Mock
+    lateinit var config: ApplicationConfig
+
     lateinit var task: GetCurrentLocationTask
 
     @Before
@@ -48,7 +52,8 @@ class GetCurrentLocationTaskTest {
         task = GetCurrentLocationTask(
                 relay,
                 locationRepository,
-                permissionChecker
+                permissionChecker,
+                config
         )
     }
 

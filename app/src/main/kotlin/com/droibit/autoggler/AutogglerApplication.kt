@@ -2,6 +2,7 @@ package com.droibit.autoggler
 
 import android.app.Application
 import com.droibit.autoggler.data.checker.checkerModule
+import com.droibit.autoggler.data.config.configModule
 import com.droibit.autoggler.data.provider.providerModule
 import com.droibit.autoggler.data.repository.repositoryModule
 import com.droibit.autoggler.stetho.Stetho
@@ -16,8 +17,9 @@ class AutogglerApplication : Application(), KodeinAware {
         val context = this@AutogglerApplication
         import(applicationModule(context, BuildConfig.DEBUG))
         import(repositoryModule())
-        import(checkerModule())
         import(providerModule())
+        import(configModule())
+        import(checkerModule())
         import(stethoModule())
     }
 

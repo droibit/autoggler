@@ -19,7 +19,8 @@ fun addGeofenceModule(view: AddGeofenceContract.View, navigator: AddGeofenceCont
         GetCurrentLocationTask(
                 relay = instance(),
                 locationRepository = instance(),
-                permissionChecker = instance()
+                permissionChecker = instance(),
+                config = instance()
         )
     }
 
