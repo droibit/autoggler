@@ -1,6 +1,7 @@
 package com.droibit.autoggler.edit.add
 
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
+import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
@@ -12,6 +13,8 @@ fun addGeofenceModule(view: AddGeofenceContract.View, navigator: AddGeofenceCont
     bind<AddGeofenceContract.View>() with instance(view)
 
     bind<AddGeofenceContract.Navigator>() with instance(navigator)
+
+    bind<RxActivityLauncher>() with provider { RxActivityLauncher() }
 
     bind<BehaviorRelay<Event>>() with provider { BehaviorRelay.create<Event>() }
 
