@@ -14,7 +14,7 @@ object Mock {
             }
         }
 
-        override fun getLocationAvailableStatus(): LocationAvailableStatus {
+        override fun getLocationAvailableStatus(): AvailableStatus {
             return LocationAvailableStatus(Status(SUCCESS))
         }
     }
@@ -23,7 +23,7 @@ object Mock {
 
         override fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location? = null
 
-        override fun getLocationAvailableStatus(): LocationAvailableStatus {
+        override fun getLocationAvailableStatus(): AvailableStatus {
             return LocationAvailableStatus(Status(SUCCESS))
         }
     }
@@ -32,7 +32,7 @@ object Mock {
 
         override fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location? = null
 
-        override fun getLocationAvailableStatus(): LocationAvailableStatus {
+        override fun getLocationAvailableStatus(): AvailableStatus {
             return LocationAvailableStatus(Status(ERROR))
         }
     }

@@ -10,5 +10,5 @@ interface LocationRepository {
     fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location?
 
     @WorkerThread
-    fun getLocationAvailableStatus(): LocationAvailableStatus
+    fun getLocationAvailableStatus(): AvailableStatus
 }

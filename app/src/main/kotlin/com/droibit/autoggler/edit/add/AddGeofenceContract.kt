@@ -2,8 +2,7 @@ package com.droibit.autoggler.edit.add
 
 import android.location.Location
 import android.support.annotation.IdRes
-import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
-import com.google.android.gms.common.api.Status
+import com.droibit.autoggler.data.repository.location.AvailableStatus
 import rx.Observable
 
 
@@ -15,12 +14,12 @@ interface AddGeofenceContract {
 
         fun showLocation(location: Location)
 
-        fun showCurrentLocationErrorToast(@IdRes resId: Int)
+        fun showErrorToast(@IdRes msgId: Int)
     }
 
     interface Navigator {
 
-        fun showLocationResolutionDialog(status: LocationAvailableStatus)
+        fun showLocationResolutionDialog(status: AvailableStatus)
 
         fun navigationToUp()
     }
@@ -64,7 +63,7 @@ interface AddGeofenceContract {
 
     class UnavailableLocationException(
             val status: ErrorStatus,
-            val option: LocationAvailableStatus? = null) : Exception() {
+            val option: AvailableStatus? = null) : Exception() {
 
         enum class ErrorStatus {
             PERMISSION_DENIED,

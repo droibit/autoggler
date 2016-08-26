@@ -3,23 +3,21 @@ package com.droibit.autoggler.edit.add
 import android.content.Context
 import android.content.Intent
 import android.location.Location
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.droibit.autoggler.R
-import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
+import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.GoogleMapView
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
-import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.MapView
 
 class AddGeofenceActivity : AppCompatActivity(),
@@ -96,7 +94,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.View
 
-    override fun showLocationResolutionDialog(status: LocationAvailableStatus) {
+    override fun showLocationResolutionDialog(status: AvailableStatus) {
         // TODO: status.startResolutionForResult()
         TODO()
     }
@@ -109,7 +107,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         TODO()
     }
 
-    override fun showCurrentLocationErrorToast(@IdRes resId: Int) {
+    override fun showErrorToast(@IdRes msgId: Int) {
         TODO()
     }
 

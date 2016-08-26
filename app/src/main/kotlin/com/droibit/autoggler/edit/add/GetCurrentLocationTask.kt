@@ -44,8 +44,7 @@ class GetCurrentLocationTask(
 
             val availableStatus = locationRepository.getLocationAvailableStatus()
             when {
-                availableStatus.isEnabled -> {
-                    // TODO: specify timeout(millis)
+                availableStatus.isAvailable -> {
                     val location = locationRepository.getCurrentLocation(
                             config.maxLastLocationElapsedTimeMillis,
                             config.currentLocationTimeoutMillis
