@@ -5,4 +5,6 @@
     <string name="no_geofences">No Geofences</string>
     <string name="item_geofence_menu_delete">Delete</string>
     <string name="activity_label_add_geofence">New Geofence</string>
+    <string name="add_geofence_get_current_location_failed">Failed to get the current location</string>
+    <string name="add_geofence_get_current_location_error">Can not get the current location</string>
 </resources>

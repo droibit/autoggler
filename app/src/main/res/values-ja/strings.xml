@@ -4,4 +4,6 @@
     <string name="no_geofences">ジオフェンスがありません</string>
     <string name="item_geofence_menu_delete">削除</string>
     <string name="activity_label_add_geofence">新しいジオフェンス</string>
+    <string name="add_geofence_get_current_location_failed">現在位置を取得できませんでした</string>
+    <string name="add_geofence_get_current_location_error">現在位置を取得することができません</string>
 </resources>

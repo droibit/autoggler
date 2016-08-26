@@ -2,6 +2,7 @@ package com.droibit.autoggler.edit.add
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
+import com.droibit.autoggler.R
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
@@ -17,7 +18,7 @@ class AddGeofencePresenter(
         private val subscriptions: CompositeSubscription) : AddGeofenceContract.Presenter {
 
     override fun onCreate() {
-        val locationPermissionGranted = permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)
+        val locationPermissionGranted = permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)
         view.enableMyLocationButton(locationPermissionGranted)
 
         getCurrentLocationTask.requestLocation()
@@ -38,30 +39,38 @@ class AddGeofencePresenter(
     }
 
     override fun onLocationResolutionResult(resolved: Boolean) {
-        TODO()
+        if (resolved) {
+            getCurrentLocationTask.requestLocation()
+        } else {
+            view.showErrorToast(R.string.add_geofence_get_current_location_error)
+        }
     }
 
     // RuntimePermissions
 
     override fun onRequestPermissionsResult(grantResults: IntArray) {
-        TODO()
+        if (permissionChecker.isPermissionsGranted(*grantResults)) {
+            getCurrentLocationTask.requestLocation()
+        } else {
+            view.showErrorToast(R.string.add_geofence_get_current_location_error)
+        }
     }
 
     private fun subscribeCurrentLocation() {
         getCurrentLocationTask.asObservable()
             .subscribe { event ->
                 when (event) {
-                    is Event.OnSuccess -> onGotCurrentLocation(event.location)
+                    is Event.OnSuccess -> onCurrentLocationSuccess(event.location)
                     is Event.OnError -> onCurrentLocationError(event.exception)
                 }
             }
     }
 
-    private fun onGotCurrentLocation(location: Location?) {
+    private fun onCurrentLocationSuccess(location: Location?) {
         if (location != null) {
             view.showLocation(location)
         } else {
-            view.showCurrentLocationErrorToast(0)
+            view.showErrorToast(msgId = R.string.add_geofence_get_current_location_failed)
         }
     }
 
@@ -69,7 +78,7 @@ class AddGeofencePresenter(
         when (e.status) {
             PERMISSION_DENIED -> permissions.requestPermissions(ACCESS_FINE_LOCATION)
             RESOLUTION_REQUIRED -> navigator.showLocationResolutionDialog(checkNotNull(e.option))
-            ERROR -> view.showCurrentLocationErrorToast(0)
+            ERROR -> view.showErrorToast(msgId = R.string.add_geofence_get_current_location_error)
         }
     }
 }

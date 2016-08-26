@@ -2,16 +2,14 @@ package com.droibit.autoggler.edit.add
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
+import com.droibit.autoggler.R
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
-import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
+import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
-import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -71,14 +69,14 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onCreate_enableMyLocationButton() {
-        whenever(permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
+        whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
         presenter.onCreate()
 
         verify(view).enableMyLocationButton(true)
     }
 
     @Test
-    fun subscribe_onSuccess() {
+    fun subscribe_onGotLocation() {
         val mockLocation: Location = mock()
         val locationObservable = Event.OnSuccess(mockLocation)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
@@ -87,12 +85,24 @@ class AddGeofencePresenterTest {
 
         verify(getCurrentLocationTask).asObservable()
         verify(view).showLocation(mockLocation)
+        verify(view, never()).showErrorToast(0)
+    }
+
+    @Test
+    fun subscribe_onGotNullableLocation() {
+        val locationObservable = Event.OnSuccess(null)
+        whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
+
+        presenter.subscribe()
+
+        verify(getCurrentLocationTask).asObservable()
+        verify(view).showErrorToast(R.string.add_geofence_get_current_location_failed)
+        verify(view, never()).showLocation(any())
     }
 
     @Test
     fun subscribe_onPermissionDenied() {
-        val mockStatus: LocationAvailableStatus = mock()
-        whenever(mockStatus.isEnabled).thenReturn(false)
+        val availableStatus: AvailableStatus = mock()
 
         val throwable = UnavailableLocationException(PERMISSION_DENIED)
         val locationObservable = Event.OnError(throwable)
@@ -106,8 +116,8 @@ class AddGeofencePresenterTest {
 
     @Test
     fun subscribe_onResolutionRequired() {
-        val mockStatus: LocationAvailableStatus = mock()
-        whenever(mockStatus.isEnabled).thenReturn(false)
+        val mockStatus: AvailableStatus = mock()
+        whenever(mockStatus.isAvailable).thenReturn(false)
         whenever(mockStatus.isResolutionRequired).thenReturn(true)
 
         val throwable = UnavailableLocationException(RESOLUTION_REQUIRED, option = mockStatus)
@@ -121,9 +131,9 @@ class AddGeofencePresenterTest {
     }
 
     @Test
-    fun subscribe_onError() {
-        val mockStatus: LocationAvailableStatus = mock()
-        whenever(mockStatus.isEnabled).thenReturn(false)
+    fun subscribe_onUnknownError() {
+        val mockStatus: AvailableStatus = mock()
+        whenever(mockStatus.isAvailable).thenReturn(false)
 
         val throwable = UnavailableLocationException(ERROR)
         val locationObservable = Event.OnError(throwable)
@@ -132,7 +142,7 @@ class AddGeofencePresenterTest {
         presenter.subscribe()
 
         verify(getCurrentLocationTask).asObservable()
-        verify(view).showCurrentLocationErrorToast(0)
+        verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
     }
 
     // Navigator
@@ -149,14 +159,14 @@ class AddGeofencePresenterTest {
         presenter.onLocationResolutionResult(resolved = true)
 
         verify(getCurrentLocationTask).requestLocation()
-        verify(view, never()).showCurrentLocationErrorToast(0)
+        verify(view, never()).showErrorToast(0)
     }
 
     @Test
     fun onLocationResolutionResult_showCurrentLocationErrorToast() {
         presenter.onLocationResolutionResult(resolved = false)
 
-        verify(view).showCurrentLocationErrorToast(0)
+        verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
         verify(getCurrentLocationTask, never()).requestLocation()
     }
 
@@ -165,23 +175,22 @@ class AddGeofencePresenterTest {
     @Test
     fun onRequestPermissionsResult_requestLocation() {
         val grantResults = intArrayOf(1)
-        whenever(permissionChecker.isRuntimePermissionsGranted(*grantResults)).thenReturn(true)
+        whenever(permissionChecker.isPermissionsGranted(*grantResults)).thenReturn(true)
 
         presenter.onRequestPermissionsResult(grantResults)
 
         verify(getCurrentLocationTask).requestLocation()
-        verify(view, never()).showCurrentLocationErrorToast(0)
+        verify(view, never()).showErrorToast(0)
     }
 
     @Test
     fun onRequestPermissionsResult_showErrorToast() {
         val grantResults = intArrayOf(0)
-        whenever(permissionChecker.isRuntimePermissionsGranted(*grantResults)).thenReturn(false)
+        whenever(permissionChecker.isPermissionsGranted(*grantResults)).thenReturn(false)
 
         presenter.onRequestPermissionsResult(grantResults)
 
-
-        verify(view).showCurrentLocationErrorToast(0)
+        verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
         verify(getCurrentLocationTask, never()).requestLocation()
     }
 }
