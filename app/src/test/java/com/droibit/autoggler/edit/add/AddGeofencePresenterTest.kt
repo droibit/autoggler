@@ -68,14 +68,6 @@ class AddGeofencePresenterTest {
     }
 
     @Test
-    fun onCreate_enableMyLocationButton() {
-        whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
-        presenter.onCreate()
-
-        verify(view).enableMyLocationButton(true)
-    }
-
-    @Test
     fun subscribe_onGotLocation() {
         val mockLocation: Location = mock()
         val locationObservable = Event.OnSuccess(mockLocation)
@@ -180,6 +172,7 @@ class AddGeofencePresenterTest {
         presenter.onRequestPermissionsResult(grantResults)
 
         verify(getCurrentLocationTask).requestLocation()
+        verify(view).enableMyLocationButton(true)
         verify(view, never()).showErrorToast(0)
     }
 
@@ -191,6 +184,7 @@ class AddGeofencePresenterTest {
         presenter.onRequestPermissionsResult(grantResults)
 
         verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
+        verify(view, never()).enableMyLocationButton(true)
         verify(getCurrentLocationTask, never()).requestLocation()
     }
 }

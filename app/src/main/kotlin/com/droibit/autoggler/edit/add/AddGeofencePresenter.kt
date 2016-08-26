@@ -18,9 +18,6 @@ class AddGeofencePresenter(
         private val subscriptions: CompositeSubscription) : AddGeofenceContract.Presenter {
 
     override fun onCreate() {
-        val locationPermissionGranted = permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)
-        view.enableMyLocationButton(locationPermissionGranted)
-
         getCurrentLocationTask.requestLocation()
     }
 
@@ -50,6 +47,7 @@ class AddGeofencePresenter(
 
     override fun onRequestPermissionsResult(grantResults: IntArray) {
         if (permissionChecker.isPermissionsGranted(*grantResults)) {
+            view.enableMyLocationButton(true)
             getCurrentLocationTask.requestLocation()
         } else {
             view.showErrorToast(R.string.add_geofence_get_current_location_error)
