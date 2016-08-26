@@ -22,6 +22,11 @@ interface AddGeofenceContract {
         fun navigationToUp()
     }
 
+    interface RuntimePermissions {
+
+        fun requestPermissions(vararg permissions: String)
+    }
+
     interface Presenter {
 
         fun onCreate()
@@ -30,7 +35,15 @@ interface AddGeofenceContract {
 
         fun unsubscribe()
 
+        // Navigator
+
         fun onUpNavigationButtonClicked()
+
+        fun onLocationResolutionResult(resolved: Boolean)
+
+        // RuntimePermissions
+
+        fun onRequestPermissionsResult(grantResults: IntArray)
     }
 
     interface GetCurrentLocationTask {

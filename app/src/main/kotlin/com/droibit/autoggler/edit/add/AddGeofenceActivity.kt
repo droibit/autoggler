@@ -22,7 +22,8 @@ import com.google.android.gms.maps.MapView
 
 class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.View,
-        AddGeofenceContract.Navigator {
+        AddGeofenceContract.Navigator,
+        AddGeofenceContract.RuntimePermissions {
 
     companion object {
 
@@ -46,8 +47,8 @@ class AddGeofenceActivity : AppCompatActivity(),
             extend(appKodein())
             import(editGeofenceModule())
 
-            val self = this@AddGeofenceActivity
-            import(addGeofenceModule(view = self, navigator = self))
+            val thiz = this@AddGeofenceActivity
+            import(addGeofenceModule(view = thiz, navigator = thiz, permissions = thiz))
         })
 
         val mapView: MapView = findView(R.id.map)
@@ -59,6 +60,10 @@ class AddGeofenceActivity : AppCompatActivity(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         activityLauncher.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onResume() {
@@ -91,17 +96,26 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun showLocationResolutionDialog(status: Status) {
         // TODO: status.startResolutionForResult()
+        TODO()
     }
 
     override fun enableMyLocationButton(enable: Boolean) {
+        TODO()
     }
 
     override fun showLocation(location: Location) {
+        TODO()
     }
 
     // AddGeofenceContract.Navigator
 
     override fun navigationToUp() {
         finish()
+    }
+
+    // AddGeofenceContract.RuntimePermission
+
+    override fun requestPermissions(vararg permissions: String) {
+        TODO()
     }
 }

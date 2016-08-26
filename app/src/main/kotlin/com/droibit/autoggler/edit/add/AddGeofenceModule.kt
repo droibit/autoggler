@@ -8,11 +8,16 @@ import com.github.salomonbrys.kodein.provider
 import com.jakewharton.rxrelay.BehaviorRelay
 
 
-fun addGeofenceModule(view: AddGeofenceContract.View, navigator: AddGeofenceContract.Navigator) = Kodein.Module {
+fun addGeofenceModule(
+        view: AddGeofenceContract.View,
+        navigator: AddGeofenceContract.Navigator,
+        permissions: AddGeofenceContract.RuntimePermissions) = Kodein.Module {
 
     bind<AddGeofenceContract.View>() with instance(view)
 
     bind<AddGeofenceContract.Navigator>() with instance(navigator)
+
+    bind<AddGeofenceContract.RuntimePermissions>() with instance(permissions)
 
     bind<RxActivityLauncher>() with provider { RxActivityLauncher() }
 
@@ -30,6 +35,7 @@ fun addGeofenceModule(view: AddGeofenceContract.View, navigator: AddGeofenceCont
     bind<AddGeofenceContract.Presenter>() with provider {
         AddGeofencePresenter(
                 view = instance(),
+                permissions = instance(),
                 navigator = instance(),
                 getCurrentLocationTask = instance(),
                 permissionChecker = instance(),
