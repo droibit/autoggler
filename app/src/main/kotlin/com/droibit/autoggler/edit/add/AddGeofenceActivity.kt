@@ -5,8 +5,10 @@ import android.content.Intent
 import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.annotation.IdRes
 import android.view.MenuItem
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
 import com.droibit.autoggler.edit.GoogleMapView
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
@@ -94,7 +96,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.View
 
-    override fun showLocationResolutionDialog(status: Status) {
+    override fun showLocationResolutionDialog(status: LocationAvailableStatus) {
         // TODO: status.startResolutionForResult()
         TODO()
     }
@@ -104,6 +106,10 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun showLocation(location: Location) {
+        TODO()
+    }
+
+    override fun showCurrentLocationErrorToast(@IdRes resId: Int) {
         TODO()
     }
 

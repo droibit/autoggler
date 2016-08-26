@@ -1,6 +1,7 @@
 package com.droibit.autoggler.edit.add
 
 import android.location.Location
+import android.support.annotation.IdRes
 import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
 import com.google.android.gms.common.api.Status
 import rx.Observable
@@ -13,11 +14,13 @@ interface AddGeofenceContract {
         fun enableMyLocationButton(enable: Boolean)
 
         fun showLocation(location: Location)
+
+        fun showCurrentLocationErrorToast(@IdRes resId: Int)
     }
 
     interface Navigator {
 
-        fun showLocationResolutionDialog(status: Status)
+        fun showLocationResolutionDialog(status: LocationAvailableStatus)
 
         fun navigationToUp()
     }
