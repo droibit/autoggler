@@ -5,6 +5,7 @@ import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.droibit.autoggler.R
@@ -107,7 +108,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         TODO()
     }
 
-    override fun showErrorToast(@IdRes msgId: Int) {
+    override fun showErrorToast(@StringRes msgId: Int) {
         TODO()
     }
 

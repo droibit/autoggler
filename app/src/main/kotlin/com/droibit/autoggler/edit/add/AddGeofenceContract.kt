@@ -2,6 +2,7 @@ package com.droibit.autoggler.edit.add
 
 import android.location.Location
 import android.support.annotation.IdRes
+import android.support.annotation.StringRes
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import rx.Observable
 
@@ -14,7 +15,7 @@ interface AddGeofenceContract {
 
         fun showLocation(location: Location)
 
-        fun showErrorToast(@IdRes msgId: Int)
+        fun showErrorToast(@StringRes msgId: Int)
     }
 
     interface Navigator {
