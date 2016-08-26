@@ -7,6 +7,7 @@ import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
+import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 
 class AddGeofencePresenter(
@@ -56,12 +57,13 @@ class AddGeofencePresenter(
 
     private fun subscribeCurrentLocation() {
         getCurrentLocationTask.asObservable()
-            .subscribe { event ->
-                when (event) {
-                    is Event.OnSuccess -> onCurrentLocationSuccess(event.location)
-                    is Event.OnError -> onCurrentLocationError(event.exception)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { event ->
+                    when (event) {
+                        is Event.OnSuccess -> onCurrentLocationSuccess(event.location)
+                        is Event.OnError -> onCurrentLocationError(event.exception)
+                    }
                 }
-            }
     }
 
     private fun onCurrentLocationSuccess(location: Location?) {
