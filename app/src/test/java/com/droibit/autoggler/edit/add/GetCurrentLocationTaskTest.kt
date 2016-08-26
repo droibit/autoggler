@@ -163,7 +163,7 @@ class GetCurrentLocationTaskTest {
         val mockLocation: Location = mock()
         whenever(locationRepository.getCurrentLocation(any(), any())).thenReturn(mockLocation)
 
-        task.getLocation()
+        task.requestLocation()
 
         val testSubscriber = TestSubscriber.create<Event>()
         task.asObservable().subscribe(testSubscriber)
@@ -183,7 +183,7 @@ class GetCurrentLocationTaskTest {
         // Permission denied
         run {
             whenever(permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(false)
-            task.getLocation()
+            task.requestLocation()
 
             val testSubscriber = TestSubscriber.create<Event>()
             task.asObservable().subscribe(testSubscriber)
@@ -209,7 +209,7 @@ class GetCurrentLocationTaskTest {
             val availableStatus = LocationAvailableStatus(status)
             whenever(locationRepository.getLocationAvailableStatus()).thenReturn(availableStatus)
 
-            task.getLocation()
+            task.requestLocation()
 
             val testSubscriber = TestSubscriber.create<Event>()
             task.asObservable().subscribe(testSubscriber)
@@ -235,7 +235,7 @@ class GetCurrentLocationTaskTest {
             val availableStatus = LocationAvailableStatus(status)
             whenever(locationRepository.getLocationAvailableStatus()).thenReturn(availableStatus)
 
-            task.getLocation()
+            task.requestLocation()
 
             val testSubscriber = TestSubscriber.create<Event>()
             task.asObservable().subscribe(testSubscriber)

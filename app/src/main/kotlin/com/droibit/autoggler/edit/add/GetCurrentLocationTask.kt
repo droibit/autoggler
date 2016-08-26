@@ -26,7 +26,7 @@ class GetCurrentLocationTask(
                 .doOnNext { relay.call(Event.OnCompleted) }
     }
 
-    override fun getLocation() {
+    override fun requestLocation() {
         getLocationAsSingle()
                 .subscribeOn(Schedulers.io())
                 .subscribe(

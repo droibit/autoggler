@@ -54,7 +54,7 @@ interface AddGeofenceContract {
             object OnCompleted : Event()
         }
 
-        fun getLocation()
+        fun requestLocation()
 
         fun asObservable(): Observable<Event>
     }
