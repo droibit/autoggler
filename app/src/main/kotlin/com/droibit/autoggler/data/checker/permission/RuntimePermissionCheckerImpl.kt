@@ -6,11 +6,11 @@ import android.support.v4.content.PermissionChecker.checkSelfPermission
 
 class RuntimePermissionCheckerImpl(private val context: Context) : RuntimePermissionChecker {
 
-    override fun isRuntimePermissionsGranted(vararg permissions: String): Boolean {
+    override fun isPermissionsGranted(vararg permissions: String): Boolean {
         return permissions.all { checkSelfPermission(context, it) == PERMISSION_GRANTED }
     }
 
-    override fun isRuntimePermissionsGranted(vararg grantResults: Int): Boolean {
+    override fun isPermissionsGranted(vararg grantResults: Int): Boolean {
         return grantResults.all { it == PERMISSION_GRANTED }
     }
 }

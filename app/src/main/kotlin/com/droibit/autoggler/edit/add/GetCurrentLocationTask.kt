@@ -37,7 +37,7 @@ class GetCurrentLocationTask(
 
     private fun getLocationAsSingle(): Single<Location?> {
         return single { subscriber ->
-            if (!permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)) {
+            if (!permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)) {
                 subscriber.onError(UnavailableLocationException(PERMISSION_DENIED))
                 return@single
             }

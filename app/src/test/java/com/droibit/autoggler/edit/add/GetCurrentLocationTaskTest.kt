@@ -154,7 +154,7 @@ class GetCurrentLocationTaskTest {
 
     @Test
     fun getLocation_onSuccess() {
-        whenever(permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
+        whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
 
         val status = Status(CommonStatusCodes.SUCCESS)
         val availableStatus = LocationAvailableStatus(status)
@@ -182,7 +182,7 @@ class GetCurrentLocationTaskTest {
     fun getLocation_onError() {
         // Permission denied
         run {
-            whenever(permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(false)
+            whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(false)
             task.requestLocation()
 
             val testSubscriber = TestSubscriber.create<Event>()
@@ -203,7 +203,7 @@ class GetCurrentLocationTaskTest {
 
         // Location unavailable
         run {
-            whenever(permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
+            whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
 
             val status = Status(CommonStatusCodes.RESOLUTION_REQUIRED)
             val availableStatus = LocationAvailableStatus(status)
@@ -229,7 +229,7 @@ class GetCurrentLocationTaskTest {
 
         // Unknown error
         run {
-            whenever(permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
+            whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
 
             val status = Status(CommonStatusCodes.ERROR)
             val availableStatus = LocationAvailableStatus(status)

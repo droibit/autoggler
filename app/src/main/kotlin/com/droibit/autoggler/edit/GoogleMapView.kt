@@ -59,7 +59,7 @@ class GoogleMapView(private val permissionChecker: RuntimePermissionChecker) : O
     }
 
     private fun GoogleMap.enableMyLocationButtonIfAllowed() {
-        if (permissionChecker.isRuntimePermissionsGranted(ACCESS_FINE_LOCATION)) {
+        if (permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)) {
             isMyLocationEnabled = true
         }
     }
