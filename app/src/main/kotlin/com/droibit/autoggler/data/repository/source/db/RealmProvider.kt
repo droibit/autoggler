@@ -1,4 +1,4 @@
-package com.droibit.autoggler.data.repository.source
+package com.droibit.autoggler.data.repository.source.db
 
 import io.realm.Realm
 

@@ -2,8 +2,9 @@ package com.droibit.autoggler.data.repository.geofence
 
 import android.support.annotation.WorkerThread
 import com.droibit.autoggler.data.repository.source.*
-import com.droibit.autoggler.data.repository.source.GeofencePersistenceContract.COLUMN_ID
-import com.droibit.autoggler.data.repository.source.GeofencePersistenceContract.COLUMN_NAME
+import com.droibit.autoggler.data.repository.source.db.*
+import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
+import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_NAME
 import io.realm.RealmObject
 
 class GeofenceRepositoryImpl(

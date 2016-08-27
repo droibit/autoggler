@@ -3,11 +3,11 @@ package com.droibit.autoggler.data.repository
 import android.content.Context
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepositoryImpl
-import com.droibit.autoggler.data.repository.source.AutoIncrementor
-import com.droibit.autoggler.data.repository.source.GeofencePersistenceContract.COLUMN_ID
-import com.droibit.autoggler.data.repository.source.RealmProvider
-import com.droibit.autoggler.data.repository.source.RealmProvider.Companion.FILE_NAME
-import com.droibit.autoggler.data.repository.source.RealmProviderImpl
+import com.droibit.autoggler.data.repository.source.db.AutoIncrementor
+import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
+import com.droibit.autoggler.data.repository.source.db.RealmProvider
+import com.droibit.autoggler.data.repository.source.db.RealmProvider.Companion.FILE_NAME
+import com.droibit.autoggler.data.repository.source.db.RealmProviderImpl
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
