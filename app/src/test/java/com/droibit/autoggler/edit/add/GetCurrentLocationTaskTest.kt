@@ -253,4 +253,57 @@ class GetCurrentLocationTaskTest {
             testSubscriber.unsubscribe()
         }
     }
+
+    @Test
+    fun getLocation_onErrorAndSuccess() {
+        whenever(permissionChecker.isPermissionsGranted(ACCESS_FINE_LOCATION)).thenReturn(true)
+
+        // Location unavailable
+        run {
+            val status = Status(CommonStatusCodes.RESOLUTION_REQUIRED)
+            val availableStatus = LocationAvailableStatus(status)
+            whenever(locationRepository.getLocationAvailableStatus()).thenReturn(availableStatus)
+
+            task.requestLocation()
+
+            val testSubscriber = TestSubscriber.create<Event>()
+            task.asObservable().subscribe(testSubscriber)
+
+            testSubscriber.assertNoTerminalEvent()
+            testSubscriber.assertValueCount(1)
+
+            val event = testSubscriber.onNextEvents.first()
+            assertThat(event).isExactlyInstanceOf(Event.OnError::class.java)
+
+            val onErrorEvent = event as Event.OnError
+            assertThat(onErrorEvent.exception.status).isEqualTo(RESOLUTION_REQUIRED)
+            assertThat(onErrorEvent.exception.option).isSameAs(availableStatus)
+
+            testSubscriber.unsubscribe()
+        }
+
+        // getLocation
+        run {
+            val status = Status(CommonStatusCodes.SUCCESS)
+            val availableStatus = LocationAvailableStatus(status)
+            whenever(locationRepository.getLocationAvailableStatus()).thenReturn(availableStatus)
+
+            val mockLocation: Location = mock()
+            whenever(locationRepository.getCurrentLocation(any(), any())).thenReturn(mockLocation)
+
+            task.requestLocation()
+
+            val testSubscriber = TestSubscriber.create<Event>()
+            task.asObservable().subscribe(testSubscriber)
+
+            testSubscriber.assertNoTerminalEvent()
+            testSubscriber.assertValueCount(1)
+
+            val event = testSubscriber.onNextEvents.first()
+            assertThat(event).isExactlyInstanceOf(Event.OnSuccess::class.java)
+
+            val onSuccessEvent = event as Event.OnSuccess
+            assertThat(onSuccessEvent.location).isSameAs(mockLocation)
+        }
+    }
 }
