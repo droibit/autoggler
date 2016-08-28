@@ -6,4 +6,6 @@ interface TimeProvider {
     val currentTimeMillis: Long
 
     val elapsedRealTimeMillis: Long
+
+    val elapsedRealTimeNanos: Long
 }

@@ -7,4 +7,6 @@ object TimeProviderImpl : TimeProvider {
     override val currentTimeMillis = System.currentTimeMillis()
 
     override val elapsedRealTimeMillis = SystemClock.elapsedRealtime()
+
+    override val elapsedRealTimeNanos = SystemClock.elapsedRealtimeNanos()
 }
