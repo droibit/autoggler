@@ -3,8 +3,10 @@ package com.droibit.autoggler.data.repository
 import android.content.Context
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepositoryImpl
-import com.droibit.autoggler.data.repository.source.api.GoogleApiClientFactory
-import com.droibit.autoggler.data.repository.source.api.GoogleApiClientFactoryImpl
+import com.droibit.autoggler.data.repository.location.LocationRepository
+import com.droibit.autoggler.data.repository.location.LocationRepositoryImpl
+import com.droibit.autoggler.data.repository.source.api.GoogleApiProvider
+import com.droibit.autoggler.data.repository.source.api.GoogleApiProviderImpl
 import com.droibit.autoggler.data.repository.source.db.AutoIncrementor
 import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
 import com.droibit.autoggler.data.repository.source.db.RealmProvider
@@ -36,12 +38,16 @@ fun repositoryModule() = Kodein.Module {
         }
     }
 
-    bind<GoogleApiClientFactory>() with singleton { GoogleApiClientFactoryImpl(instance()) }
+    bind<GoogleApiProvider>() with singleton { GoogleApiProviderImpl(instance()) }
 
-//    bind<LocationRepository>() with singleton { Mock.LocationRepositoryImpl() }
+    bind<LocationRepository>() with singleton {
+        LocationRepositoryImpl(
+                looper = instance("main"),
+                config = instance(),
+                timeProvider = instance(),
+                googleApiProvider = instance()
+        )
+    }
 
     bind<CompositeSubscription>() with provider { CompositeSubscription() }
 }
-
-
-
