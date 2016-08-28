@@ -11,7 +11,7 @@ interface AddGeofenceContract {
 
     interface View {
 
-        fun enableMyLocationButton(enable: Boolean)
+        fun enableMyLocationButton(enabled: Boolean)
 
         fun showLocation(location: Location)
 

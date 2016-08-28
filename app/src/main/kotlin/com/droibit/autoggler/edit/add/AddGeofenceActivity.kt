@@ -4,13 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
-import android.support.annotation.IdRes
 import android.support.annotation.StringRes
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.GoogleMapView
+import com.droibit.autoggler.edit.LocationResolutionSource
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
 import com.github.droibit.chopstick.findView
@@ -20,6 +22,7 @@ import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import com.google.android.gms.maps.MapView
+import timber.log.Timber
 
 class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.View,
@@ -27,6 +30,11 @@ class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.RuntimePermissions {
 
     companion object {
+
+        @JvmStatic
+        private val REQUEST_PERMISSION_ACCESS_LOCATION = 0
+        @JvmStatic
+        private val REQUEST_LOCATION_RESOLUTION = 0
 
         @JvmStatic
         fun createIntent(context: Context) = intent<AddGeofenceActivity>(context)
@@ -39,6 +47,8 @@ class AddGeofenceActivity : AppCompatActivity(),
     private val activityLauncher: RxActivityLauncher by injector.instance()
 
     private val googleMapView: GoogleMapView by injector.instance()
+
+    private val locationResolutionSource: LocationResolutionSource by injector.instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +65,18 @@ class AddGeofenceActivity : AppCompatActivity(),
         val mapView: MapView = findView(R.id.map)
         googleMapView.onCreate(mapView, savedInstanceState)
 
-        presenter.onCreate()
+        activityLauncher
+                .from { locationResolutionSource.startResolutionForResult() }
+                .on(locationResolutionSource.trigger)
+                .startActivityForResult(Intent(), REQUEST_LOCATION_RESOLUTION, null)
+                .subscribe {
+                    presenter.onLocationResolutionResult(it.isOk)
+                }
+
+        // TODO: Review necessary
+        if (savedInstanceState == null) {
+            presenter.onCreate()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -64,7 +85,11 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // TODO: Using RxJava
+        when (requestCode) {
+            REQUEST_PERMISSION_ACCESS_LOCATION -> presenter.onRequestPermissionsResult(grantResults)
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
     }
 
     override fun onResume() {
@@ -96,20 +121,22 @@ class AddGeofenceActivity : AppCompatActivity(),
     // AddGeofenceContract.View
 
     override fun showLocationResolutionDialog(status: AvailableStatus) {
-        // TODO: status.startResolutionForResult()
-        TODO()
+        locationResolutionSource.prepareStartResolution {
+            Timber.d("prepareStartResolution")
+            status.startResolutionForResult(this@AddGeofenceActivity, REQUEST_LOCATION_RESOLUTION)
+        }
     }
 
-    override fun enableMyLocationButton(enable: Boolean) {
-        TODO()
+    override fun enableMyLocationButton(enabled: Boolean) {
+        googleMapView.enableMyLocationButton(enabled)
     }
 
     override fun showLocation(location: Location) {
-        TODO()
+        googleMapView.updateMyLocation(location)
     }
 
     override fun showErrorToast(@StringRes msgId: Int) {
-        TODO()
+        Toast.makeText(this, msgId, Toast.LENGTH_SHORT).show()
     }
 
     // AddGeofenceContract.Navigator
@@ -121,6 +148,6 @@ class AddGeofenceActivity : AppCompatActivity(),
     // AddGeofenceContract.RuntimePermission
 
     override fun requestPermissions(vararg permissions: String) {
-        TODO()
+        ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ACCESS_LOCATION)
     }
 }
