@@ -21,7 +21,7 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class LocationRepositoryImpl(
-        private val looper: Looper,
+        private val looper: Looper?,
         private val config: ApplicationConfig,
         private val timeProvider: TimeProvider,
         private val googleApiProvider: GoogleApiProvider) : LocationRepository {
