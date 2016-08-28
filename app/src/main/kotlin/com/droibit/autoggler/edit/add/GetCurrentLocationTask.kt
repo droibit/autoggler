@@ -13,6 +13,7 @@ import rx.Observable
 import rx.Single
 import rx.lang.kotlin.single
 import rx.schedulers.Schedulers
+import timber.log.Timber
 
 class GetCurrentLocationTask(
         private val relay: BehaviorRelay<Event>,
@@ -27,6 +28,8 @@ class GetCurrentLocationTask(
     }
 
     override fun requestLocation() {
+        Timber.d("requestLocation")
+
         getLocationAsSingle()
                 .subscribeOn(Schedulers.io())
                 .subscribe(

@@ -9,6 +9,7 @@ import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationExc
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 class AddGeofencePresenter(
         private val view: AddGeofenceContract.View,
@@ -27,6 +28,7 @@ class AddGeofencePresenter(
     }
 
     override fun unsubscribe() {
+        Timber.d("unsubscribe")
         subscriptions.unsubscribe()
     }
 
@@ -56,6 +58,8 @@ class AddGeofencePresenter(
     }
 
     private fun subscribeCurrentLocation() {
+        Timber.d("subscribeCurrentLocation")
+
         getCurrentLocationTask.asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { event ->
@@ -67,6 +71,9 @@ class AddGeofencePresenter(
     }
 
     private fun onCurrentLocationSuccess(location: Location?) {
+        Timber.d("onCurrentLocationSuccess($location)")
+
+        // FIXME: After enable Location, called twice.
         if (location != null) {
             view.showLocation(location)
         } else {
@@ -75,6 +82,8 @@ class AddGeofencePresenter(
     }
 
     private fun onCurrentLocationError(e: UnavailableLocationException) {
+        Timber.d("onCurrentLocationError(${e.status})")
+
         when (e.status) {
             PERMISSION_DENIED -> permissions.requestPermissions(ACCESS_FINE_LOCATION)
             RESOLUTION_REQUIRED -> navigator.showLocationResolutionDialog(checkNotNull(e.option))
