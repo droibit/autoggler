@@ -10,6 +10,8 @@ import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationExc
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.internal.zzf
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Rule
@@ -160,6 +162,75 @@ class AddGeofencePresenterTest {
             presenter.onMapLongClicked(latLng)
 
             verify(view, never()).dropMarker(any())
+        }
+    }
+
+    @Test
+    fun onMarkerInfoWindowClicked_showEditDialog() {
+        // can show
+        run {
+            whenever(view.canShowEditDialog()).thenReturn(true)
+
+            presenter.onMarkerInfoWindowClicked()
+            verify(view).showEditDialog()
+        }
+
+        reset(view)
+
+        // can't show
+        run {
+            whenever(view.canShowEditDialog()).thenReturn(false)
+
+            presenter.onMarkerInfoWindowClicked()
+            verify(view, never()).showEditDialog()
+        }
+    }
+
+    @Test
+    fun onMarkerClicked_showEditDialog() {
+        val marker = Marker(mock())
+        // can show
+        run {
+            whenever(view.canShowEditDialog()).thenReturn(true)
+
+            presenter.onMarkerClicked(marker)
+            verify(view).showEditDialog()
+        }
+
+        reset(view)
+
+        // can't show
+        run {
+            whenever(view.canShowEditDialog()).thenReturn(false)
+
+            presenter.onMarkerClicked(marker)
+            verify(view, never()).showEditDialog()
+        }
+    }
+
+    @Test
+    fun onMarkerClicked_showMarkerInfoWindow() {
+        val mockInternal: zzf = mock()
+        val marker = Marker(mock())
+
+        whenever(view.canShowEditDialog()).thenReturn(true)
+
+        // show
+        run {
+           whenever(mockInternal.isInfoWindowShown).thenReturn(false)
+
+            presenter.onMarkerClicked(marker)
+            verify(view).showMarkerInfoWindow(marker)
+        }
+
+        reset(view)
+
+        // already show
+        run {
+            whenever(mockInternal.isInfoWindowShown).thenReturn(true)
+
+            presenter.onMarkerClicked(marker)
+            verify(view, never()).showMarkerInfoWindow(any())
         }
     }
 

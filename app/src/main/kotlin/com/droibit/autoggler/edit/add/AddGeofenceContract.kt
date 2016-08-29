@@ -5,6 +5,7 @@ import android.support.annotation.IdRes
 import android.support.annotation.StringRes
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import rx.Observable
 
 
@@ -15,6 +16,12 @@ interface AddGeofenceContract {
         fun canDropMarker(): Boolean
 
         fun dropMarker(point: LatLng)
+
+        fun showMarkerInfoWindow(marker: Marker)
+
+        fun canShowEditDialog(): Boolean
+
+        fun showEditDialog()
 
         fun enableMyLocationButton(enabled: Boolean)
 
@@ -46,6 +53,10 @@ interface AddGeofenceContract {
         // View
 
         fun onMapLongClicked(point: LatLng)
+
+        fun onMarkerInfoWindowClicked()
+
+        fun onMarkerClicked(marker: Marker)
 
         fun onDoneButtonClicked()
 

@@ -8,6 +8,7 @@ import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -39,6 +40,23 @@ class AddGeofencePresenter(
         if (view.canDropMarker()) {
             view.dropMarker(point)
         }
+    }
+
+    override fun onMarkerInfoWindowClicked() {
+        if (view.canShowEditDialog()) {
+            view.showEditDialog()
+        }
+    }
+
+    override fun onMarkerClicked(marker: Marker) {
+        if (!view.canShowEditDialog()) {
+            return
+        }
+
+        if (!marker.isInfoWindowShown) {
+            view.showMarkerInfoWindow(marker)
+        }
+        view.showEditDialog()
     }
 
     override fun onDoneButtonClicked() {

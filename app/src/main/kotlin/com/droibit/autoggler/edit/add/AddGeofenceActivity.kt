@@ -151,6 +151,19 @@ class AddGeofenceActivity : AppCompatActivity(),
         }
     }
 
+    override fun canShowEditDialog(): Boolean {
+        // TODO
+        return true
+    }
+
+    override fun showMarkerInfoWindow(marker: Marker) {
+        marker.showInfoWindow()
+    }
+
+    override fun showEditDialog() {
+        //TODO()
+    }
+
     override fun enableMyLocationButton(enabled: Boolean) {
         googleMapView.enableMyLocationButton(enabled)
     }
@@ -189,7 +202,12 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        TODO()
+        presenter.onMarkerClicked(marker)
+        return true
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        presenter.onMarkerInfoWindowClicked()
     }
 
     override fun onMarkerDragEnd(marker: Marker) {
@@ -201,10 +219,6 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun onMarkerDrag(marker: Marker) {
-        TODO()
-    }
-
-    override fun onInfoWindowClick(marker: Marker) {
         TODO()
     }
 }
