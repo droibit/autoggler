@@ -1,3 +1,4 @@
+@file:JvmName("Extensions")
 package com.droibit.autoggler.utils
 
 import android.content.Context

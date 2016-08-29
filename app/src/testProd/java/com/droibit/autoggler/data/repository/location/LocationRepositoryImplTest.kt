@@ -140,7 +140,7 @@ class LocationRepositoryImplTest {
     }
 
     @Test
-    fun getCurrentLocation_srequestCurrentLocation() {
+    fun getCurrentLocation_requestCurrentLocation() {
         val mockClient: GoogleApiClient = mock()
         whenever(googleApiProvider.newLocationClient()).thenReturn(mockClient)
 
