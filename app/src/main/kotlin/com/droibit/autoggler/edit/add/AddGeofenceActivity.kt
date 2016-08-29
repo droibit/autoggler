@@ -13,10 +13,7 @@ import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.location.AvailableStatus
-import com.droibit.autoggler.edit.CompositeGeometory
-import com.droibit.autoggler.edit.GoogleMapView
-import com.droibit.autoggler.edit.LocationResolutionSource
-import com.droibit.autoggler.edit.editGeofenceModule
+import com.droibit.autoggler.edit.*
 import com.droibit.autoggler.utils.intent
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
@@ -34,7 +31,8 @@ class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.View,
         AddGeofenceContract.Navigator,
         AddGeofenceContract.RuntimePermissions,
-        GoogleMapView.Listener {
+        GoogleMapView.Listener,
+        DragActionMode.Callback {
 
     companion object {
 
@@ -59,6 +57,8 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val geometryProvider: GeometryProvider by injector.instance()
 
+    private val dragActionMode: DragActionMode by injector.instance()
+
     private val fab: FloatingActionButton by bindView(R.id.fab)
 
     private var compositeGeometry: CompositeGeometory? = null
@@ -71,7 +71,7 @@ class AddGeofenceActivity : AppCompatActivity(),
             extend(appKodein())
 
             val self = this@AddGeofenceActivity
-            import(editGeofenceModule(interactionListener = self))
+            import(editGeofenceModule(interactionListener = self, dragCallback = self))
             import(addGeofenceModule(view = self, navigator = self, permissions = self))
         })
 
@@ -164,6 +164,14 @@ class AddGeofenceActivity : AppCompatActivity(),
         //TODO()
     }
 
+    override fun startMarkerDragMode() {
+        startSupportActionMode(dragActionMode)
+    }
+
+    override fun endMarkerDragMode() {
+
+    }
+
     override fun enableMyLocationButton(enabled: Boolean) {
         googleMapView.enableMyLocationButton(enabled)
     }
@@ -210,15 +218,22 @@ class AddGeofenceActivity : AppCompatActivity(),
         presenter.onMarkerInfoWindowClicked()
     }
 
-    override fun onMarkerDragEnd(marker: Marker) {
-        TODO()
+    override fun onMarkerDragStart(marker: Marker) {
+        presenter.onMarkerDragStart()
     }
 
-    override fun onMarkerDragStart(marker: Marker) {
-        TODO()
+    override fun onMarkerDragEnd(marker: Marker) {
     }
 
     override fun onMarkerDrag(marker: Marker) {
-        TODO()
+    }
+
+    // MoveActionMode.Callback
+
+    override fun onPrepareMarkerMove() {
+
+    }
+
+    override fun onMarkerMoved() {
     }
 }

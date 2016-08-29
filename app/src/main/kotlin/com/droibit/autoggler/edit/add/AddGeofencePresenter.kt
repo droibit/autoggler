@@ -59,6 +59,11 @@ class AddGeofencePresenter(
         view.showEditDialog()
     }
 
+    override fun onMarkerDragStart() {
+        // TODO: isActionMode...?
+        view.startMarkerDragMode()
+    }
+
     override fun onDoneButtonClicked() {
         TODO()
     }

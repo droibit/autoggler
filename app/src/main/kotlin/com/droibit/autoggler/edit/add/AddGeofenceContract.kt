@@ -23,6 +23,10 @@ interface AddGeofenceContract {
 
         fun showEditDialog()
 
+        fun startMarkerDragMode()
+
+        fun endMarkerDragMode()
+
         fun enableMyLocationButton(enabled: Boolean)
 
         fun showLocation(location: Location)
@@ -57,6 +61,8 @@ interface AddGeofenceContract {
         fun onMarkerInfoWindowClicked()
 
         fun onMarkerClicked(marker: Marker)
+
+        fun onMarkerDragStart()
 
         fun onDoneButtonClicked()
 

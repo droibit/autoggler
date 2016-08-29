@@ -8,4 +8,5 @@
     <string name="add_geofence_get_current_location_error">現在位置を取得することができません</string>
     <string name="add_geofence_marker_title">タップで編集</string>
     <string name="add_geofence_marker_subtitle">長押しで移動</string>
+    <string name="edit_geofence_move_action_mode_title">移動</string>
 </resources>
