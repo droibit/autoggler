@@ -5,6 +5,7 @@ import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -15,6 +16,7 @@ import com.droibit.autoggler.edit.GoogleMapView
 import com.droibit.autoggler.edit.LocationResolutionSource
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
+import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
@@ -48,6 +50,8 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val googleMapView: GoogleMapView by injector.instance()
 
+    private val fab: FloatingActionButton by bindView(R.id.fab)
+
     private val locationResolutionSource: LocationResolutionSource by injector.instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +68,10 @@ class AddGeofenceActivity : AppCompatActivity(),
 
         val mapView: MapView = findView(R.id.map)
         googleMapView.onCreate(mapView, savedInstanceState)
+
+        fab.apply {
+            setOnClickListener { presenter.onDoneButtonClicked() }
+        }
 
         activityLauncher
                 .from { locationResolutionSource.startResolutionForResult() }

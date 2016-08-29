@@ -38,6 +38,10 @@ interface AddGeofenceContract {
 
         fun unsubscribe()
 
+        // View
+
+        fun onDoneButtonClicked()
+
         // Navigator
 
         fun onUpNavigationButtonClicked()

@@ -17,4 +17,17 @@
             app:uiTiltGestures="false"
             />
 
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/ic_fab_done"
+            tools:ignore="RtlHardcoded"
+            />
+
 </FrameLayout>

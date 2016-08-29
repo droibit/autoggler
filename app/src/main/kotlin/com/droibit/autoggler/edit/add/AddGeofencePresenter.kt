@@ -32,6 +32,12 @@ class AddGeofencePresenter(
         subscriptions.unsubscribe()
     }
 
+    // View
+
+    override fun onDoneButtonClicked() {
+        TODO()
+    }
+
     // Navigator
 
     override fun onUpNavigationButtonClicked() {
