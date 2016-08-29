@@ -8,7 +8,9 @@ fun editGeofenceModule(interactionListener: GoogleMapView.Listener) = Kodein.Mod
 
     bind<GoogleMapView.Listener>() with instance(interactionListener)
 
-    bind<GoogleMapView>() with provider { GoogleMapView(interactionListener = instance(), permissionChecker = instance()) }
+    bind<GoogleMapView>() with provider {
+        GoogleMapView(interactionListener = instance(), bounceDropAnimator = instance(), permissionChecker = instance())
+    }
 
     bind<LocationResolutionSource>() with provider { LocationResolutionSource() }
 

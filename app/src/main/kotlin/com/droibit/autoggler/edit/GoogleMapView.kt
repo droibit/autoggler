@@ -15,6 +15,7 @@ private val DEFAULT_ZOOM = 16f
 
 class GoogleMapView(
         private val interactionListener: Listener,
+        private val bounceDropAnimator: BounceDropAnimator,
         private val permissionChecker: RuntimePermissionChecker) : OnMapReadyCallback {
 
     interface Listener :
@@ -41,7 +42,10 @@ class GoogleMapView(
 
     fun onPause() = mapView.onPause()
 
-    fun onDestroy() = mapView.onDestroy()
+    fun onDestroy() {
+        bounceDropAnimator.stop()
+        mapView.onDestroy()
+    }
 
     fun updateMyLocation(location: Location) {
         if (mapReady) {
@@ -56,12 +60,13 @@ class GoogleMapView(
         }
     }
 
-    fun addMarker(markerOptions: MarkerOptions): Marker {
-        return checkNotNull(googleMap).addMarker(markerOptions)
-    }
-
     fun addCircle(circleOptions: CircleOptions): Circle {
         return checkNotNull(googleMap).addCircle(circleOptions)
+    }
+
+    fun addMarker(markerOptions: MarkerOptions, callback: (Marker)->Unit) {
+        val marker = checkNotNull(googleMap).addMarker(markerOptions)
+        bounceDropAnimator.start(target = marker, dropCallback = callback)
     }
 
     // OnMapReadyCallback

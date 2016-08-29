@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.location.AvailableStatus
+import com.droibit.autoggler.edit.BounceDropAnimator
 import com.droibit.autoggler.edit.GoogleMapView
 import com.droibit.autoggler.edit.LocationResolutionSource
 import com.droibit.autoggler.edit.editGeofenceModule
@@ -24,12 +26,15 @@ import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import timber.log.Timber
 
 class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.View,
         AddGeofenceContract.Navigator,
-        AddGeofenceContract.RuntimePermissions {
+        AddGeofenceContract.RuntimePermissions,
+        GoogleMapView.Listener {
 
     companion object {
 
@@ -50,9 +55,11 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val googleMapView: GoogleMapView by injector.instance()
 
-    private val fab: FloatingActionButton by bindView(R.id.fab)
-
     private val locationResolutionSource: LocationResolutionSource by injector.instance()
+
+    private val geometryProvider: GeometryProvider by injector.instance()
+
+    private val fab: FloatingActionButton by bindView(R.id.fab)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +67,10 @@ class AddGeofenceActivity : AppCompatActivity(),
 
         injector.inject(Kodein {
             extend(appKodein())
-            import(editGeofenceModule())
 
-            val thiz = this@AddGeofenceActivity
-            import(addGeofenceModule(view = thiz, navigator = thiz, permissions = thiz))
+            val self = this@AddGeofenceActivity
+            import(editGeofenceModule(interactionListener = self))
+            import(addGeofenceModule(view = self, navigator = self, permissions = self))
         })
 
         val mapView: MapView = findView(R.id.map)
@@ -128,10 +135,9 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.View
 
-    override fun showLocationResolutionDialog(status: AvailableStatus) {
-        locationResolutionSource.prepareStartResolution {
-            Timber.d("prepareStartResolution")
-            status.startResolutionForResult(this@AddGeofenceActivity, REQUEST_LOCATION_RESOLUTION)
+    override fun dropMarker(point: LatLng) {
+        val markerOptions = geometryProvider.newMarkerOptions(point)
+        googleMapView.addMarker(markerOptions) { marker ->
         }
     }
 
@@ -149,6 +155,13 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.Navigator
 
+    override fun showLocationResolutionDialog(status: AvailableStatus) {
+        locationResolutionSource.prepareStartResolution {
+            Timber.d("prepareStartResolution")
+            status.startResolutionForResult(this@AddGeofenceActivity, REQUEST_LOCATION_RESOLUTION)
+        }
+    }
+
     override fun navigationToUp() {
         finish()
     }
@@ -157,5 +170,31 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun requestPermissions(vararg permissions: String) {
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ACCESS_LOCATION)
+    }
+
+    // GoogleMapView.Listener
+
+    override fun onMapLongClick(point: LatLng) {
+        presenter.onMapLongClicked(point)
+    }
+
+    override fun onMarkerClick(marker: Marker): Boolean {
+        TODO()
+    }
+
+    override fun onMarkerDragEnd(marker: Marker) {
+        TODO()
+    }
+
+    override fun onMarkerDragStart(marker: Marker) {
+        TODO()
+    }
+
+    override fun onMarkerDrag(marker: Marker) {
+        TODO()
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        TODO()
     }
 }

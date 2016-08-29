@@ -8,4 +8,6 @@ interface ApplicationConfig {
     val maxLastLocationElapsedTimeMillis: Long
 
     val currentLocationTimeoutMillis: Long
+
+    val bounceDropAnimateDurationMillis: Long
 }

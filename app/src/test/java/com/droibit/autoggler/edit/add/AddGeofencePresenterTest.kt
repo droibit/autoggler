@@ -9,6 +9,7 @@ import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
+import com.google.android.gms.maps.model.LatLng
 import com.nhaarman.mockito_kotlin.*
 import org.junit.Before
 import org.junit.Rule
@@ -94,8 +95,6 @@ class AddGeofencePresenterTest {
 
     @Test
     fun subscribe_onPermissionDenied() {
-        val availableStatus: AvailableStatus = mock()
-
         val throwable = UnavailableLocationException(PERMISSION_DENIED)
         val locationObservable = Event.OnError(throwable)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
@@ -135,6 +134,16 @@ class AddGeofencePresenterTest {
 
         verify(getCurrentLocationTask).asObservable()
         verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
+    }
+
+    // View
+
+    @Test
+    fun onMapLongClicked_dropMarker() {
+        val latLng = LatLng(1.0, 2.0)
+        presenter.onMapLongClicked(latLng)
+
+        verify(view).dropMarker(latLng)
     }
 
     // Navigator

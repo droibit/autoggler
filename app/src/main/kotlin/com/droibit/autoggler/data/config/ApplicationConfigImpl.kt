@@ -13,4 +13,7 @@ object ApplicationConfigImpl : ApplicationConfig {
 
     // 30sec
     override val currentLocationTimeoutMillis = TimeUnit.SECONDS.toMillis(30)
+
+    // 1.5sec
+    override val bounceDropAnimateDurationMillis = 1500L
 }
