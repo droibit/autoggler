@@ -12,6 +12,8 @@ interface AddGeofenceContract {
 
     interface View {
 
+        fun canDropMarker(): Boolean
+
         fun dropMarker(point: LatLng)
 
         fun enableMyLocationButton(enabled: Boolean)

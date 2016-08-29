@@ -36,7 +36,9 @@ class AddGeofencePresenter(
     // View
 
     override fun onMapLongClicked(point: LatLng) {
-        view.dropMarker(point)
+        if (view.canDropMarker()) {
+            view.dropMarker(point)
+        }
     }
 
     override fun onDoneButtonClicked() {

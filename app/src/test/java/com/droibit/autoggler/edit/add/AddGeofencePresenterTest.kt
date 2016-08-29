@@ -140,10 +140,27 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onMapLongClicked_dropMarker() {
-        val latLng = LatLng(1.0, 2.0)
-        presenter.onMapLongClicked(latLng)
+        // can drop
+        run {
+            whenever(view.canDropMarker()).thenReturn(true)
 
-        verify(view).dropMarker(latLng)
+            val latLng = LatLng(1.0, 2.0)
+            presenter.onMapLongClicked(latLng)
+
+            verify(view).dropMarker(latLng)
+        }
+
+        reset(view)
+
+        // can't drop
+        run {
+            whenever(view.canDropMarker()).thenReturn(false)
+
+            val latLng = LatLng(0.0, 0.0)
+            presenter.onMapLongClicked(latLng)
+
+            verify(view, never()).dropMarker(any())
+        }
     }
 
     // Navigator
