@@ -135,7 +135,7 @@ class ViewHolder(view: View,
     private fun updateGoogleMap(googleMap: GoogleMap, src: Circle) {
         val circleGeo = mapView.getTag(KEY_CIRCLE_GEO) as? CircleGeometry
         if (circleGeo == null) {
-            googleMap.addCircle(provider.newCircle(src)).apply {
+            googleMap.addCircle(provider.newCircleOptions(src)).apply {
                 mapView.setTag(KEY_CIRCLE_GEO, this)
             }
         } else {

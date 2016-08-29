@@ -6,4 +6,6 @@
     <string name="activity_label_add_geofence">新しいジオフェンス</string>
     <string name="add_geofence_get_current_location_failed">現在位置を取得できませんでした</string>
     <string name="add_geofence_get_current_location_error">現在位置を取得することができません</string>
+    <string name="add_geofence_marker_title">タップで編集</string>
+    <string name="add_geofence_marker_subtitle">長押しで移動</string>
 </resources>
