@@ -4,9 +4,13 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
 
-fun editGeofenceModule() = Kodein.Module {
+fun editGeofenceModule(interactionListener: GoogleMapView.Listener) = Kodein.Module {
 
-    bind<GoogleMapView>() with provider { GoogleMapView(permissionChecker = instance()) }
+    bind<GoogleMapView.Listener>() with instance(interactionListener)
+
+    bind<GoogleMapView>() with provider { GoogleMapView(interactionListener = instance(), permissionChecker = instance()) }
 
     bind<LocationResolutionSource>() with provider { LocationResolutionSource() }
+
+    bind<BounceDropAnimator>() with provider { BounceDropAnimator(config = instance(), timeProvider = instance()) }
 }

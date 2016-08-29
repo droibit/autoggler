@@ -8,12 +8,20 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.*
 import timber.log.Timber
 
 private val DEFAULT_ZOOM = 16f
 
-class GoogleMapView(private val permissionChecker: RuntimePermissionChecker) : OnMapReadyCallback {
+class GoogleMapView(
+        private val interactionListener: Listener,
+        private val permissionChecker: RuntimePermissionChecker) : OnMapReadyCallback {
+
+    interface Listener :
+            GoogleMap.OnMapLongClickListener,
+            GoogleMap.OnMarkerClickListener,
+            GoogleMap.OnMarkerDragListener,
+            GoogleMap.OnInfoWindowClickListener
 
     private lateinit var mapView: MapView
 
@@ -48,6 +56,14 @@ class GoogleMapView(private val permissionChecker: RuntimePermissionChecker) : O
         }
     }
 
+    fun addMarker(markerOptions: MarkerOptions): Marker {
+        return checkNotNull(googleMap).addMarker(markerOptions)
+    }
+
+    fun addCircle(circleOptions: CircleOptions): Circle {
+        return checkNotNull(googleMap).addCircle(circleOptions)
+    }
+
     // OnMapReadyCallback
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -55,6 +71,11 @@ class GoogleMapView(private val permissionChecker: RuntimePermissionChecker) : O
 
         this.googleMap = googleMap.apply {
             enabledMyLocationIfAllowed(true)
+
+            setOnMapLongClickListener(interactionListener)
+            setOnMarkerClickListener(interactionListener)
+            setOnMarkerDragListener(interactionListener)
+            setOnInfoWindowClickListener(interactionListener)
         }
         this.mapReady = true
         this.currentLocation?.let { moveCameraTo(location = it) }
@@ -63,10 +84,8 @@ class GoogleMapView(private val permissionChecker: RuntimePermissionChecker) : O
     private fun moveCameraTo(location: Location) {
         Timber.d("moveCameraTo=$location")
 
-        googleMap?.let {
-            val newCamera = CameraUpdateFactory.newLatLngZoom(location.toLatLng(), DEFAULT_ZOOM)
-            it.animateCamera(newCamera)
-        }
+        val newCamera = CameraUpdateFactory.newLatLngZoom(location.toLatLng(), DEFAULT_ZOOM)
+        checkNotNull(googleMap).animateCamera(newCamera)
     }
 
     private fun GoogleMap.enabledMyLocationIfAllowed(enabled: Boolean) {
