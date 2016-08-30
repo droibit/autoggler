@@ -43,13 +43,13 @@ class AddGeofencePresenter(
     }
 
     override fun onMarkerInfoWindowClicked() {
-        if (view.canShowEditDialog()) {
+        if (view.isDragActionModeShown()) {
             view.showEditDialog()
         }
     }
 
     override fun onMarkerClicked(marker: Marker) {
-        if (!view.canShowEditDialog()) {
+        if (view.isDragActionModeShown()) {
             return
         }
 
@@ -60,8 +60,22 @@ class AddGeofencePresenter(
     }
 
     override fun onMarkerDragStart() {
-        // TODO: isActionMode...?
-        view.startMarkerDragMode()
+        if (!view.isDragActionModeShown()) {
+            view.startMarkerDragMode()
+        }
+        view.hideGeofenceCircle()
+    }
+
+    override fun onMarkerDragEnd() {
+        view.showGeofenceCircle()
+    }
+
+    override fun onPrepareDragMode() {
+        view.hideDoneButton()
+    }
+
+    override fun onFinishedDragMode() {
+        view.showDoneButton()
     }
 
     override fun onDoneButtonClicked() {

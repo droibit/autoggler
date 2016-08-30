@@ -169,7 +169,7 @@ class AddGeofencePresenterTest {
     fun onMarkerInfoWindowClicked_showEditDialog() {
         // can show
         run {
-            whenever(view.canShowEditDialog()).thenReturn(true)
+            whenever(view.isDragActionModeShown()).thenReturn(true)
 
             presenter.onMarkerInfoWindowClicked()
             verify(view).showEditDialog()
@@ -179,7 +179,7 @@ class AddGeofencePresenterTest {
 
         // can't show
         run {
-            whenever(view.canShowEditDialog()).thenReturn(false)
+            whenever(view.isDragActionModeShown()).thenReturn(false)
 
             presenter.onMarkerInfoWindowClicked()
             verify(view, never()).showEditDialog()
@@ -191,7 +191,7 @@ class AddGeofencePresenterTest {
         val marker = Marker(mock())
         // can show
         run {
-            whenever(view.canShowEditDialog()).thenReturn(true)
+            whenever(view.isDragActionModeShown()).thenReturn(false)
 
             presenter.onMarkerClicked(marker)
             verify(view).showEditDialog()
@@ -201,7 +201,7 @@ class AddGeofencePresenterTest {
 
         // can't show
         run {
-            whenever(view.canShowEditDialog()).thenReturn(false)
+            whenever(view.isDragActionModeShown()).thenReturn(true)
 
             presenter.onMarkerClicked(marker)
             verify(view, never()).showEditDialog()
@@ -210,14 +210,14 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onMarkerClicked_showMarkerInfoWindow() {
-        val mockInternal: zzf = mock()
-        val marker = Marker(mock())
 
-        whenever(view.canShowEditDialog()).thenReturn(true)
+        whenever(view.isDragActionModeShown()).thenReturn(false)
 
         // show
         run {
-           whenever(mockInternal.isInfoWindowShown).thenReturn(false)
+            val mockInternal: zzf = mock()
+            whenever(mockInternal.isInfoWindowShown).thenReturn(false)
+            val marker = Marker(mock())
 
             presenter.onMarkerClicked(marker)
             verify(view).showMarkerInfoWindow(marker)
@@ -227,11 +227,65 @@ class AddGeofencePresenterTest {
 
         // already show
         run {
+            val mockInternal: zzf = mock()
             whenever(mockInternal.isInfoWindowShown).thenReturn(true)
+            val marker = Marker(mockInternal)
 
             presenter.onMarkerClicked(marker)
             verify(view, never()).showMarkerInfoWindow(any())
         }
+    }
+
+    @Test
+    fun onMarkerDragStart_startMarkerDragMode() {
+        run {
+            whenever(view.isDragActionModeShown()).thenReturn(false)
+
+            presenter.onMarkerDragStart()
+            verify(view).startMarkerDragMode()
+        }
+
+        reset(view)
+
+        // now, shown
+        run {
+            whenever(view.isDragActionModeShown()).thenReturn(true)
+
+            presenter.onMarkerDragStart()
+            verify(view, never()).startMarkerDragMode()
+        }
+    }
+
+    @Test
+    fun onMarkerDragStart_hideGeofenceCircle() {
+        presenter.onMarkerDragStart()
+
+        verify(view).hideGeofenceCircle()
+        verify(view, never()).showGeofenceCircle()
+    }
+
+    @Test
+    fun onMarkerDragEnd_hideGeofenceCircle() {
+        presenter.onMarkerDragEnd()
+
+        verify(view).showGeofenceCircle()
+        verify(view, never()).hideGeofenceCircle()
+    }
+
+    @Test
+    fun onPrepareDragMode_hideDoneButton() {
+        presenter.onPrepareDragMode()
+
+        verify(view).hideDoneButton()
+        verify(view, never()).showDoneButton()
+    }
+
+    @Test
+    fun onFinishedDragMode_showDoneButton() {
+        presenter.onFinishedDragMode()
+
+        verify(view).showDoneButton()
+        verify(view, never()).hideDoneButton()
     }
 
     // Navigator

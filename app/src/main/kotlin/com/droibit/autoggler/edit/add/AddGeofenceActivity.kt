@@ -151,9 +151,8 @@ class AddGeofenceActivity : AppCompatActivity(),
         }
     }
 
-    override fun canShowEditDialog(): Boolean {
-        // TODO
-        return true
+    override fun isDragActionModeShown(): Boolean {
+        return dragActionMode.isShown
     }
 
     override fun showMarkerInfoWindow(marker: Marker) {
@@ -168,16 +167,34 @@ class AddGeofenceActivity : AppCompatActivity(),
         startSupportActionMode(dragActionMode)
     }
 
-    override fun endMarkerDragMode() {
-
-    }
-
     override fun enableMyLocationButton(enabled: Boolean) {
         googleMapView.enableMyLocationButton(enabled)
     }
 
     override fun showLocation(location: Location) {
         googleMapView.updateMyLocation(location)
+    }
+
+    override fun showDoneButton() {
+        fab.show()
+    }
+
+    override fun hideDoneButton() {
+        fab.hide()
+    }
+
+    override fun showGeofenceCircle() {
+        compositeGeometry?.let {
+            it.circle.center = it.marker.position
+            it.circle.isVisible = true
+        }
+    }
+
+    override fun hideGeofenceCircle() {
+        compositeGeometry?.let {
+            it.circle.center = it.marker.position
+            it.circle.isVisible = false
+        }
     }
 
     override fun showErrorToast(@StringRes msgId: Int) {
@@ -222,18 +239,20 @@ class AddGeofenceActivity : AppCompatActivity(),
         presenter.onMarkerDragStart()
     }
 
-    override fun onMarkerDragEnd(marker: Marker) {
+    override fun onMarkerDrag(marker: Marker) {
     }
 
-    override fun onMarkerDrag(marker: Marker) {
+    override fun onMarkerDragEnd(marker: Marker) {
+        presenter.onMarkerDragEnd()
     }
 
     // MoveActionMode.Callback
 
-    override fun onPrepareMarkerMove() {
-
+    override fun onPrepareDragMode() {
+        presenter.onPrepareDragMode()
     }
 
-    override fun onMarkerMoved() {
+    override fun onFinishedDragMode() {
+        presenter.onFinishedDragMode()
     }
 }

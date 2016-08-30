@@ -19,17 +19,23 @@ interface AddGeofenceContract {
 
         fun showMarkerInfoWindow(marker: Marker)
 
-        fun canShowEditDialog(): Boolean
+        fun isDragActionModeShown(): Boolean
 
         fun showEditDialog()
 
         fun startMarkerDragMode()
 
-        fun endMarkerDragMode()
-
         fun enableMyLocationButton(enabled: Boolean)
 
         fun showLocation(location: Location)
+
+        fun showDoneButton()
+
+        fun hideDoneButton()
+
+        fun showGeofenceCircle()
+
+        fun hideGeofenceCircle()
 
         fun showErrorToast(@StringRes msgId: Int)
     }
@@ -63,6 +69,12 @@ interface AddGeofenceContract {
         fun onMarkerClicked(marker: Marker)
 
         fun onMarkerDragStart()
+
+        fun onMarkerDragEnd()
+
+        fun onPrepareDragMode()
+
+        fun onFinishedDragMode()
 
         fun onDoneButtonClicked()
 
