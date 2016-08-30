@@ -10,6 +10,7 @@ import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationExc
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.addTo
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 
@@ -31,7 +32,7 @@ class AddGeofencePresenter(
 
     override fun unsubscribe() {
         Timber.d("unsubscribe")
-        subscriptions.unsubscribe()
+        subscriptions.clear()
     }
 
     // View
@@ -117,7 +118,7 @@ class AddGeofencePresenter(
                         is Event.OnSuccess -> onCurrentLocationSuccess(event.location)
                         is Event.OnError -> onCurrentLocationError(event.exception)
                     }
-                }
+                }.addTo(subscriptions)
     }
 
     private fun onCurrentLocationSuccess(location: Location?) {

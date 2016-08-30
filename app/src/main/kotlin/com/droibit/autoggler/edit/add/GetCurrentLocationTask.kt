@@ -21,7 +21,6 @@ class GetCurrentLocationTask(
         private val permissionChecker: RuntimePermissionChecker,
         private val config: ApplicationConfig) : AddGeofenceContract.GetCurrentLocationTask {
 
-
     override fun asObservable(): Observable<Event> {
         return relay.filter { it != Event.OnCompleted }
                 .doOnNext { relay.call(Event.OnCompleted) }
