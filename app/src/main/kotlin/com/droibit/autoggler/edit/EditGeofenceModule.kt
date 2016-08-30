@@ -16,5 +16,5 @@ fun editGeofenceModule(interactionListener: GoogleMapView.Listener, dragCallback
 
     bind<BounceDropAnimator>() with provider { BounceDropAnimator(config = instance(), timeProvider = instance()) }
 
-    bind<DragActionMode>() with provider { DragActionMode(context = instance(), callback = dragCallback) }
+    bind<DragActionMode>() with provider { DragActionMode(callback = dragCallback) }
 }
