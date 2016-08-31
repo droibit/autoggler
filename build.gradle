@@ -17,6 +17,7 @@ buildscript {
         kodeinAndroidVersion = '3.0.0'
         timberVersion = '4.3.0'
         chopsticksVersion = '0.3.1'
+        linearListViewVersion = '1.0.1'
         robolectricVersion = '3.1.2'
         junitVersion = '4.12'
         assertjVersion = '3.4.1'

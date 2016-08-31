@@ -99,6 +99,7 @@ dependencies {
     compile "com.jakewharton.rxrelay:rxrelay:$rxRelayVersion"
     compile "com.github.droibit:rxactivitylauncher:$rxactivitylauncherVersion"
 
+    compile "com.github.frankiesardo:linearlistview:$linearListViewVersion"
     compile "com.jakewharton.timber:timber:$timberVersion"
     compile "com.github.droibit.chopsticks:chopstick:$chopsticksVersion"
     compile "com.github.droibit.chopsticks:chopstick-preference:$chopsticksVersion"
