@@ -35,6 +35,8 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
         }
     }
 
+    private lateinit var contentView: EditGeofenceContentView
+
     private lateinit var geofence: Geofence
 
     private lateinit var positiveButton: Button
@@ -54,7 +56,7 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
             setPositiveButton(R.string.update, this@EditGeofenceDialogFragment)
             setNegativeButton(android.R.string.cancel, this@EditGeofenceDialogFragment)
 
-            val contentView = EditGeofenceView(context)
+            contentView = EditGeofenceContentView(context).apply { init(geofence) }
             setView(contentView)
 
             if (arguments.getBoolean(ARG_DELETABLE, false)) {
@@ -78,6 +80,7 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        // TODO:
         outState.putSerializable(ARG_GEOFENCE, geofence)
     }
 
