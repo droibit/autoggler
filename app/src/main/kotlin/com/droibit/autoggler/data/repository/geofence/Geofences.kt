@@ -38,28 +38,28 @@ open class Circle(
 }
 
 @RealmClass
-open class Trigger(
-        open var toggleWifi: Boolean = false,
-        open var toggleVibration: Boolean = false
+open class Toggle(
+        open var wifi: Boolean = false,
+        open var vibration: Boolean = false
 ) : RealmModel, Serializable {
 
     override fun toString(): String {
-        return "Trigger(toggleWifi=$toggleWifi, toggleVibration=$toggleVibration)"
+        return "Trigger(wifi=$wifi, vibration=$vibration)"
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Trigger) return false
+        if (other !is Toggle) return false
 
-        if (toggleWifi != other.toggleWifi) return false
-        if (toggleVibration != other.toggleVibration) return false
+        if (wifi != other.wifi) return false
+        if (wifi != other.vibration) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = toggleWifi.hashCode()
-        result = 31 * result + toggleVibration.hashCode()
+        var result = wifi.hashCode()
+        result = 31 * result + vibration.hashCode()
         return result
     }
 }
@@ -70,11 +70,11 @@ open class Geofence(
         @Required open var name: String = "",
         open var enabled: Boolean = true,
         open var circle: Circle = Circle(),
-        open var trigger: Trigger = Trigger()
+        open var toggle: Toggle = Toggle()
 ) : RealmModel, Serializable {
 
     override fun toString(): String {
-        return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, trigger=$trigger)"
+        return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, toggle=$toggle)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -85,7 +85,7 @@ open class Geofence(
         if (name != other.name) return false
         if (enabled != other.enabled) return false
         if (circle != other.circle) return false
-        if (trigger != other.trigger) return false
+        if (toggle != other.toggle) return false
 
         return true
     }
@@ -95,7 +95,7 @@ open class Geofence(
         result = 31 * result + name.hashCode()
         result = 31 * result + enabled.hashCode()
         result = 31 * result + circle.hashCode()
-        result = 31 * result + trigger.hashCode()
+        result = 31 * result + toggle.hashCode()
         return result
     }
 }

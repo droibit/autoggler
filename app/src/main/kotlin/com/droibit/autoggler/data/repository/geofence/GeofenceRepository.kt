@@ -12,7 +12,7 @@ interface GeofenceRepository {
     fun loadGeofence(targetId: Long): Geofence?
 
     @WorkerThread
-    fun addGeofence(name: String, circle: Circle, trigger: Trigger): Geofence
+    fun addGeofence(name: String, circle: Circle, toggle: Toggle): Geofence
 
     @WorkerThread
     fun updateGeofence(srcGeofence: Geofence): Geofence

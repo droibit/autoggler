@@ -13,7 +13,7 @@ import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.data.repository.geofence.Trigger
+import com.droibit.autoggler.data.repository.geofence.Toggle
 import com.droibit.autoggler.edit.add.AddGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.github.droibit.chopstick.bindView
@@ -95,31 +95,31 @@ class GeofencesActivity : AppCompatActivity(),
                         name = "テスト",
                         enabled = true,
                         circle = Circle(35.7121228, 139.7740507, 500.0),
-                        trigger = Trigger()
+                        toggle = Toggle()
                 ),
                 Geofence(id = 2L,
                         name = "テスト",
                         enabled = false,
                         circle = Circle(35.3121228, 139.7740507, 500.0),
-                        trigger = Trigger()
+                        toggle = Toggle()
                 ),
                 Geofence(id = 3L,
                         name = "テスト",
                         enabled = true,
                         circle = Circle(35.4121228, 139.7740507, 500.0),
-                        trigger = Trigger()
+                        toggle = Toggle()
                 ),
                 Geofence(id = 4L,
                         name = "テスト",
                         enabled = true,
                         circle = Circle(35.5121228, 139.7740507, 500.0),
-                        trigger = Trigger()
+                        toggle = Toggle()
                 ),
                 Geofence(id = 5L,
                         name = "テスト",
                         enabled = false,
                         circle = Circle(35.6121228, 139.7740507, 500.0),
-                        trigger = Trigger()
+                        toggle = Toggle()
                 )
         )
     }
