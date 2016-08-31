@@ -60,9 +60,13 @@ class AddGeofencePresenter(
         view.showEditDialog()
     }
 
-    override fun onMarkerDragStart() {
+    override fun onMarkerDragStart(marker: Marker) {
         if (!view.isDragActionModeShown()) {
             view.startMarkerDragMode()
+        }
+
+        if (marker.isInfoWindowShown) {
+            view.hideMarkerInfoWindow(marker)
         }
         view.hideGeofenceCircle()
     }

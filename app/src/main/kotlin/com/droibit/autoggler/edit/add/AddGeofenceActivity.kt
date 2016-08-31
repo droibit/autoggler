@@ -159,6 +159,10 @@ class AddGeofenceActivity : AppCompatActivity(),
         marker.showInfoWindow()
     }
 
+    override fun hideMarkerInfoWindow(marker: Marker) {
+        marker.hideInfoWindow()
+    }
+
     override fun showEditDialog() {
         //TODO()
     }
@@ -236,7 +240,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun onMarkerDragStart(marker: Marker) {
-        presenter.onMarkerDragStart()
+        presenter.onMarkerDragStart(marker)
     }
 
     override fun onMarkerDrag(marker: Marker) {

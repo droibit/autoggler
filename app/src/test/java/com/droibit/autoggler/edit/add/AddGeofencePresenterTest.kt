@@ -238,10 +238,12 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onMarkerDragStart_startMarkerDragMode() {
+        val marker = Marker(mock())
+
         run {
             whenever(view.isDragActionModeShown()).thenReturn(false)
 
-            presenter.onMarkerDragStart()
+            presenter.onMarkerDragStart(marker)
             verify(view).startMarkerDragMode()
         }
 
@@ -251,14 +253,41 @@ class AddGeofencePresenterTest {
         run {
             whenever(view.isDragActionModeShown()).thenReturn(true)
 
-            presenter.onMarkerDragStart()
+            presenter.onMarkerDragStart(marker)
             verify(view, never()).startMarkerDragMode()
         }
     }
 
     @Test
+    fun onMarkerDragStart_hideInfoWindow() {
+        // is not shown
+        run {
+            val mockInternal: zzf = mock()
+            whenever(mockInternal.isInfoWindowShown).thenReturn(true)
+
+            val marker = Marker(mockInternal)
+            presenter.onMarkerDragStart(marker)
+
+            verify(view).hideMarkerInfoWindow(marker)
+        }
+
+        reset(view)
+
+        // shown
+        run {
+            val mockInternal: zzf = mock()
+            whenever(mockInternal.isInfoWindowShown).thenReturn(false)
+
+            val marker = Marker(mockInternal)
+            presenter.onMarkerDragStart(marker)
+
+            verify(view, never()).hideMarkerInfoWindow(marker)
+        }
+    }
+
+    @Test
     fun onMarkerDragStart_hideGeofenceCircle() {
-        presenter.onMarkerDragStart()
+        presenter.onMarkerDragStart(marker = Marker(mock()))
 
         verify(view).hideGeofenceCircle()
         verify(view, never()).showGeofenceCircle()

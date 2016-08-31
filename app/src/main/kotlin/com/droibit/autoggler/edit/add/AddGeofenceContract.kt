@@ -19,6 +19,8 @@ interface AddGeofenceContract {
 
         fun showMarkerInfoWindow(marker: Marker)
 
+        fun hideMarkerInfoWindow(marker: Marker)
+
         fun isDragActionModeShown(): Boolean
 
         fun showEditDialog()
@@ -68,7 +70,7 @@ interface AddGeofenceContract {
 
         fun onMarkerClicked(marker: Marker)
 
-        fun onMarkerDragStart()
+        fun onMarkerDragStart(marker: Marker)
 
         fun onMarkerDragEnd()
 
