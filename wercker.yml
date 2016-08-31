@@ -5,4 +5,9 @@ build:
         - script:
             name: run assembleDebug
             code: |
-                ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR --info assembleDebug
+                ./gradlew --project-cache-dir=$WERCKER_CACHE_DIR --info clean assembleDebug
+
+after-steps:
+    - slack-notifier:
+        url: $SLACK_URL
+        username: wercker-bot
