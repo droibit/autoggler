@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:layout_margin="@dimen/dialog_horizontal_margin"
+        >
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_geofence_dialog_label_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            />
+
+    <EditText
+            android:id="@+id/geofence_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_geofence_dialog_name_hint"
+            android:inputType="text"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/black"
+            />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_geofence_dialog_label_range"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:layout_marginTop="8dp"
+            />
+
+    <Spinner
+            android:id="@+id/geofence_radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:entries="@array/edit_geofence_circle_radius_labels"
+            />
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_geofence_dialog_label_toggle_list"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:layout_marginTop="8dp"
+            />
+
+    <com.linearlistview.LinearListView
+            android:id="@+id/toggle_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+</LinearLayout>

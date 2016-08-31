@@ -10,4 +10,13 @@
     <string name="add_geofence_marker_title">Edit by tap.</string>
     <string name="add_geofence_marker_subtitle">Move by long tap.</string>
     <string name="edit_geofence_move_action_mode_title">Move</string>
+    <string name="edit_geofence_dialog_label_name">Area Name</string>
+    <string name="edit_geofence_dialog_name_hint">Enter name</string>
+    <string name="edit_geofence_dialog_label_range">Range(radius)</string>
+    <string name="edit_geofence_dialog_toggle_item_wifi" translatable="false">Wifi</string>
+    <string name="edit_geofence_dialog_toggle_item_vibration">Vibration</string>
+    <string name="edit_geofence_dialog_label_toggle_list">Settings</string>
+    <string name="edit_geofence_dialog_title">Edit</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -1,2 +1,4 @@
 <resources>
+    <dimen name="dialog_horizontal_margin">20dp</dimen>
+    <dimen name="dialog_vertical_margin">20dp</dimen>
 </resources>

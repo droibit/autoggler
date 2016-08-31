@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
+import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
 import com.droibit.autoggler.utils.intent
@@ -164,7 +165,8 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun showEditDialog() {
-        //TODO()
+        EditGeofenceDialogFragment.newInstance(Geofence())
+                .show(supportFragmentManager)
     }
 
     override fun startMarkerDragMode() {
