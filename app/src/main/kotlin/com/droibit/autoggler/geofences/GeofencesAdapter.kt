@@ -163,5 +163,5 @@ private enum class Status(
     ENABLED(iconRes = R.drawable.ciecled_geofenceing_enabled,
             textColorRes = android.R.color.black),
     DISABLED(iconRes = R.drawable.ciecled_geofenceing_disabled,
-            textColorRes = R.color.appGrey);
+            textColorRes = R.color.colorGrey_300);
 }

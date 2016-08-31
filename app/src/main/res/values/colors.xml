@@ -4,8 +4,8 @@
     <color name="colorPrimaryDark">#00695C</color>
     <color name="colorAccent">#FF5252</color>
 
-    <color name="appGrey">#90A4AE</color>
-    
+    <color name="colorGrey_300">#90A4AE</color>
+
     <color name="colorCircleFill">#80AAAAAA</color>
     <color name="colorCircleStroke">#80009688</color>
 </resources>
