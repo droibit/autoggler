@@ -53,7 +53,7 @@
             android:layout_marginEnd="16dp"
             android:clickable="true"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_fab_add"
+            app:srcCompat="@drawable/ic_action_add"
             tools:ignore="RtlHardcoded"
             />
 
