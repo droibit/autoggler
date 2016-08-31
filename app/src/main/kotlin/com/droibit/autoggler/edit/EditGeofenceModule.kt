@@ -1,12 +1,17 @@
 package com.droibit.autoggler.edit
 
+import android.app.Activity
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
 
-fun editGeofenceModule(interactionListener: GoogleMapView.Listener, dragCallback: DragActionMode.Callback) = Kodein.Module {
+fun editGeofenceModule(activity: Activity, interactionListener: GoogleMapView.Listener, dragCallback: DragActionMode.Callback) = Kodein.Module {
 
     bind<GoogleMapView.Listener>() with instance(interactionListener)
+
+    bind<Activity>() with instance(activity)
+
+    bind<DragActionMode.Callback>() with instance(dragCallback)
 
     bind<GoogleMapView>() with provider {
         GoogleMapView(interactionListener = instance(), bounceDropAnimator = instance(), permissionChecker = instance())
@@ -16,5 +21,5 @@ fun editGeofenceModule(interactionListener: GoogleMapView.Listener, dragCallback
 
     bind<BounceDropAnimator>() with provider { BounceDropAnimator(config = instance(), timeProvider = instance()) }
 
-    bind<DragActionMode>() with provider { DragActionMode(callback = dragCallback) }
+    bind<DragActionMode>() with provider { DragActionMode(activity = instance(), callback = instance()) }
 }

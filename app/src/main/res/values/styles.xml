@@ -8,10 +8,11 @@
 
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="actionModeStyle">@style/AppTheme.ActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_action_done</item>
     </style>
 
     <style name="AppTheme.ActionMode" parent="@style/Widget.AppCompat.ActionMode">
-        <item name="background">@color/colorPrimary</item>
+        <item name="background">@color/colorGrey_500</item>
     </style>
 
 </resources>

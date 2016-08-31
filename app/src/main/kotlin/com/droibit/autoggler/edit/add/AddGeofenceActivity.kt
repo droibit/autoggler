@@ -71,7 +71,7 @@ class AddGeofenceActivity : AppCompatActivity(),
             extend(appKodein())
 
             val self = this@AddGeofenceActivity
-            import(editGeofenceModule(interactionListener = self, dragCallback = self))
+            import(editGeofenceModule(activity = self, interactionListener = self, dragCallback = self))
             import(addGeofenceModule(view = self, navigator = self, permissions = self))
         })
 
