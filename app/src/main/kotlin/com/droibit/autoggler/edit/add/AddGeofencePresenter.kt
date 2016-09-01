@@ -44,7 +44,7 @@ class AddGeofencePresenter(
     }
 
     override fun onMarkerInfoWindowClicked() {
-        if (view.isDragActionModeShown()) {
+        if (!view.isDragActionModeShown()) {
             view.showEditDialog()
         }
     }

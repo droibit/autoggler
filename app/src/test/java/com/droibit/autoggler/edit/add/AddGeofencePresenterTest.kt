@@ -169,7 +169,7 @@ class AddGeofencePresenterTest {
     fun onMarkerInfoWindowClicked_showEditDialog() {
         // can show
         run {
-            whenever(view.isDragActionModeShown()).thenReturn(true)
+            whenever(view.isDragActionModeShown()).thenReturn(false)
 
             presenter.onMarkerInfoWindowClicked()
             verify(view).showEditDialog()
@@ -179,7 +179,7 @@ class AddGeofencePresenterTest {
 
         // can't show
         run {
-            whenever(view.isDragActionModeShown()).thenReturn(false)
+            whenever(view.isDragActionModeShown()).thenReturn(true)
 
             presenter.onMarkerInfoWindowClicked()
             verify(view, never()).showEditDialog()
