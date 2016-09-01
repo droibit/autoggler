@@ -8,9 +8,10 @@
           android:minHeight="?attr/dropdownListPreferredItemHeight"
           android:ellipsize="marquee"
           android:textAlignment="inherit"
-          android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
           android:textColor="@android:color/black"
           android:maxLines="1"
           android:gravity="center_vertical"
           tools:text="hoge"
+          tools:ignore="PrivateResource"
         />
