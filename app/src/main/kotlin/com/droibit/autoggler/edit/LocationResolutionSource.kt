@@ -1,12 +1,14 @@
 package com.droibit.autoggler.edit
 
+import android.support.annotation.VisibleForTesting
 import com.jakewharton.rxrelay.PublishRelay
 
 class LocationResolutionSource {
 
-    private var startResolutionAction: (()->Unit)? = null
+    @VisibleForTesting
+    internal var startResolutionAction: (()->Unit)? = null
 
-    val trigger = PublishRelay.create<Any>()
+    val trigger: PublishRelay<Unit> = PublishRelay.create()
 
     fun prepareStartResolution(action: ()->Unit) {
         startResolutionAction = action
