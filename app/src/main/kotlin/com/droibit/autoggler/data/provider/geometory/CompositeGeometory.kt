@@ -1,4 +1,4 @@
-package com.droibit.autoggler.edit
+package com.droibit.autoggler.data.provider.geometory
 
 import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.Marker

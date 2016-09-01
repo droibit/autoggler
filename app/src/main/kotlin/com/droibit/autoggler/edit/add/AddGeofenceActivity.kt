@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.widget.Toast
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
