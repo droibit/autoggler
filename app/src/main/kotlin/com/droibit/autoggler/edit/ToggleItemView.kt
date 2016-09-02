@@ -25,9 +25,11 @@ class ToggleItemView : RelativeLayout {
                 defStyleAttr: Int = 0) : super(context, attrs, defStyleAttr) {
     }
 
-    inline fun bind(item: EditGeofenceContract.ToggleItem, crossinline checkedCallback:(Boolean)->Unit) {
-        switch.isChecked = item.enabled
-        switch.setOnCheckedChangeListener { v, isChecked -> checkedCallback(isChecked) }
+    inline fun bind(item: EditGeofenceContract.ToggleItem, crossinline checkedCallback: (Boolean) -> Unit) {
+        switch.apply {
+            isChecked = item.enabled
+            setOnCheckedChangeListener { v, isChecked -> checkedCallback(isChecked) }
+        }
         iconView.setImageResource(item.iconRes)
         textView.setText(item.textRes)
     }

@@ -7,8 +7,7 @@ import rx.lang.kotlin.single
 import rx.schedulers.Schedulers
 
 
-class LoadTask(private val geofenceRepository: GeofenceRepository) :
-        GeofencesContract.LoadTask {
+class LoadTask(private val geofenceRepository: GeofenceRepository) : GeofencesContract.LoadTask {
 
     override fun loadGeofences(): Single<List<Geofence>> {
         return single<List<Geofence>> { subscriber ->

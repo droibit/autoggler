@@ -66,8 +66,7 @@ class GeofencesAdapter(context: Context, private val geometryProvider: GeometryP
  * [LiteListDemoActivity#ViewHolder](https://github.com/googlemaps/android-samples/blob/master/ApiDemos/app/src/main/java/com/example/mapdemo/LiteListDemoActivity.java)
  */
 class ViewHolder(view: View,
-                 private val provider: GeometryProvider) :
-        RecyclerView.ViewHolder(view), OnMapReadyCallback {
+                 private val provider: GeometryProvider) : RecyclerView.ViewHolder(view), OnMapReadyCallback {
 
     companion object {
         private val KEY_CIRCLE = R.id.key_circle

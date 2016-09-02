@@ -128,6 +128,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         super.onDestroy()
     }
 
+    @SuppressWarnings("PrivateResource")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {

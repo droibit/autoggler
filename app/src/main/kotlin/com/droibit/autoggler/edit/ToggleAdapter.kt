@@ -12,12 +12,9 @@ import com.droibit.autoggler.edit.EditGeofenceContract.ToggleItemRes
 
 class ToggleAdapter : ArrayAdapter<ToggleItem> {
 
-    private val geofence: Geofence
-
     private val inflater: LayoutInflater
 
     constructor(context: Context, geofence: Geofence) : super(context, 0) {
-        this.geofence = geofence
         this.inflater = LayoutInflater.from(context)
 
         this.add(ToggleItem(itemRes = ToggleItemRes.WIFI, enabled = geofence.toggle.wifi))
