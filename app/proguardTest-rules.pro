@@ -16,21 +16,5 @@
 #   public *;
 #}
 
-# Rxjava
--dontwarn sun.misc.**
--keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
-   long producerIndex;
-   long consumerIndex;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode producerNode;
-}
--keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
-    rx.internal.util.atomic.LinkedQueueNode consumerNode;
-}
-
-# Kodein
--keepattributes Signature
-
-# Setho
--keep class com.facebook.stetho.** { *; }
+# Some methods are only called from tests, so make sure the shrinker keeps them.
+-keep class com.droibit.autoggler.** { *; }

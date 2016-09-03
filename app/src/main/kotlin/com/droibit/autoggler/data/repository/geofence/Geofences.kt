@@ -52,7 +52,7 @@ open class Toggle(
         if (other !is Toggle) return false
 
         if (wifi != other.wifi) return false
-        if (wifi != other.vibration) return false
+        if (vibration != other.vibration) return false
 
         return true
     }

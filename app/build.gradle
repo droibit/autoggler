@@ -25,7 +25,7 @@ android {
             minifyEnabled true
             // Uses new built-in shrinker http://tools.android.com/tech-docs/new-build-system/built-in-shrinker
             useProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguardTest-rules.pro'
         }
 
         release {
@@ -109,9 +109,9 @@ dependencies {
     testCompile "org.assertj:assertj-core:$assertjVersion"
     testCompile "org.mockito:mockito-core:$mockitoVersion"
     testCompile "com.nhaarman:mockito-kotlin:$mockitoKotinVersion"
-    //testCompile "org.robolectric:robolectric:$robolectricVersion"
 
     // Espresso UI Testing
+    androidTestCompile "com.squareup.assertj:assertj-android:$assertjAndroidVersion"
     androidTestCompile "com.android.support.test.espresso:espresso-core:$espressoVersion"
     androidTestCompile "com.android.support.test:runner:$supportTestRunnerVersion"
     androidTestCompile "com.android.support:support-annotations:$supportLibraryVersion"
