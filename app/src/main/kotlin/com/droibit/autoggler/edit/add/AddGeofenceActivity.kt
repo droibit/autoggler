@@ -151,6 +151,8 @@ class AddGeofenceActivity : AppCompatActivity(),
             val circleOptions = geometryProvider.newCircleOptions(marker.position, radius.toDouble())
             val circle = googleMapView.addCircle(circleOptions)
             compositeGeometry = CompositeGeometory(marker, circle)
+
+            marker.showInfoWindow()
         }
     }
 
