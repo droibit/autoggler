@@ -3,6 +3,7 @@ package com.droibit.autoggler.edit.add
 import android.location.Location
 import android.support.annotation.IdRes
 import android.support.annotation.StringRes
+import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -79,6 +80,8 @@ interface AddGeofenceContract {
         fun onFinishedDragMode()
 
         fun onDoneButtonClicked()
+
+        fun onUpdateGeofence(geofence: Geofence)
 
         // Navigator
 

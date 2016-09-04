@@ -3,6 +3,7 @@ package com.droibit.autoggler.edit
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.DialogInterface.BUTTON_POSITIVE
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.FragmentManager
@@ -13,9 +14,18 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
+import com.droibit.autoggler.edit.EditGeofenceContract.ToggleItem.Companion.INDEX_VIBRATION
+import com.droibit.autoggler.edit.EditGeofenceContract.ToggleItem.Companion.INDEX_WIFI
 import com.github.droibit.chopstick.bindView
+import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.KodeinAware
+import com.github.salomonbrys.kodein.KodeinInjector
+import com.github.salomonbrys.kodein.instance
 import com.linearlistview.LinearListView
+import timber.log.Timber
 
 class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickListener {
 
@@ -32,24 +42,40 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
 
         @JvmStatic
         fun newInstance(srcGeofence: Geofence, deletable: Boolean = false): EditGeofenceDialogFragment {
-            val fragment = EditGeofenceDialogFragment().apply {
+            return EditGeofenceDialogFragment().apply {
                 arguments = Bundle(2).apply {
                     putSerializable(ARG_GEOFENCE, srcGeofence)
                     putBoolean(ARG_DELETABLE, deletable)
                 }
             }
-            return fragment
         }
     }
 
-
     internal class EditGeofenceContentView : LinearLayout {
+
+        val geofenceName: String
+            get() = "${geofenceNameView.text}"
+
+        val geofenceRadius: Double
+            get() = geofenceRadiusList[geofenceRadiusView.selectedItemPosition].toDouble()
+
+        val shouldToggleWifi: Boolean
+            get() = toggleListAdapter.shouldToggle(INDEX_WIFI)
+
+        val shouldToggleVibration: Boolean
+            get() = toggleListAdapter.shouldToggle(INDEX_VIBRATION)
 
         private val geofenceNameView: EditText by bindView(R.id.geofence_name)
 
         private val geofenceRadiusView: Spinner by bindView(R.id.geofence_radius)
 
         private val toggleListView: LinearListView by bindView(R.id.toggle_list)
+
+        // TODO: bindArray
+        private val geofenceRadiusList: IntArray
+
+        private val toggleListAdapter: ToggleAdapter
+            get() = toggleListView.adapter as ToggleAdapter
 
         @JvmOverloads
         constructor(context: Context,
@@ -58,11 +84,18 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
             View.inflate(context, R.layout.view_edit_geofence, this)
 
             geofenceRadiusView.adapter = ArrayAdapter.createFromResource(
-                    context, R.array.edit_geofence_circle_radius_labels, R.layout.list_item_geofence_radius)
+                    context,
+                    R.array.edit_geofence_circle_radius_labels,
+                    R.layout.list_item_geofence_radius
+            )
+            geofenceRadiusList = context.resources.getIntArray(R.array.edit_geofence_circle_radius_items)
         }
 
         fun init(srcGeofence: Geofence) {
             toggleListView.adapter = ToggleAdapter(context, srcGeofence)
+
+            val radiusIndex = geofenceRadiusList.indexOfFirst { it == srcGeofence.radius.toInt() }
+            geofenceRadiusView.setSelection(if (radiusIndex != -1) radiusIndex else 0)
         }
 
         inline fun onTextChanged(crossinline callback: (CharSequence?) -> Unit) {
@@ -82,12 +115,15 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
         fun hasGeofenceName() = !geofenceNameView.text.isNullOrEmpty()
     }
 
-    private val positiveButton: Button by lazy { (dialog as AlertDialog).getButton(DialogInterface.BUTTON_POSITIVE) }
+    private val injector = KodeinInjector()
+
+    private val rxBus: RxBus by injector.instance()
+
+    private val positiveButton: Button by lazy { (dialog as AlertDialog).getButton(BUTTON_POSITIVE) }
 
     private lateinit var contentView: EditGeofenceContentView
 
     private lateinit var geofence: Geofence
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +132,16 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
             savedInstanceState.getSerializable(ARG_GEOFENCE) as Geofence
         else
             arguments.getSerializable(ARG_GEOFENCE) as Geofence
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        injector.inject(Kodein {
+            val parentKodein = context as? KodeinAware
+                    ?: throw IllegalStateException("KodeinAware is not implemented.")
+            extend(parentKodein.kodein)
+        })
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -132,8 +178,8 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // TODO:
-        outState.putSerializable(ARG_GEOFENCE, geofence)
+
+        updateGeofence().apply { outState.putSerializable(ARG_GEOFENCE, this) }
     }
 
     fun show(manager: FragmentManager) {
@@ -141,6 +187,19 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
     }
 
     override fun onClick(dialog: DialogInterface?, which: Int) {
+        when (which) {
+            BUTTON_POSITIVE -> updateGeofence().run { rxBus.call(EditGeofenceEvent.OnUpdate(geofence = this)) }
+        }
+    }
 
+    private fun updateGeofence(): Geofence {
+        return geofence.apply {
+            name = contentView.geofenceName
+            circle.radius = contentView.geofenceRadius
+            toggle.wifi = contentView.shouldToggleWifi
+            toggle.vibration = contentView.shouldToggleVibration
+
+            Timber.d("Updated: $this")
+        }
     }
 }

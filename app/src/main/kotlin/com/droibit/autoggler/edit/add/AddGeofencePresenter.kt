@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
@@ -84,6 +85,10 @@ class AddGeofencePresenter(
     }
 
     override fun onDoneButtonClicked() {
+        TODO()
+    }
+
+    override fun onUpdateGeofence(geofence: Geofence) {
         TODO()
     }
 

@@ -1,6 +1,7 @@
 package com.droibit.autoggler.edit
 
 import android.content.Context
+import android.support.annotation.IntRange
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,5 +29,10 @@ class ToggleAdapter : ArrayAdapter<ToggleItem> {
             val item = getItem(position)
             bind(item) { isChecked -> item.enabled = isChecked }
         }
+    }
+
+    fun shouldToggle(@IntRange(from = 0, to = 1) index: Int): Boolean {
+        check(index in 0..1)
+        return getItem(index).enabled
     }
 }

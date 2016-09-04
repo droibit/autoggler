@@ -13,20 +13,24 @@ import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
+import com.droibit.autoggler.data.provider.rx.RxBus
+import com.droibit.autoggler.data.provider.rx.castIf
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
+import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
 import com.droibit.autoggler.utils.intent
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinInjector
+import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.addTo
+import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 
 class AddGeofenceActivity : AppCompatActivity(),
@@ -34,7 +38,8 @@ class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.Navigator,
         AddGeofenceContract.RuntimePermissions,
         GoogleMapView.Listener,
-        DragActionMode.Callback {
+        DragActionMode.Callback,
+        KodeinAware {
 
     companion object {
 
@@ -61,21 +66,27 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val dragActionMode: DragActionMode by injector.instance()
 
+    private val rxBus: RxBus by injector.instance()
+
+    private val subscriptions: CompositeSubscription by injector.instance()
+
     private val fab: FloatingActionButton by bindView(R.id.fab)
 
     private var compositeGeometry: CompositeGeometory? = null
+
+    override val kodein: Kodein by Kodein.lazy {
+        extend(appKodein())
+
+        val self = this@AddGeofenceActivity
+        import(editGeofenceModule(activity = self, interactionListener = self, dragCallback = self))
+        import(addGeofenceModule(view = self, navigator = self, permissions = self))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_geofence)
 
-        injector.inject(Kodein {
-            extend(appKodein())
-
-            val self = this@AddGeofenceActivity
-            import(editGeofenceModule(activity = self, interactionListener = self, dragCallback = self))
-            import(addGeofenceModule(view = self, navigator = self, permissions = self))
-        })
+        injector.inject(kodein)
 
         val mapView: MapView = findView(R.id.map)
         googleMapView.onCreate(mapView, savedInstanceState)
@@ -115,11 +126,13 @@ class AddGeofenceActivity : AppCompatActivity(),
         super.onResume()
         googleMapView.onResume()
         presenter.subscribe()
+        subscribeEditGeofence()
     }
 
     override fun onPause() {
         googleMapView.onPause()
         presenter.unsubscribe()
+        subscriptions.unsubscribe()
         super.onPause()
     }
 
@@ -269,5 +282,18 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun onFinishedDragMode() {
         presenter.onFinishedDragMode()
+    }
+
+    // private
+
+    private fun subscribeEditGeofence() {
+        rxBus.asObservable()
+                .castIf<EditGeofenceEvent>()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { event ->
+                    when (event) {
+                        is EditGeofenceEvent.OnUpdate -> presenter.onUpdateGeofence(event.geofence)
+                    }
+                }.addTo(subscriptions)
     }
 }
