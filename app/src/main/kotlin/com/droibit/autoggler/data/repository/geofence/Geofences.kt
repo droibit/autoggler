@@ -73,6 +73,12 @@ open class Geofence(
         open var toggle: Toggle = Toggle()
 ) : RealmModel, Serializable {
 
+    val radius: Double
+        get() = circle.radius
+
+    val latLong: LatLng
+        get() = circle.latLng
+
     override fun toString(): String {
         return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, toggle=$toggle)"
     }
