@@ -47,6 +47,8 @@ class GoogleMapView(
         mapView.onDestroy()
     }
 
+    fun onSaveInstanceState(outState: Bundle) = mapView.onSaveInstanceState(outState)
+
     fun updateMyLocation(location: Location) {
         if (mapReady) {
             moveCameraTo(location)

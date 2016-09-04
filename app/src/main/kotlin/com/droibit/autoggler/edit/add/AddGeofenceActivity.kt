@@ -128,6 +128,11 @@ class AddGeofenceActivity : AppCompatActivity(),
         super.onDestroy()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        googleMapView.onSaveInstanceState(outState)
+    }
+
     @SuppressWarnings("PrivateResource")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
