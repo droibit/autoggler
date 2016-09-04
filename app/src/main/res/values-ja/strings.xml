@@ -9,7 +9,7 @@
     <string name="add_geofence_marker_title">タップで編集</string>
     <string name="add_geofence_marker_subtitle">長押しで移動</string>
     <string name="edit_geofence_move_action_mode_title">移動</string>
-    <string name="edit_geofence_dialog_label_name">エリア名前</string>
+    <string name="edit_geofence_dialog_label_name">エリア名</string>
     <string name="edit_geofence_dialog_name_hint">名前を入力します</string>
     <string name="edit_geofence_dialog_label_range">範囲(半径)</string>
     <string name="edit_geofence_dialog_toggle_item_vibration">バイブレーション</string>
