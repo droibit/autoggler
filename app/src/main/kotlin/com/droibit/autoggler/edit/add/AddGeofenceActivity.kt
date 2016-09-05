@@ -20,6 +20,7 @@ import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
 import com.droibit.autoggler.utils.intent
+import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
@@ -71,6 +72,8 @@ class AddGeofenceActivity : AppCompatActivity(),
     private val subscriptions: CompositeSubscription by injector.instance()
 
     private val fab: FloatingActionButton by bindView(R.id.fab)
+
+    private val geofenceRadiusList: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
 
     private var compositeGeometry: CompositeGeometory? = null
 
@@ -165,8 +168,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     override fun dropMarker(point: LatLng) {
         val markerOptions = geometryProvider.newMarkerOptions(point)
         googleMapView.addMarker(markerOptions) { marker ->
-            val radius = resources.getIntArray(R.array.edit_geofence_circle_radius_items).first()
-            val circleOptions = geometryProvider.newCircleOptions(marker.position, radius.toDouble())
+            val circleOptions = geometryProvider.newCircleOptions(marker.position, geofenceRadiusList.first().toDouble())
             val circle = googleMapView.addCircle(circleOptions)
             compositeGeometry = CompositeGeometory(marker, circle)
 

@@ -19,6 +19,7 @@ import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
 import com.droibit.autoggler.edit.EditGeofenceContract.ToggleItem.Companion.INDEX_VIBRATION
 import com.droibit.autoggler.edit.EditGeofenceContract.ToggleItem.Companion.INDEX_WIFI
+import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinAware
@@ -71,8 +72,7 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
 
         private val toggleListView: LinearListView by bindView(R.id.toggle_list)
 
-        // TODO: bindArray
-        private val geofenceRadiusList: IntArray
+        private val geofenceRadiusList: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
 
         private val toggleListAdapter: ToggleAdapter
             get() = toggleListView.adapter as ToggleAdapter
@@ -88,7 +88,6 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
                     R.array.edit_geofence_circle_radius_labels,
                     R.layout.list_item_geofence_radius
             )
-            geofenceRadiusList = context.resources.getIntArray(R.array.edit_geofence_circle_radius_items)
         }
 
         fun init(srcGeofence: Geofence) {
@@ -162,7 +161,6 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
             }
             create()
         }
-
         return dialog
     }
 

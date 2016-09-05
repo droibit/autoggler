@@ -103,6 +103,7 @@ dependencies {
     compile "com.jakewharton.timber:timber:$timberVersion"
     compile "com.github.droibit.chopsticks:chopstick:$chopsticksVersion"
     compile "com.github.droibit.chopsticks:chopstick-preference:$chopsticksVersion"
+    compile "com.github.droibit.chopsticks:chopstick-resource:$chopsticksVersion"
 
     // Dependencies for local unit tests
     testCompile "junit:junit:$junitVersion"
