@@ -24,6 +24,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/edit_geofence_dialog_name_hint"
+                android:maxLines="1"
+                android:maxLength="30"
                 android:inputType="text"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
                 android:textColor="@android:color/black"

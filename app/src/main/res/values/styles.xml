@@ -15,4 +15,8 @@
         <item name="background">@color/colorGrey_500</item>
     </style>
 
+    <style name="AppTheme.Dialog.Alert" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 </resources>

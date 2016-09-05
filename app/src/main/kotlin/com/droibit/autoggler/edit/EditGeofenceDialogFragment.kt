@@ -146,24 +146,23 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = AlertDialog.Builder(context).run {
+        val builder = AlertDialog.Builder(context, R.style.AppTheme_Dialog_Alert).apply {
             val self = this@EditGeofenceDialogFragment
             setTitle(R.string.edit_geofence_dialog_title)
             setPositiveButton(R.string.update, self)
             setNegativeButton(android.R.string.cancel, self)
+
+            if (arguments.getBoolean(ARG_DELETABLE, false)) {
+                setNeutralButton(R.string.delete, self)
+            }
 
             contentView = EditGeofenceContentView(context).apply {
                 init(geofence)
                 onTextChanged { positiveButton.isEnabled = !it.isNullOrEmpty() }
             }
             setView(contentView)
-
-            if (arguments.getBoolean(ARG_DELETABLE, false)) {
-                setNeutralButton(R.string.delete, self)
-            }
-            create()
         }
-        return dialog
+        return builder.create()
     }
 
     override fun onResume() {
