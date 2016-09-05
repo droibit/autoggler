@@ -12,7 +12,7 @@ open class Circle(
         open var lat: Double = 0.0,
         open var lng: Double = 0.0,
         open var radius: Double = 0.0
-) : RealmModel, Serializable {
+) : RealmModel, Serializable, Cloneable {
 
     override fun toString(): String {
         return "Circle(lat=$lat, lng=$lng, radius=$radius)"
@@ -35,16 +35,24 @@ open class Circle(
         result = 31 * result + radius.hashCode()
         return result
     }
+
+    public override fun clone(): Circle {
+        try {
+            return super.clone() as Circle
+        } catch (e: CloneNotSupportedException) {
+            throw RuntimeException(e)
+        }
+    }
 }
 
 @RealmClass
 open class Toggle(
         open var wifi: Boolean = false,
         open var vibration: Boolean = false
-) : RealmModel, Serializable {
+) : RealmModel, Serializable, Cloneable {
 
     override fun toString(): String {
-        return "Trigger(wifi=$wifi, vibration=$vibration)"
+        return "Toggle(wifi=$wifi, vibration=$vibration)"
     }
 
     override fun equals(other: Any?): Boolean {
@@ -61,6 +69,14 @@ open class Toggle(
         var result = wifi.hashCode()
         result = 31 * result + vibration.hashCode()
         return result
+    }
+
+    public override fun clone(): Toggle {
+        try {
+            return super.clone() as Toggle
+        } catch (e: CloneNotSupportedException) {
+            throw RuntimeException(e)
+        }
     }
 }
 
