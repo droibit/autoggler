@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_maps_key" translatable="false">AIzaSyBOdw5amckXyKcQpjawJ_-z7RqZecqFm_w</string>
+    <string name="google_awareness_key" translatable="false">@string/google_maps_key</string>
 </resources>

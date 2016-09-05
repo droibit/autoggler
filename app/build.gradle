@@ -80,6 +80,7 @@ dependencies {
     // Play Services dependencies
     compile "com.google.android.gms:play-services-maps:$playServicesVersion"
     compile "com.google.android.gms:play-services-location:$playServicesVersion"
+    compile "com.google.android.gms:play-services-contextmanager:$playServicesVersion"
 
     // Firebase dependencies
     releaseCompile "com.google.firebase:firebase-crash:$firebaseVersion"
