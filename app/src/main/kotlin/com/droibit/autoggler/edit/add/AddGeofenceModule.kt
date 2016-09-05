@@ -1,5 +1,6 @@
 package com.droibit.autoggler.edit.add
 
+import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
@@ -11,13 +12,16 @@ import com.jakewharton.rxrelay.BehaviorRelay
 fun addGeofenceModule(
         view: AddGeofenceContract.View,
         navigator: AddGeofenceContract.Navigator,
-        permissions: AddGeofenceContract.RuntimePermissions) = Kodein.Module {
+        permissions: AddGeofenceContract.RuntimePermissions,
+        initialGeofence: Geofence) = Kodein.Module {
 
     bind<AddGeofenceContract.View>() with instance(view)
 
     bind<AddGeofenceContract.Navigator>() with instance(navigator)
 
     bind<AddGeofenceContract.RuntimePermissions>() with instance(permissions)
+
+    bind<Geofence>() with instance(initialGeofence)
 
     bind<RxActivityLauncher>() with provider { RxActivityLauncher() }
 
@@ -39,7 +43,8 @@ fun addGeofenceModule(
                 navigator = instance(),
                 getCurrentLocationTask = instance(),
                 permissionChecker = instance(),
-                subscriptions = instance()
+                subscriptions = instance(),
+                geofence = instance()
         )
     }
 }

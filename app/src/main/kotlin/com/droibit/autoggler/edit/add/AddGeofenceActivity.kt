@@ -50,6 +50,9 @@ class AddGeofenceActivity : AppCompatActivity(),
         private val REQUEST_LOCATION_RESOLUTION = 0
 
         @JvmStatic
+        private val KEY_GEOFENCE = "KEY_GEOFENCE"
+
+        @JvmStatic
         fun createIntent(context: Context) = intent<AddGeofenceActivity>(context)
     }
 
@@ -82,14 +85,19 @@ class AddGeofenceActivity : AppCompatActivity(),
 
         val self = this@AddGeofenceActivity
         import(editGeofenceModule(activity = self, interactionListener = self, dragCallback = self))
-        import(addGeofenceModule(view = self, navigator = self, permissions = self))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_geofence)
 
-        injector.inject(kodein)
+        injector.inject(Kodein {
+            extend(kodein)
+
+            val self = this@AddGeofenceActivity
+            val geofence = savedInstanceState?.getSerializable(KEY_GEOFENCE) as? Geofence ?: Geofence()
+            import(addGeofenceModule(view = self, navigator = self, permissions = self, initialGeofence = geofence))
+        })
 
         val mapView: MapView = findView(R.id.map)
         googleMapView.onCreate(mapView, savedInstanceState)
@@ -188,9 +196,17 @@ class AddGeofenceActivity : AppCompatActivity(),
         marker.hideInfoWindow()
     }
 
-    override fun showEditDialog() {
-        EditGeofenceDialogFragment.newInstance(Geofence())
-                .show(supportFragmentManager)
+    override fun setMarkerInfoWindow(title: String, snippet: String?) {
+        compositeGeometry?.let {
+            it.marker.title = title
+            it.marker.snippet = snippet
+            it.marker.showInfoWindow()
+        }
+    }
+
+    override fun showEditDialog(target: Geofence) {
+        val df = EditGeofenceDialogFragment.newInstance(target).apply { isCancelable = false }
+        df.show(supportFragmentManager)
     }
 
     override fun startMarkerDragMode() {
@@ -224,6 +240,12 @@ class AddGeofenceActivity : AppCompatActivity(),
         compositeGeometry?.let {
             it.circle.center = it.marker.position
             it.circle.isVisible = false
+        }
+    }
+
+    override fun setGeofenceRadius(radius: Double) {
+        compositeGeometry?.let {
+            it.circle.radius = radius
         }
     }
 
@@ -294,7 +316,7 @@ class AddGeofenceActivity : AppCompatActivity(),
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { event ->
                     when (event) {
-                        is EditGeofenceEvent.OnUpdate -> presenter.onUpdateGeofence(event.geofence)
+                        is EditGeofenceEvent.OnUpdate -> presenter.onGeofenceUpdated(updated = event.geofence)
                     }
                 }.addTo(subscriptions)
     }

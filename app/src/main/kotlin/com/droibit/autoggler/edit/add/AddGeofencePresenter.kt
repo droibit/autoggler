@@ -21,7 +21,8 @@ class AddGeofencePresenter(
         private val navigator: AddGeofenceContract.Navigator,
         private val getCurrentLocationTask: AddGeofenceContract.GetCurrentLocationTask,
         private val permissionChecker: RuntimePermissionChecker,
-        private val subscriptions: CompositeSubscription) : AddGeofenceContract.Presenter {
+        private val subscriptions: CompositeSubscription,
+        private val geofence: Geofence) : AddGeofenceContract.Presenter {
 
     override fun onCreate() {
         getCurrentLocationTask.requestLocation()
@@ -46,7 +47,7 @@ class AddGeofencePresenter(
 
     override fun onMarkerInfoWindowClicked() {
         if (!view.isDragActionModeShown()) {
-            view.showEditDialog()
+            view.showEditDialog(target = geofence)
         }
     }
 
@@ -58,7 +59,7 @@ class AddGeofencePresenter(
         if (!marker.isInfoWindowShown) {
             view.showMarkerInfoWindow(marker)
         }
-        view.showEditDialog()
+        view.showEditDialog(target = geofence)
     }
 
     override fun onMarkerDragStart(marker: Marker) {
@@ -88,8 +89,14 @@ class AddGeofencePresenter(
         TODO()
     }
 
-    override fun onUpdateGeofence(geofence: Geofence) {
-        TODO()
+    override fun onGeofenceUpdated(updated: Geofence) {
+        geofence.apply {
+            name = updated.name
+            circle = updated.circle.clone()
+            toggle = updated.toggle.clone()
+        }
+        view.setMarkerInfoWindow(title = updated.name, snippet = null)
+        view.setGeofenceRadius(updated.radius)
     }
 
     // Navigator

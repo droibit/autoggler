@@ -22,9 +22,11 @@ interface AddGeofenceContract {
 
         fun hideMarkerInfoWindow(marker: Marker)
 
+        fun setMarkerInfoWindow(title: String, snippet: String?)
+
         fun isDragActionModeShown(): Boolean
 
-        fun showEditDialog()
+        fun showEditDialog(target: Geofence)
 
         fun startMarkerDragMode()
 
@@ -39,6 +41,8 @@ interface AddGeofenceContract {
         fun showGeofenceCircle()
 
         fun hideGeofenceCircle()
+
+        fun setGeofenceRadius(radius: Double)
 
         fun showErrorToast(@StringRes msgId: Int)
     }
@@ -81,7 +85,7 @@ interface AddGeofenceContract {
 
         fun onDoneButtonClicked()
 
-        fun onUpdateGeofence(geofence: Geofence)
+        fun onGeofenceUpdated(updated: Geofence)
 
         // Navigator
 

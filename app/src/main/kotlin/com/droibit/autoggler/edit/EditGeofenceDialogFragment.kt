@@ -66,6 +66,9 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
         val shouldToggleVibration: Boolean
             get() = toggleListAdapter.shouldToggle(INDEX_VIBRATION)
 
+        val hasGeofenceName: Boolean
+            get() = !geofenceNameView.text.isNullOrEmpty()
+
         private val geofenceNameView: EditText by bindView(R.id.geofence_name)
 
         private val geofenceRadiusView: Spinner by bindView(R.id.geofence_radius)
@@ -91,6 +94,7 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
         }
 
         fun init(srcGeofence: Geofence) {
+            geofenceNameView.setText(srcGeofence.name)
             toggleListView.adapter = ToggleAdapter(context, srcGeofence)
 
             val radiusIndex = geofenceRadiusList.indexOfFirst { it == srcGeofence.radius.toInt() }
@@ -110,8 +114,6 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
                 }
             })
         }
-
-        fun hasGeofenceName() = !geofenceNameView.text.isNullOrEmpty()
     }
 
     private val injector = KodeinInjector()
@@ -167,7 +169,7 @@ class EditGeofenceDialogFragment : DialogFragment(), DialogInterface.OnClickList
     override fun onResume() {
         super.onResume()
 
-        positiveButton.isEnabled = contentView.hasGeofenceName()
+        positiveButton.isEnabled = contentView.hasGeofenceName
     }
 
     override fun onDestroyView() {

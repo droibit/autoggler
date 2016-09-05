@@ -4,6 +4,9 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.data.repository.geofence.Circle
+import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.data.repository.geofence.Toggle
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
@@ -46,6 +49,9 @@ class AddGeofencePresenterTest {
     @Mock
     lateinit var permissionChecker: RuntimePermissionChecker
 
+    @Mock
+    lateinit var geofence: Geofence
+
     lateinit var subscriptions: CompositeSubscription
 
     private lateinit var presenter: AddGeofencePresenter
@@ -59,7 +65,8 @@ class AddGeofencePresenterTest {
                 navigator,
                 getCurrentLocationTask,
                 permissionChecker,
-                subscriptions
+                subscriptions,
+                geofence
         )
     }
 
@@ -172,7 +179,7 @@ class AddGeofencePresenterTest {
             whenever(view.isDragActionModeShown()).thenReturn(false)
 
             presenter.onMarkerInfoWindowClicked()
-            verify(view).showEditDialog()
+            verify(view).showEditDialog(geofence)
         }
 
         reset(view)
@@ -182,7 +189,7 @@ class AddGeofencePresenterTest {
             whenever(view.isDragActionModeShown()).thenReturn(true)
 
             presenter.onMarkerInfoWindowClicked()
-            verify(view, never()).showEditDialog()
+            verify(view, never()).showEditDialog(any())
         }
     }
 
@@ -194,7 +201,7 @@ class AddGeofencePresenterTest {
             whenever(view.isDragActionModeShown()).thenReturn(false)
 
             presenter.onMarkerClicked(marker)
-            verify(view).showEditDialog()
+            verify(view).showEditDialog(geofence)
         }
 
         reset(view)
@@ -204,7 +211,7 @@ class AddGeofencePresenterTest {
             whenever(view.isDragActionModeShown()).thenReturn(true)
 
             presenter.onMarkerClicked(marker)
-            verify(view, never()).showEditDialog()
+            verify(view, never()).showEditDialog(any())
         }
     }
 
@@ -315,6 +322,42 @@ class AddGeofencePresenterTest {
 
         verify(view).showDoneButton()
         verify(view, never()).hideDoneButton()
+    }
+
+    @Test
+    fun onUpdateGeofence_shouldUpdateGeofence() {
+        val updatedGeofence = Geofence().apply {
+            name = "updated"
+            circle = Circle(1.0, 2.0, 3.0)
+            toggle = Toggle(true, false)
+        }
+        presenter.onGeofenceUpdated(updatedGeofence)
+
+        verify(geofence).name = updatedGeofence.name
+        verify(geofence).circle = updatedGeofence.circle
+        verify(geofence).toggle = updatedGeofence.toggle
+    }
+
+    @Test
+    fun onUpdateGeofence_updateMarkerInfoWindow() {
+        val updatedGeofence = Geofence().apply {
+            name = "updated"
+            circle = Circle(1.0, 2.0, 3.0)
+            toggle = Toggle(true, false)
+        }
+        presenter.onGeofenceUpdated(updatedGeofence)
+
+        verify(view).setMarkerInfoWindow(title = updatedGeofence.name, snippet = null)
+    }
+
+    @Test
+    fun onUpdateGeofence_setGeofenceRadius() {
+        val updatedGeofence = Geofence().apply {
+            circle = Circle(1.0, 2.0, 3.0)
+        }
+        presenter.onGeofenceUpdated(updatedGeofence)
+
+        verify(view).setGeofenceRadius(updatedGeofence.radius)
     }
 
     // Navigator
