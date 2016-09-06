@@ -32,7 +32,9 @@ interface AddGeofenceContract {
 
         fun enableMyLocationButton(enabled: Boolean)
 
-        fun showLocation(location: Location)
+        fun setLocation(location: Location)
+
+        fun setLocation(location: LatLng)
 
         fun showDoneButton()
 
@@ -72,6 +74,8 @@ interface AddGeofenceContract {
         fun onMapLongClicked(point: LatLng)
 
         fun onMarkerInfoWindowClicked()
+
+        fun onMarkerDropped(marker: Marker)
 
         fun onMarkerClicked(marker: Marker)
 

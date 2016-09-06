@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import android.os.Bundle
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.utils.toLatLng
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -26,7 +27,7 @@ class GoogleMapView(
 
     private lateinit var mapView: MapView
 
-    private var currentLocation: Location? = null
+    private var currentLocation: LatLng? = null
 
     private var mapReady = false
 
@@ -49,7 +50,9 @@ class GoogleMapView(
 
     fun onSaveInstanceState(outState: Bundle) = mapView.onSaveInstanceState(outState)
 
-    fun updateMyLocation(location: Location) {
+    fun updateMyLocation(location: Location) = updateMyLocation(location.toLatLng())
+
+    fun updateMyLocation(location: LatLng) {
         if (mapReady) {
             moveCameraTo(location)
         }
@@ -88,10 +91,10 @@ class GoogleMapView(
         this.currentLocation?.let { moveCameraTo(location = it) }
     }
 
-    private fun moveCameraTo(location: Location) {
+    private fun moveCameraTo(location: LatLng) {
         Timber.d("moveCameraTo=$location")
 
-        val newCamera = CameraUpdateFactory.newLatLngZoom(location.toLatLng(), DEFAULT_ZOOM)
+        val newCamera = CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM)
         checkNotNull(googleMap).animateCamera(newCamera)
     }
 
@@ -104,5 +107,3 @@ class GoogleMapView(
         }
     }
 }
-
-private fun Location.toLatLng() = LatLng(latitude, longitude)

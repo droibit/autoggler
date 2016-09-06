@@ -180,7 +180,7 @@ class AddGeofenceActivity : AppCompatActivity(),
             val circle = googleMapView.addCircle(circleOptions)
             compositeGeometry = CompositeGeometory(marker, circle)
 
-            marker.showInfoWindow()
+            presenter.onMarkerDropped(marker)
         }
     }
 
@@ -217,7 +217,11 @@ class AddGeofenceActivity : AppCompatActivity(),
         googleMapView.enableMyLocationButton(enabled)
     }
 
-    override fun showLocation(location: Location) {
+    override fun setLocation(location: Location) {
+        googleMapView.updateMyLocation(location)
+    }
+
+    override fun setLocation(location: LatLng) {
         googleMapView.updateMyLocation(location)
     }
 
