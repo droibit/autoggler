@@ -61,16 +61,13 @@ class GeofencesActivity : AppCompatActivity(),
         })
 
         fab.apply {
-            val clickObservable = PublishRelay.create<Any>()
-            tag = clickObservable
-
-            setOnClickListener { presenter.onGeofenceAddButtonClicked() }
-
             val intent = AddGeofenceActivity.createIntent(this@GeofencesActivity)
             activityLauncher.from(this@GeofencesActivity)
-                .on(clickObservable)
+                .on(PublishRelay.create<Any>().apply { fab.tag = this })
                 .startActivityForResult(intent, REQUEST_ADD_GEOFENCE, null)
                 .subscribe {  }
+
+            setOnClickListener { presenter.onGeofenceAddButtonClicked() }
         }
 
         geofenceAdapter = GeofenceAdapter(this, geometryProvider).apply {

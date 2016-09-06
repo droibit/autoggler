@@ -9,7 +9,6 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
-import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
@@ -20,6 +19,7 @@ import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
 import com.droibit.autoggler.utils.intent
+import com.droibit.autoggler.utils.showShortToast
 import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
@@ -250,7 +250,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun showErrorToast(@StringRes msgId: Int) {
-        Toast.makeText(this, msgId, Toast.LENGTH_SHORT).show()
+        showShortToast(msgId)
     }
 
     // AddGeofenceContract.Navigator
