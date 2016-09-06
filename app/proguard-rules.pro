@@ -16,7 +16,7 @@
 #   public *;
 #}
 
-# Rxjava
+# For Rxjava
 -dontwarn sun.misc.**
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
    long producerIndex;
@@ -29,8 +29,9 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 
-# Kodein
+# For Kodein
 -keepattributes Signature
 
-# Setho
+# For Setho
 -keep class com.facebook.stetho.** { *; }
+-keep class com.uphyca.** { *; }
