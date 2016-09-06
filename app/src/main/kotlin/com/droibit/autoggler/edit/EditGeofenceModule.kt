@@ -8,16 +8,16 @@ import com.github.salomonbrys.kodein.provider
 import com.github.salomonbrys.kodein.singleton
 import com.jakewharton.rxrelay.PublishRelay
 
-fun editGeofenceModule(activity: Activity, interactionListener: GoogleMapView.Listener, dragCallback: DragActionMode.Callback) = Kodein.Module {
+fun editGeofenceModule(activity: Activity, interactionCallback: GoogleMapView.Callback, dragCallback: DragActionMode.Callback) = Kodein.Module {
 
-    bind<GoogleMapView.Listener>() with instance(interactionListener)
+    bind<GoogleMapView.Callback>() with instance(interactionCallback)
 
     bind<Activity>() with instance(activity)
 
     bind<DragActionMode.Callback>() with instance(dragCallback)
 
     bind<GoogleMapView>() with provider {
-        GoogleMapView(interactionListener = instance(), bounceDropAnimator = instance(), permissionChecker = instance())
+        GoogleMapView(interactionCallback = instance(), bounceDropAnimator = instance(), permissionChecker = instance())
     }
 
     bind<LocationResolutionSource>() with provider { LocationResolutionSource() }

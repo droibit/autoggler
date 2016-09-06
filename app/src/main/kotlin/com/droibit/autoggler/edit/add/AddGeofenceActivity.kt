@@ -38,7 +38,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         AddGeofenceContract.View,
         AddGeofenceContract.Navigator,
         AddGeofenceContract.RuntimePermissions,
-        GoogleMapView.Listener,
+        GoogleMapView.Callback,
         DragActionMode.Callback,
         KodeinAware {
 
@@ -84,7 +84,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         extend(appKodein())
 
         val self = this@AddGeofenceActivity
-        import(editGeofenceModule(activity = self, interactionListener = self, dragCallback = self))
+        import(editGeofenceModule(activity = self, interactionCallback = self, dragCallback = self))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -272,7 +272,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ACCESS_LOCATION)
     }
 
-    // GoogleMapView.Listener
+    // GoogleMapView.Callback
 
     override fun onMapLongClick(point: LatLng) {
         presenter.onMapLongClicked(point)

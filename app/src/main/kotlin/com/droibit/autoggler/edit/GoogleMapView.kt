@@ -14,11 +14,11 @@ import timber.log.Timber
 private val DEFAULT_ZOOM = 16f
 
 class GoogleMapView(
-        private val interactionListener: Listener,
+        private val interactionCallback: Callback,
         private val bounceDropAnimator: BounceDropAnimator,
         private val permissionChecker: RuntimePermissionChecker) : OnMapReadyCallback {
 
-    interface Listener :
+    interface Callback :
             GoogleMap.OnMapLongClickListener,
             GoogleMap.OnMarkerClickListener,
             GoogleMap.OnMarkerDragListener,
@@ -79,10 +79,10 @@ class GoogleMapView(
         this.googleMap = googleMap.apply {
             enabledMyLocationIfAllowed(true)
 
-            setOnMapLongClickListener(interactionListener)
-            setOnMarkerClickListener(interactionListener)
-            setOnMarkerDragListener(interactionListener)
-            setOnInfoWindowClickListener(interactionListener)
+            setOnMapLongClickListener(interactionCallback)
+            setOnMarkerClickListener(interactionCallback)
+            setOnMarkerDragListener(interactionCallback)
+            setOnInfoWindowClickListener(interactionCallback)
         }
         this.mapReady = true
         this.currentLocation?.let { moveCameraTo(location = it) }
