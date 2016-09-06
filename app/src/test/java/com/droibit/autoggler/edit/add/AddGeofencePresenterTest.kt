@@ -86,7 +86,7 @@ class AddGeofencePresenterTest {
         presenter.subscribe()
 
         verify(getCurrentLocationTask).asObservable()
-        verify(view).showLocation(mockLocation)
+        verify(view).setLocation(mockLocation)
         verify(view, never()).showErrorToast(0)
     }
 
@@ -99,7 +99,7 @@ class AddGeofencePresenterTest {
 
         verify(getCurrentLocationTask).asObservable()
         verify(view).showErrorToast(R.string.add_geofence_get_current_location_failed)
-        verify(view, never()).showLocation(any())
+        verify(view, never()).setLocation(any<LatLng>())
     }
 
     @Test
@@ -191,6 +191,28 @@ class AddGeofencePresenterTest {
             presenter.onMarkerInfoWindowClicked()
             verify(view, never()).showEditDialog(any())
         }
+    }
+
+    @Test
+    fun onMarkerDropped_showInfoWindow() {
+        val mockInternal: zzf = mock()
+        whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+
+        val marker = Marker(mockInternal)
+        presenter.onMarkerDropped(marker)
+
+        verify(view).showMarkerInfoWindow(marker)
+    }
+
+    @Test
+    fun onMarkerDropped_shouldMoveMarkerPosition() {
+        val mockInternal: zzf = mock()
+        whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+
+        val marker = Marker(mockInternal)
+        presenter.onMarkerDropped(marker)
+
+        verify(view).setLocation(marker.position)
     }
 
     @Test
@@ -310,7 +332,8 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onPrepareDragMode_hideDoneButton() {
-        presenter.onPrepareDragMode()
+        val marker = Marker(mock())
+        presenter.onPrepareDragMode(marker)
 
         verify(view).hideDoneButton()
         verify(view, never()).showDoneButton()
@@ -318,10 +341,25 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onFinishedDragMode_showDoneButton() {
-        presenter.onFinishedDragMode()
+        val mockInternal: zzf = mock()
+        whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+
+        val marker = Marker(mockInternal)
+        presenter.onFinishedDragMode(marker)
 
         verify(view).showDoneButton()
         verify(view, never()).hideDoneButton()
+    }
+
+    @Test
+    fun onFinishedDragMode_shouldMoveMarkerPosition() {
+        val mockInternal: zzf = mock()
+        whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+
+        val marker = Marker(mockInternal)
+        presenter.onFinishedDragMode(marker)
+
+        verify(view).setLocation(marker.position)
     }
 
     @Test

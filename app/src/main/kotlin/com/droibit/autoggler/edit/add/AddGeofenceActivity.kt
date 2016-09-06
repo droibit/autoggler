@@ -237,14 +237,14 @@ class AddGeofenceActivity : AppCompatActivity(),
         compositeGeometry?.let {
             it.circle.center = it.marker.position
             it.circle.isVisible = true
-        }
+        } ?: throw IllegalStateException("Not exist #compositeGeometry")
     }
 
     override fun hideGeofenceCircle() {
         compositeGeometry?.let {
             it.circle.center = it.marker.position
             it.circle.isVisible = false
-        }
+        } ?: throw IllegalStateException("Not exist #compositeGeometry")
     }
 
     override fun setGeofenceRadius(radius: Double) {
@@ -305,11 +305,13 @@ class AddGeofenceActivity : AppCompatActivity(),
     // MoveActionMode.Callback
 
     override fun onPrepareDragMode() {
-        presenter.onPrepareDragMode()
+        compositeGeometry?.let { presenter.onPrepareDragMode(it.marker) }
+                ?: throw IllegalStateException("Not exist #compositeGeometry")
     }
 
     override fun onFinishedDragMode() {
-        presenter.onFinishedDragMode()
+        compositeGeometry?.let { presenter.onFinishedDragMode(it.marker) }
+                ?: throw IllegalStateException("Not exist #compositeGeometry")
     }
 
     // private

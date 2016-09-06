@@ -83,9 +83,9 @@ interface AddGeofenceContract {
 
         fun onMarkerDragEnd()
 
-        fun onPrepareDragMode()
+        fun onPrepareDragMode(marker: Marker)
 
-        fun onFinishedDragMode()
+        fun onFinishedDragMode(marker: Marker)
 
         fun onDoneButtonClicked()
 

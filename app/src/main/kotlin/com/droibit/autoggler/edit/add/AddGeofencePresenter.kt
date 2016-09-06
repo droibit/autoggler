@@ -51,6 +51,11 @@ class AddGeofencePresenter(
         }
     }
 
+    override fun onMarkerDropped(marker: Marker) {
+        view.showMarkerInfoWindow(marker)
+        view.setLocation(marker.position)
+    }
+
     override fun onMarkerClicked(marker: Marker) {
         if (view.isDragActionModeShown()) {
             return
@@ -77,12 +82,13 @@ class AddGeofencePresenter(
         view.showGeofenceCircle()
     }
 
-    override fun onPrepareDragMode() {
+    override fun onPrepareDragMode(marker: Marker) {
         view.hideDoneButton()
     }
 
-    override fun onFinishedDragMode() {
+    override fun onFinishedDragMode(marker: Marker) {
         view.showDoneButton()
+        view.setLocation(marker.position)
     }
 
     override fun onDoneButtonClicked() {
@@ -142,7 +148,7 @@ class AddGeofencePresenter(
 
         // FIXME: After enable Location, called twice.
         if (location != null) {
-            view.showLocation(location)
+            view.setLocation(location)
         } else {
             view.showErrorToast(msgId = R.string.add_geofence_get_current_location_failed)
         }
