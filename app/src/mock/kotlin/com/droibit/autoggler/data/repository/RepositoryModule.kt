@@ -1,8 +1,7 @@
 package com.droibit.autoggler.data.repository
 
 import android.content.Context
-import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
-import com.droibit.autoggler.data.repository.geofence.GeofenceRepositoryImpl
+import com.droibit.autoggler.data.repository.geofence.*
 import com.droibit.autoggler.data.repository.location.LocationRepository
 import com.droibit.autoggler.data.repository.location.Mock
 import com.droibit.autoggler.data.repository.source.db.AutoIncrementor
@@ -26,13 +25,40 @@ fun repositoryModule() = Kodein.Module {
                 .build()
     }
 
-    bind<RealmProvider>() with singleton { RealmProviderImpl(instance()) }
+    bind<RealmProvider>() with singleton { RealmProviderImpl(config = instance()) }
 
     bind<AutoIncrementor>("geofence") with singleton { AutoIncrementor(COLUMN_ID) }
 
     bind<GeofenceRepository>() with singleton {
-        GeofenceRepositoryImpl(instance(), instance("geofence")).apply {
+        GeofenceRepositoryImpl(realmProvider = instance(), autoIncrementor = instance("geofence")).apply {
             _deleteGeofences()
+            listOf(
+                    Geofence(name = "テスト",
+                            enabled = true,
+                            circle = Circle(35.7121228, 139.7740507, 500.0),
+                            toggle = Toggle()
+                    ),
+                    Geofence(name = "テスト",
+                            enabled = false,
+                            circle = Circle(35.3121228, 139.7740507, 500.0),
+                            toggle = Toggle()
+                    ),
+                    Geofence(name = "テスト",
+                            enabled = true,
+                            circle = Circle(35.4121228, 139.7740507, 500.0),
+                            toggle = Toggle()
+                    ),
+                    Geofence(name = "テスト",
+                            enabled = true,
+                            circle = Circle(35.5121228, 139.7740507, 500.0),
+                            toggle = Toggle()
+                    ),
+                    Geofence(name = "テスト",
+                            enabled = false,
+                            circle = Circle(35.6121228, 139.7740507, 500.0),
+                            toggle = Toggle()
+                    )
+            ).forEach { addGeofence(name = it.name, circle = it.circle, toggle = it.toggle) }
         }
     }
 

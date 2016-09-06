@@ -52,6 +52,7 @@ class GeofencesPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         { geofence ->
+                            Timber.d("Delete successful: ${geofence.id}")
                             view.hideGeofence(geofence)
                         },
                         { e ->
@@ -59,6 +60,7 @@ class GeofencesPresenter(
                             view.showGeofenceErrorToast()
                         }
                 )
+        // TODO: need addTo(subscriptions) ...?
     }
 
     @VisibleForTesting
@@ -72,9 +74,10 @@ class GeofencesPresenter(
                             } else {
                                 view.showNoGeofences()
                             }
+                            Timber.d("Loaded geofence count: ${geofences.size}")
                         },
                         { e ->
-                            Timber.d(e, "Load Gefence:")
+                            Timber.d(e, "Load geofence:")
                             view.showNoGeofences()
                         }
                 ).addTo(subscriptions)

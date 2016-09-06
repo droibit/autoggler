@@ -11,9 +11,7 @@ import android.view.View
 import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
-import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.data.repository.geofence.Toggle
 import com.droibit.autoggler.edit.add.AddGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.github.droibit.chopstick.bindView
@@ -39,7 +37,7 @@ class GeofencesActivity : AppCompatActivity(),
 
     private val geometryProvider: GeometryProvider by injector.instance()
 
-    private val recyclerView: RecyclerView by bindView(R.id.list)
+    private val geofencesView: RecyclerView by bindView(R.id.list)
 
     private val activityLauncher: RxActivityLauncher by injector.instance()
 
@@ -47,7 +45,7 @@ class GeofencesActivity : AppCompatActivity(),
 
     private val fab: FloatingActionButton by bindView(R.id.fab)
 
-    private lateinit var listAdapter: GeofencesAdapter
+    private lateinit var geofenceAdapter: GeofenceAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +73,7 @@ class GeofencesActivity : AppCompatActivity(),
                 .subscribe {  }
         }
 
-        listAdapter = GeofencesAdapter(this, geometryProvider).apply {
+        geofenceAdapter = GeofenceAdapter(this, geometryProvider).apply {
             itemClickListener = { geofence ->
                 Toast.makeText(this@GeofencesActivity, "$geofence", Toast.LENGTH_SHORT).show()
             }
@@ -84,44 +82,21 @@ class GeofencesActivity : AppCompatActivity(),
             }
         }
 
-        recyclerView.apply {
+        geofencesView.apply {
             layoutManager = LinearLayoutManager(this@GeofencesActivity)
-            adapter = listAdapter
+            adapter = geofenceAdapter
             setHasFixedSize(true)
         }
+    }
 
-        listAdapter.addAll(
-                Geofence(id = 1L,
-                        name = "テスト",
-                        enabled = true,
-                        circle = Circle(35.7121228, 139.7740507, 500.0),
-                        toggle = Toggle()
-                ),
-                Geofence(id = 2L,
-                        name = "テスト",
-                        enabled = false,
-                        circle = Circle(35.3121228, 139.7740507, 500.0),
-                        toggle = Toggle()
-                ),
-                Geofence(id = 3L,
-                        name = "テスト",
-                        enabled = true,
-                        circle = Circle(35.4121228, 139.7740507, 500.0),
-                        toggle = Toggle()
-                ),
-                Geofence(id = 4L,
-                        name = "テスト",
-                        enabled = true,
-                        circle = Circle(35.5121228, 139.7740507, 500.0),
-                        toggle = Toggle()
-                ),
-                Geofence(id = 5L,
-                        name = "テスト",
-                        enabled = false,
-                        circle = Circle(35.6121228, 139.7740507, 500.0),
-                        toggle = Toggle()
-                )
-        )
+    override fun onResume() {
+        super.onResume()
+        presenter.subscribe()
+    }
+
+    override fun onPause() {
+        presenter.unsubscribe()
+        super.onPause()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -137,11 +112,15 @@ class GeofencesActivity : AppCompatActivity(),
     // GeofencesContract.View
 
     override fun showGeofences(geofences: List<Geofence>) {
-        TODO()
+        emptyView.visibility = View.GONE
+        geofencesView.visibility = View.VISIBLE
+        geofenceAdapter.addAll(geofences)
     }
 
     override fun showNoGeofences() {
-        TODO()
+        emptyView.visibility = View.VISIBLE
+        geofencesView.visibility = View.GONE
+        geofenceAdapter.clear()
     }
 
     override fun hideGeofence(geofence: Geofence) {

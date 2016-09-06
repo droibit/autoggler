@@ -26,7 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import java.util.*
 import com.google.android.gms.maps.model.Circle as CircleGeometry
 
-class GeofencesAdapter(context: Context, private val geometryProvider: GeometryProvider) :
+class GeofenceAdapter(context: Context, private val geometryProvider: GeometryProvider) :
         RecyclerView.Adapter<ViewHolder>() {
 
     private val geofences = ArrayList<Geofence>()
@@ -55,9 +55,18 @@ class GeofencesAdapter(context: Context, private val geometryProvider: GeometryP
 
     override fun getItemCount() = geofences.size
 
-    fun addAll(vararg geofences: Geofence) {
+    fun addAll(geofences: List<Geofence>) {
+        if (this.geofences == geofences.toMutableList()) {
+            return
+        }
+
         this.geofences.clear()
         this.geofences.addAll(geofences)
+        this.notifyDataSetChanged()
+    }
+
+    fun clear() {
+        this.geofences.clear()
         this.notifyDataSetChanged()
     }
 }
