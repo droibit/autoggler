@@ -8,6 +8,7 @@ import com.droibit.autoggler.data.repository.location.UnavailableLocationExcepti
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import rx.Observable
+import rx.Single
 
 
 interface AddGeofenceContract {
@@ -113,5 +114,10 @@ interface AddGeofenceContract {
         fun requestLocation()
 
         fun asObservable(): Observable<GetCurrentLocationEvent>
+    }
+
+    interface RegisterTask {
+
+        fun register(geofence: Geofence): Single<Boolean>
     }
 }
