@@ -104,15 +104,15 @@ interface AddGeofenceContract {
 
     interface GetCurrentLocationTask {
 
-        sealed class Event {
-            class OnSuccess(val location: Location?) : Event()
-            class OnError(val exception: UnavailableLocationException) : Event()
-            object OnCompleted : Event()
+        sealed class GetCurrentLocationEvent {
+            class OnSuccess(val location: Location?) : GetCurrentLocationEvent()
+            class OnError(val exception: UnavailableLocationException) : GetCurrentLocationEvent()
+            object Nothing : GetCurrentLocationEvent()
         }
 
         fun requestLocation()
 
-        fun asObservable(): Observable<Event>
+        fun asObservable(): Observable<GetCurrentLocationEvent>
     }
 
     class UnavailableLocationException(

@@ -6,7 +6,7 @@ import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
 import com.droibit.autoggler.data.repository.location.LocationRepository
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent as Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.google.android.gms.common.api.CommonStatusCodes

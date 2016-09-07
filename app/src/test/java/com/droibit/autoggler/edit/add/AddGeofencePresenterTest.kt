@@ -8,7 +8,7 @@ import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.Toggle
 import com.droibit.autoggler.data.repository.location.AvailableStatus
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
@@ -80,7 +80,7 @@ class AddGeofencePresenterTest {
     @Test
     fun subscribe_onGotLocation() {
         val mockLocation: Location = mock()
-        val locationObservable = Event.OnSuccess(mockLocation)
+        val locationObservable = GetCurrentLocationEvent.OnSuccess(mockLocation)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
 
         presenter.subscribe()
@@ -92,7 +92,7 @@ class AddGeofencePresenterTest {
 
     @Test
     fun subscribe_onGotNullableLocation() {
-        val locationObservable = Event.OnSuccess(null)
+        val locationObservable = GetCurrentLocationEvent.OnSuccess(null)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
 
         presenter.subscribe()
@@ -105,7 +105,7 @@ class AddGeofencePresenterTest {
     @Test
     fun subscribe_onPermissionDenied() {
         val throwable = UnavailableLocationException(PERMISSION_DENIED)
-        val locationObservable = Event.OnError(throwable)
+        val locationObservable = GetCurrentLocationEvent.OnError(throwable)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
 
         presenter.subscribe()
@@ -121,7 +121,7 @@ class AddGeofencePresenterTest {
         whenever(mockStatus.isResolutionRequired).thenReturn(true)
 
         val throwable = UnavailableLocationException(RESOLUTION_REQUIRED, option = mockStatus)
-        val locationObservable = Event.OnError(throwable)
+        val locationObservable = GetCurrentLocationEvent.OnError(throwable)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
 
         presenter.subscribe()
@@ -136,7 +136,7 @@ class AddGeofencePresenterTest {
         whenever(mockStatus.isAvailable).thenReturn(false)
 
         val throwable = UnavailableLocationException(ERROR)
-        val locationObservable = Event.OnError(throwable)
+        val locationObservable = GetCurrentLocationEvent.OnError(throwable)
         whenever(getCurrentLocationTask.asObservable()).thenReturn(locationObservable.toSingletonObservable())
 
         presenter.subscribe()

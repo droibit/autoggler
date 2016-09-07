@@ -5,7 +5,7 @@ import android.location.Location
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.repository.location.LocationRepository
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent as Event
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.jakewharton.rxrelay.BehaviorRelay
@@ -22,8 +22,8 @@ class GetCurrentLocationTask(
         private val config: ApplicationConfig) : AddGeofenceContract.GetCurrentLocationTask {
 
     override fun asObservable(): Observable<Event> {
-        return relay.filter { it != Event.OnCompleted }
-                .doOnNext { relay.call(Event.OnCompleted) }
+        return relay.filter { it != Event.Nothing }
+                .doOnNext { relay.call(Event.Nothing) }
     }
 
     override fun requestLocation() {

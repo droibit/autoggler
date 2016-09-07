@@ -5,7 +5,8 @@ import android.location.Location
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.Event
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
 import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.google.android.gms.maps.model.LatLng
@@ -19,7 +20,7 @@ class AddGeofencePresenter(
         private val view: AddGeofenceContract.View,
         private val permissions: AddGeofenceContract.RuntimePermissions,
         private val navigator: AddGeofenceContract.Navigator,
-        private val getCurrentLocationTask: AddGeofenceContract.GetCurrentLocationTask,
+        private val getCurrentLocationTask: GetCurrentLocationTask,
         private val permissionChecker: RuntimePermissionChecker,
         private val subscriptions: CompositeSubscription,
         private val geofence: Geofence) : AddGeofenceContract.Presenter {
@@ -137,8 +138,8 @@ class AddGeofencePresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { event ->
                     when (event) {
-                        is Event.OnSuccess -> onCurrentLocationSuccess(event.location)
-                        is Event.OnError -> onCurrentLocationError(event.exception)
+                        is GetCurrentLocationEvent.OnSuccess -> onCurrentLocationSuccess(event.location)
+                        is GetCurrentLocationEvent.OnError -> onCurrentLocationError(event.exception)
                     }
                 }.addTo(subscriptions)
     }
