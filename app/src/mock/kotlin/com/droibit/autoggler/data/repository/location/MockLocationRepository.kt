@@ -4,9 +4,9 @@ import android.location.Location
 import com.google.android.gms.common.api.CommonStatusCodes.*
 import com.google.android.gms.common.api.Status
 
-object Mock {
+object MockLocationRepository {
 
-    class LocationRepositoryImpl : LocationRepository {
+    class Success : LocationRepository {
         override fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location? {
             return Location("mock").apply {
                 latitude = 35.681298
@@ -19,7 +19,7 @@ object Mock {
         }
     }
 
-    class NullLocationRepository : LocationRepository {
+    class NullLocation : LocationRepository {
 
         override fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location? = null
 
@@ -28,7 +28,7 @@ object Mock {
         }
     }
 
-    class NotAvailableLocationRepository : LocationRepository {
+    class NotAvailableLocation : LocationRepository {
 
         override fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location? = null
 

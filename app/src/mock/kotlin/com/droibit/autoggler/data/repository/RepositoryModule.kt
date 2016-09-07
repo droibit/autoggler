@@ -3,7 +3,7 @@ package com.droibit.autoggler.data.repository
 import android.content.Context
 import com.droibit.autoggler.data.repository.geofence.*
 import com.droibit.autoggler.data.repository.location.LocationRepository
-import com.droibit.autoggler.data.repository.location.Mock
+import com.droibit.autoggler.data.repository.location.MockLocationRepository
 import com.droibit.autoggler.data.repository.source.db.AutoIncrementor
 import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
 import com.droibit.autoggler.data.repository.source.db.RealmProvider
@@ -62,7 +62,9 @@ fun repositoryModule() = Kodein.Module {
         }
     }
 
-    bind<LocationRepository>() with singleton { Mock.LocationRepositoryImpl() }
+    bind<GeofencingRepository>() with singleton { MockGeofencingRepository.Success() }
+
+    bind<LocationRepository>() with singleton { MockLocationRepository.Success() }
 
     bind<CompositeSubscription>() with provider { CompositeSubscription() }
 }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.v4.content.ContextCompat
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Circle
-import com.droibit.autoggler.data.repository.geofence.latLng
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED
 import com.google.android.gms.maps.model.CircleOptions

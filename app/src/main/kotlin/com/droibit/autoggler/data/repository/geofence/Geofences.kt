@@ -14,6 +14,9 @@ open class Circle(
         open var radius: Double = 0.0
 ) : RealmModel, Serializable, Cloneable {
 
+    val latLng: LatLng
+        get() = LatLng(lat, lng)
+
     override fun toString(): String {
         return "Circle(lat=$lat, lng=$lng, radius=$radius)"
     }
@@ -121,6 +124,3 @@ open class Geofence(
         return result
     }
 }
-
-val Circle.latLng: LatLng
-    get() = LatLng(lat, lng)

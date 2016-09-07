@@ -16,7 +16,6 @@ import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.data.repository.geofence.latLng
 import com.droibit.autoggler.geofences.GeofencesContract.GeofenceMenuItem
 import com.github.droibit.chopstick.bindView
 import com.google.android.gms.maps.CameraUpdateFactory
