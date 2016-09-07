@@ -5,15 +5,15 @@ import android.location.Location
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.repository.location.LocationRepository
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent as Event
-import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
-import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
+import com.droibit.autoggler.data.repository.location.UnavailableLocationException
+import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
 import com.jakewharton.rxrelay.BehaviorRelay
 import rx.Observable
 import rx.Single
 import rx.lang.kotlin.single
 import rx.schedulers.Schedulers
 import timber.log.Timber
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent as Event
 
 class GetCurrentLocationTask(
         private val relay: BehaviorRelay<Event>,

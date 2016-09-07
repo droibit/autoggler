@@ -6,8 +6,8 @@ import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.repository.location.LocationAvailableStatus
 import com.droibit.autoggler.data.repository.location.LocationRepository
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent as Event
-import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
+import com.droibit.autoggler.data.repository.location.UnavailableLocationException
+import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
@@ -22,6 +22,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import rx.observers.TestSubscriber
+import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent as Event
 
 class GetCurrentLocationTaskTest {
 
@@ -85,7 +86,7 @@ class GetCurrentLocationTaskTest {
     @Test
     fun asObservable_ignoreSameEvent() {
         val onSuccessEvent = Event.OnSuccess(mock())
-        val onErrorEvent = Event.OnError(AddGeofenceContract.UnavailableLocationException(ERROR))
+        val onErrorEvent = Event.OnError(UnavailableLocationException(ERROR))
 
         // First time
         run {

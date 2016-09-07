@@ -8,9 +8,9 @@ import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.Toggle
 import com.droibit.autoggler.data.repository.location.AvailableStatus
+import com.droibit.autoggler.data.repository.location.UnavailableLocationException
+import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
-import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException
-import com.droibit.autoggler.edit.add.AddGeofenceContract.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
