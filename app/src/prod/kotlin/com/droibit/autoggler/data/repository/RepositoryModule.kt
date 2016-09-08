@@ -3,6 +3,8 @@ package com.droibit.autoggler.data.repository
 import android.content.Context
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepository
 import com.droibit.autoggler.data.repository.geofence.GeofenceRepositoryImpl
+import com.droibit.autoggler.data.repository.geofence.GeofencingRepository
+import com.droibit.autoggler.data.repository.geofence.GeofencingRepositoryImpl
 import com.droibit.autoggler.data.repository.location.LocationRepository
 import com.droibit.autoggler.data.repository.location.LocationRepositoryImpl
 import com.droibit.autoggler.data.repository.source.api.GoogleApiProvider
@@ -37,6 +39,8 @@ fun repositoryModule() = Kodein.Module {
             _deleteGeofences()
         }
     }
+
+    bind<GeofencingRepository>() with singleton { GeofencingRepositoryImpl() }
 
     bind<GoogleApiProvider>() with singleton { GoogleApiProviderImpl(instance()) }
 
