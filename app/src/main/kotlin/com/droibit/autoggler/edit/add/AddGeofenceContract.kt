@@ -116,7 +116,7 @@ interface AddGeofenceContract {
         fun asObservable(): Observable<GetCurrentLocationEvent>
     }
 
-    interface RegisterTask {
+    interface RegisterGeofencingTask {
 
         fun register(geofence: Geofence): Single<Boolean>
     }

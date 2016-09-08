@@ -9,9 +9,9 @@ import com.droibit.autoggler.data.repository.location.UnavailableLocationExcepti
 import rx.Single
 import rx.lang.kotlin.single
 
-class RegisterTask(
+class RegisterGeofencingTask(
         private val geofencingRepository: GeofencingRepository,
-        private val permissionChecker: RuntimePermissionChecker) : AddGeofenceContract.RegisterTask {
+        private val permissionChecker: RuntimePermissionChecker) : AddGeofenceContract.RegisterGeofencingTask {
 
     override fun register(geofence: Geofence): Single<Boolean> {
         return single { subscriber ->

@@ -16,7 +16,7 @@ import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import rx.observers.TestSubscriber
 
-class RegisterTaskTest {
+class RegisterGeofencingTaskTest {
 
     @Rule
     @JvmField
@@ -32,11 +32,11 @@ class RegisterTaskTest {
     @Mock
     lateinit var permissionChecker: RuntimePermissionChecker
 
-    lateinit var task: RegisterTask
+    lateinit var task: RegisterGeofencingTask
 
     @Before
     fun setUp() {
-        task = RegisterTask(
+        task = RegisterGeofencingTask(
                 geofencingRepository,
                 permissionChecker
         )

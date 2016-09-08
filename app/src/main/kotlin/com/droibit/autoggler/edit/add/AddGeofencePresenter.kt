@@ -20,7 +20,7 @@ class AddGeofencePresenter(
         private val view: AddGeofenceContract.View,
         private val permissions: AddGeofenceContract.RuntimePermissions,
         private val navigator: AddGeofenceContract.Navigator,
-        private val getCurrentLocationTask: GetCurrentLocationTask,
+        private val getCurrentLocationTask: AddGeofenceContract.GetCurrentLocationTask,
         private val permissionChecker: RuntimePermissionChecker,
         private val subscriptions: CompositeSubscription,
         private val geofence: Geofence) : AddGeofenceContract.Presenter {
@@ -147,7 +147,6 @@ class AddGeofencePresenter(
     private fun onCurrentLocationSuccess(location: Location?) {
         Timber.d("onCurrentLocationSuccess($location)")
 
-        // FIXME: After enable Location, called twice.
         if (location != null) {
             view.setLocation(location)
         } else {
