@@ -21,6 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
+import rx.Single
 import rx.lang.kotlin.toSingletonObservable
 import rx.subscriptions.CompositeSubscription
 
@@ -47,6 +48,9 @@ class AddGeofencePresenterTest {
     lateinit var getCurrentLocationTask: AddGeofenceContract.GetCurrentLocationTask
 
     @Mock
+    lateinit var registerGeofencingTask: AddGeofenceContract.RegisterGeofencingTask
+
+    @Mock
     lateinit var permissionChecker: RuntimePermissionChecker
 
     @Mock
@@ -64,6 +68,7 @@ class AddGeofencePresenterTest {
                 permissions,
                 navigator,
                 getCurrentLocationTask,
+                registerGeofencingTask,
                 permissionChecker,
                 subscriptions,
                 geofence
@@ -396,6 +401,27 @@ class AddGeofencePresenterTest {
         presenter.onGeofenceUpdated(updatedGeofence)
 
         verify(view).setGeofenceRadius(updatedGeofence.radius)
+    }
+
+    @Test
+    fun onDoneButtonClicked_registerGeofencing() {
+        whenever(view.canRegisterGeofencing()).thenReturn(true)
+        whenever(registerGeofencingTask.register(any())).thenReturn(Single.just(true))
+
+        presenter.onDoneButtonClicked()
+
+        verify(registerGeofencingTask).register(geofence)
+        verify(view, never()).showErrorToast(any())
+    }
+
+    @Test
+    fun onDoneButtonClicked_showErrorToast() {
+        whenever(view.canRegisterGeofencing()).thenReturn(false)
+
+        presenter.onDoneButtonClicked()
+
+        verify(view).showErrorToast(R.string.add_geofence_not_yet_add_marker)
+        verify(registerGeofencingTask, never()).register(any())
     }
 
     // Navigator

@@ -15,6 +15,8 @@ interface AddGeofenceContract {
 
     interface View {
 
+        fun canRegisterGeofencing(): Boolean
+
         fun canDropMarker(): Boolean
 
         fun dropMarker(point: LatLng)
@@ -55,6 +57,8 @@ interface AddGeofenceContract {
         fun showLocationResolutionDialog(status: AvailableStatus)
 
         fun navigationToUp()
+
+        fun finish(result: Geofence)
     }
 
     interface RuntimePermissions {
@@ -88,9 +92,9 @@ interface AddGeofenceContract {
 
         fun onFinishedDragMode(marker: Marker)
 
-        fun onDoneButtonClicked()
-
         fun onGeofenceUpdated(updated: Geofence)
+
+        fun onDoneButtonClicked()
 
         // Navigator
 

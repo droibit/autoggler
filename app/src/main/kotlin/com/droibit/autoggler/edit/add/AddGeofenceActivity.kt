@@ -17,6 +17,7 @@ import com.droibit.autoggler.data.provider.rx.castIf
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
+import com.droibit.autoggler.edit.EditGeofenceContract.Companion.EXTRA_GEOFENCE
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
 import com.droibit.autoggler.utils.intent
 import com.droibit.autoggler.utils.showShortToast
@@ -169,6 +170,10 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.View
 
+    override fun canRegisterGeofencing(): Boolean {
+        return compositeGeometry != null
+    }
+
     override fun canDropMarker(): Boolean {
         return compositeGeometry == null
     }
@@ -268,6 +273,10 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun navigationToUp() {
         finish()
+    }
+
+    override fun finish(result: Geofence) {
+        setResult(RESULT_OK, Intent().apply { putExtra(EXTRA_GEOFENCE, result) })
     }
 
     // AddGeofenceContract.RuntimePermission

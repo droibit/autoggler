@@ -16,4 +16,6 @@
     <string name="edit_geofence_dialog_label_toggle_list">設定</string>
     <string name="edit_geofence_dialog_title">編集</string>
     <string name="update">更新</string>
+    <string name="delete">削除</string>
+    <string name="add_geofence_not_yet_add_marker">地図を長押しすると新しいエリアを追加することができます</string>
 </resources>

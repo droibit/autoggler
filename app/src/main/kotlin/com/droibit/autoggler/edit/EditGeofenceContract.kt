@@ -8,6 +8,10 @@ import com.droibit.autoggler.data.repository.geofence.Geofence
 
 interface EditGeofenceContract {
 
+    companion object {
+        val EXTRA_GEOFENCE = "EXTRA_GEOFENCE"
+    }
+
     enum class ToggleItemRes(@DrawableRes val icon: Int, @StringRes val text: Int) {
         WIFI(
                 icon = R.drawable.ic_toggle_wifi_enabled,

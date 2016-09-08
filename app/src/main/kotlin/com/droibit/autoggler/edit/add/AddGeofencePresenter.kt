@@ -21,6 +21,7 @@ class AddGeofencePresenter(
         private val permissions: AddGeofenceContract.RuntimePermissions,
         private val navigator: AddGeofenceContract.Navigator,
         private val getCurrentLocationTask: AddGeofenceContract.GetCurrentLocationTask,
+        private val registerGeofencingTask: AddGeofenceContract.RegisterGeofencingTask,
         private val permissionChecker: RuntimePermissionChecker,
         private val subscriptions: CompositeSubscription,
         private val geofence: Geofence) : AddGeofenceContract.Presenter {
@@ -92,10 +93,6 @@ class AddGeofencePresenter(
         view.setLocation(marker.position)
     }
 
-    override fun onDoneButtonClicked() {
-        TODO()
-    }
-
     override fun onGeofenceUpdated(updated: Geofence) {
         geofence.apply {
             name = updated.name
@@ -104,6 +101,20 @@ class AddGeofencePresenter(
         }
         view.setMarkerInfoWindow(title = updated.name, snippet = null)
         view.setGeofenceRadius(updated.radius)
+    }
+
+    override fun onDoneButtonClicked() {
+        if (!view.canRegisterGeofencing()) {
+            view.showErrorToast(R.string.add_geofence_not_yet_add_marker)
+            return
+        }
+
+        registerGeofencingTask.register(geofence)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                    { v -> onRegisterGeofencingResult(registered = v) },
+                    { e -> onRegisterGeofencingError(e as UnavailableLocationException)}
+            )
     }
 
     // Navigator
@@ -130,6 +141,8 @@ class AddGeofencePresenter(
             view.showErrorToast(R.string.add_geofence_get_current_location_error)
         }
     }
+
+    // Private
 
     private fun subscribeCurrentLocation() {
         Timber.d("subscribeCurrentLocation")
@@ -162,5 +175,13 @@ class AddGeofencePresenter(
             RESOLUTION_REQUIRED -> navigator.showLocationResolutionDialog(checkNotNull(e.option))
             ERROR -> view.showErrorToast(msgId = R.string.add_geofence_get_current_location_error)
         }
+    }
+
+    private fun onRegisterGeofencingResult(registered: Boolean) {
+        Timber.d("onRegisterGeofencingResult($registered)")
+    }
+
+    private fun onRegisterGeofencingError(e: UnavailableLocationException) {
+        Timber.d("onRegisterGeofencingError(${e.status})")
     }
 }

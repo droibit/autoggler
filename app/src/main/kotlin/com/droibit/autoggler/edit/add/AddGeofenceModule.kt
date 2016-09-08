@@ -36,12 +36,20 @@ fun addGeofenceModule(
         )
     }
 
+    bind<AddGeofenceContract.RegisterGeofencingTask>() with provider {
+        RegisterGeofencingTask(
+                geofencingRepository = instance(),
+                permissionChecker = instance()
+        )
+    }
+
     bind<AddGeofenceContract.Presenter>() with provider {
         AddGeofencePresenter(
                 view = instance(),
                 permissions = instance(),
                 navigator = instance(),
                 getCurrentLocationTask = instance(),
+                registerGeofencingTask = instance(),
                 permissionChecker = instance(),
                 subscriptions = instance(),
                 geofence = instance()
