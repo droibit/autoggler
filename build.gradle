@@ -13,7 +13,7 @@ buildscript {
         rxKotlinVersion = '0.60.0'
         rxAndroidVersion = '1.2.1'
         rxRelayVersion = '1.1.0'
-        rxactivitylauncherVersion = '0.4.1'
+        rxActivitylauncherVersion = '0.4.1'
         kodeinAndroidVersion = '3.0.0'
         timberVersion = '4.3.0'
         chopsticksVersion = '0.4.1'
