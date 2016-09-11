@@ -1,9 +1,7 @@
 package com.droibit.autoggler.edit.add
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import com.droibit.autoggler.R
-import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.geofence.Toggle
@@ -11,6 +9,7 @@ import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -51,9 +50,6 @@ class AddGeofencePresenterTest {
     lateinit var registerGeofencingTask: AddGeofenceContract.RegisterGeofencingTask
 
     @Mock
-    lateinit var permissionChecker: RuntimePermissionChecker
-
-    @Mock
     lateinit var geofence: Geofence
 
     lateinit var subscriptions: CompositeSubscription
@@ -69,7 +65,6 @@ class AddGeofencePresenterTest {
                 navigator,
                 getCurrentLocationTask,
                 registerGeofencingTask,
-                permissionChecker,
                 subscriptions,
                 geofence
         )
@@ -116,7 +111,7 @@ class AddGeofencePresenterTest {
         presenter.subscribe()
 
         verify(getCurrentLocationTask).asObservable()
-        verify(permissions).requestPermissions(ACCESS_FINE_LOCATION)
+        verify(permissions).requestLocationPermission(usage = GET_LOCATION)
     }
 
     @Test
@@ -452,11 +447,8 @@ class AddGeofencePresenterTest {
     // RuntimePermission
 
     @Test
-    fun onRequestPermissionsResult_requestLocation() {
-        val grantResults = intArrayOf(1)
-        whenever(permissionChecker.isPermissionsGranted(*grantResults)).thenReturn(true)
-
-        presenter.onRequestPermissionsResult(grantResults)
+    fun onLocationPermissionsResult_requestLocation() {
+        presenter.onLocationPermissionsResult(usage = GET_LOCATION, granted = true)
 
         verify(getCurrentLocationTask).requestLocation()
         verify(view).enableMyLocationButton(true)
@@ -464,11 +456,8 @@ class AddGeofencePresenterTest {
     }
 
     @Test
-    fun onRequestPermissionsResult_showErrorToast() {
-        val grantResults = intArrayOf(0)
-        whenever(permissionChecker.isPermissionsGranted(*grantResults)).thenReturn(false)
-
-        presenter.onRequestPermissionsResult(grantResults)
+    fun onLocationPermissionsResult_showErrorToast() {
+        presenter.onLocationPermissionsResult(usage = GET_LOCATION, granted = false)
 
         verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
         verify(view, never()).enableMyLocationButton(true)

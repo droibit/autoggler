@@ -1,8 +1,11 @@
 package com.droibit.autoggler.edit.add
 
+import android.app.Activity
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
+import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
@@ -24,6 +27,10 @@ fun addGeofenceModule(
     bind<Geofence>() with instance(initialGeofence)
 
     bind<RxActivityLauncher>() with provider { RxActivityLauncher() }
+
+    bind<RxRuntimePermissions>() with provider { RxRuntimePermissions() }
+
+    bind<PendingRuntimePermissions>() with provider { PendingRuntimePermissions(instance()) }
 
     bind<BehaviorRelay<GetCurrentLocationEvent>>() with provider { BehaviorRelay.create<GetCurrentLocationEvent>() }
 
@@ -50,7 +57,6 @@ fun addGeofenceModule(
                 navigator = instance(),
                 getCurrentLocationTask = instance(),
                 registerGeofencingTask = instance(),
-                permissionChecker = instance(),
                 subscriptions = instance(),
                 geofence = instance()
         )

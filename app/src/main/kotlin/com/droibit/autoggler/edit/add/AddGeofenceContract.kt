@@ -63,7 +63,12 @@ interface AddGeofenceContract {
 
     interface RuntimePermissions {
 
-        fun requestPermissions(vararg permissions: String)
+        enum class Usage(val requestCode: Int) {
+            GET_LOCATION(requestCode = 1),
+            GEOFENCING(requestCode = 2)
+        }
+
+        fun requestLocationPermission(usage: RuntimePermissions.Usage)
     }
 
     interface Presenter {
@@ -104,7 +109,7 @@ interface AddGeofenceContract {
 
         // RuntimePermissions
 
-        fun onRequestPermissionsResult(grantResults: IntArray)
+        fun onLocationPermissionsResult(usage: RuntimePermissions.Usage, granted: Boolean)
     }
 
     interface GetCurrentLocationTask {

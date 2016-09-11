@@ -1,14 +1,13 @@
 package com.droibit.autoggler.edit.add
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import com.droibit.autoggler.R
-import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
-import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import rx.android.schedulers.AndroidSchedulers
@@ -22,7 +21,6 @@ class AddGeofencePresenter(
         private val navigator: AddGeofenceContract.Navigator,
         private val getCurrentLocationTask: AddGeofenceContract.GetCurrentLocationTask,
         private val registerGeofencingTask: AddGeofenceContract.RegisterGeofencingTask,
-        private val permissionChecker: RuntimePermissionChecker,
         private val subscriptions: CompositeSubscription,
         private val geofence: Geofence) : AddGeofenceContract.Presenter {
 
@@ -110,11 +108,11 @@ class AddGeofencePresenter(
         }
 
         registerGeofencingTask.register(geofence)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                    { v -> onRegisterGeofencingResult(registered = v) },
-                    { e -> onRegisterGeofencingError(e as UnavailableLocationException)}
-            )
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { v -> onRegisterGeofencingResult(registered = v) },
+                        { e -> onRegisterGeofencingError(e as UnavailableLocationException) }
+                )
     }
 
     // Navigator
@@ -133,13 +131,24 @@ class AddGeofencePresenter(
 
     // RuntimePermissions
 
-    override fun onRequestPermissionsResult(grantResults: IntArray) {
-        if (permissionChecker.isPermissionsGranted(*grantResults)) {
+    override fun onLocationPermissionsResult(usage: RuntimePermissions.Usage, granted: Boolean) {
+        when (usage) {
+            RuntimePermissions.Usage.GET_LOCATION -> onLocationPermissionsResultForGetLocation(granted)
+            RuntimePermissions.Usage.GEOFENCING -> onLocationPermissionsResultForGeofencing(granted)
+        }
+    }
+
+    private fun onLocationPermissionsResultForGetLocation(granted: Boolean) {
+        if (granted) {
             view.enableMyLocationButton(true)
             getCurrentLocationTask.requestLocation()
         } else {
             view.showErrorToast(R.string.add_geofence_get_current_location_error)
         }
+    }
+
+    fun onLocationPermissionsResultForGeofencing(granted: Boolean) {
+
     }
 
     // Private
@@ -171,7 +180,7 @@ class AddGeofencePresenter(
         Timber.d("onCurrentLocationError(${e.status})")
 
         when (e.status) {
-            PERMISSION_DENIED -> permissions.requestPermissions(ACCESS_FINE_LOCATION)
+            PERMISSION_DENIED -> permissions.requestLocationPermission(usage = GET_LOCATION)
             RESOLUTION_REQUIRED -> navigator.showLocationResolutionDialog(checkNotNull(e.option))
             ERROR -> view.showErrorToast(msgId = R.string.add_geofence_get_current_location_error)
         }

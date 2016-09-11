@@ -99,6 +99,7 @@ dependencies {
 
     compile "com.jakewharton.rxrelay:rxrelay:$rxRelayVersion"
     compile "com.github.droibit:rxactivitylauncher:$rxActivitylauncherVersion"
+    compile "com.github.droibit:rxruntimepermissions:$rxRuntimePermissionsVersion"
 
     compile "com.github.frankiesardo:linearlistview:$linearListViewVersion"
     compile "com.jakewharton.timber:timber:$timberVersion"

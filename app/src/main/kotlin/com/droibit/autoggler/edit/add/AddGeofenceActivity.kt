@@ -1,12 +1,12 @@
 package com.droibit.autoggler.edit.add
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.droibit.autoggler.R
@@ -19,12 +19,16 @@ import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
 import com.droibit.autoggler.edit.EditGeofenceContract.Companion.EXTRA_GEOFENCE
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GEOFENCING
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
 import com.droibit.autoggler.utils.intent
 import com.droibit.autoggler.utils.showShortToast
 import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
+import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
 import com.google.android.gms.maps.MapView
@@ -46,8 +50,6 @@ class AddGeofenceActivity : AppCompatActivity(),
     companion object {
 
         @JvmStatic
-        private val REQUEST_PERMISSION_ACCESS_LOCATION = 0
-        @JvmStatic
         private val REQUEST_LOCATION_RESOLUTION = 0
 
         @JvmStatic
@@ -61,15 +63,19 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val presenter: AddGeofenceContract.Presenter by injector.instance()
 
-    private val activityLauncher: RxActivityLauncher by injector.instance()
-
     private val googleMapView: GoogleMapView by injector.instance()
 
     private val locationResolutionSource: LocationResolutionSource by injector.instance()
 
+    private val pendingGetLocationPermission: PendingRuntimePermissions by injector.instance()
+
     private val geometryProvider: GeometryProvider by injector.instance()
 
     private val dragActionMode: DragActionMode by injector.instance()
+
+    private val activityLauncher: RxActivityLauncher by injector.instance()
+
+    private val rxRuntimePermissions: RxRuntimePermissions by injector.instance()
 
     private val rxBus: RxBus by injector.instance()
 
@@ -104,16 +110,16 @@ class AddGeofenceActivity : AppCompatActivity(),
         googleMapView.onCreate(mapView, savedInstanceState)
 
         fab.apply {
+            PendingRuntimePermissions(this@AddGeofenceActivity).apply {
+                fab.tag = this
+                subscribeLocationPermission(usage = GEOFENCING, pendingPermissions = this)
+            }
             setOnClickListener { presenter.onDoneButtonClicked() }
         }
 
-        activityLauncher
-                .from { locationResolutionSource.startResolutionForResult() }
-                .on(locationResolutionSource.trigger)
-                .startActivityForResult(Intent(), REQUEST_LOCATION_RESOLUTION, null)
-                .subscribe {
-                    presenter.onLocationResolutionResult(it.isOk)
-                }
+        subscribeLocationPermission(usage = GET_LOCATION, pendingPermissions = pendingGetLocationPermission)
+
+        subscribeLocationResolution()
 
         // TODO: Review necessary
         if (savedInstanceState == null) {
@@ -127,11 +133,8 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        // TODO: Using RxJava
-        when (requestCode) {
-            REQUEST_PERMISSION_ACCESS_LOCATION -> presenter.onRequestPermissionsResult(grantResults)
-            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        rxRuntimePermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onResume() {
@@ -144,7 +147,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     override fun onPause() {
         googleMapView.onPause()
         presenter.unsubscribe()
-        subscriptions.unsubscribe()
+        subscriptions.clear()
         super.onPause()
     }
 
@@ -156,6 +159,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         googleMapView.onSaveInstanceState(outState)
+        // TODO: save current geofence
     }
 
     @SuppressWarnings("PrivateResource")
@@ -281,8 +285,13 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.RuntimePermission
 
-    override fun requestPermissions(vararg permissions: String) {
-        ActivityCompat.requestPermissions(this, permissions, REQUEST_PERMISSION_ACCESS_LOCATION)
+    override fun requestLocationPermission(usage: Usage) {
+        @Suppress("UNCHECKED_CAST")
+        val pendingPermission = when (usage) {
+            GET_LOCATION -> pendingGetLocationPermission
+            GEOFENCING -> fab.tag as PendingRuntimePermissions
+        }
+        pendingPermission.trigger.call(null)
     }
 
     // GoogleMapView.Callback
@@ -334,5 +343,25 @@ class AddGeofenceActivity : AppCompatActivity(),
                         is EditGeofenceEvent.OnUpdate -> presenter.onGeofenceUpdated(updated = event.geofence)
                     }
                 }.addTo(subscriptions)
+    }
+
+    private fun subscribeLocationPermission(usage: Usage, pendingPermissions: PendingRuntimePermissions) {
+        rxRuntimePermissions
+                .from(pendingPermissions.source)
+                .on(pendingPermissions.trigger)
+                .requestPermissions(usage.requestCode, ACCESS_FINE_LOCATION)
+                .subscribe {
+                    presenter.onLocationPermissionsResult(usage, granted = it)
+                }
+    }
+
+    private fun subscribeLocationResolution() {
+        activityLauncher
+                .from { locationResolutionSource.startResolutionForResult() }
+                .on(locationResolutionSource.trigger)
+                .startActivityForResult(Intent(), REQUEST_LOCATION_RESOLUTION, null)
+                .subscribe {
+                    presenter.onLocationResolutionResult(it.isOk)
+                }
     }
 }
