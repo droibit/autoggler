@@ -73,7 +73,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val dragActionMode: DragActionMode by injector.instance()
 
-    private val activityLauncher: RxActivityLauncher by injector.instance()
+    private val rxActivityLauncher: RxActivityLauncher by injector.instance()
 
     private val rxRuntimePermissions: RxRuntimePermissions by injector.instance()
 
@@ -129,7 +129,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        activityLauncher.onActivityResult(requestCode, resultCode, data)
+        rxActivityLauncher.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -356,7 +356,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     private fun subscribeLocationResolution() {
-        activityLauncher
+        rxActivityLauncher
                 .from { locationResolutionSource.startResolutionForResult() }
                 .on(locationResolutionSource.trigger)
                 .startActivityForResult(Intent(), REQUEST_LOCATION_RESOLUTION, null)

@@ -139,6 +139,8 @@ class AddGeofencePresenter(
     }
 
     private fun onLocationPermissionsResultForGetLocation(granted: Boolean) {
+        Timber.d("onLocationPermissionsResultForGetLocation($granted)")
+
         if (granted) {
             view.enableMyLocationButton(true)
             getCurrentLocationTask.requestLocation()
@@ -148,7 +150,7 @@ class AddGeofencePresenter(
     }
 
     fun onLocationPermissionsResultForGeofencing(granted: Boolean) {
-
+        Timber.d("onLocationPermissionsResultForGeofencing($granted)")
     }
 
     // Private
