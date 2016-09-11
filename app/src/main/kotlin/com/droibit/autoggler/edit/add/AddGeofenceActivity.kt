@@ -174,7 +174,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.View
 
-    override fun canRegisterGeofencing(): Boolean {
+    override fun hasGeofenceGeometory(): Boolean {
         return compositeGeometry != null
     }
 
@@ -234,6 +234,10 @@ class AddGeofenceActivity : AppCompatActivity(),
         googleMapView.updateMyLocation(location)
     }
 
+    override fun setDoneButtonEnabled(enabled: Boolean) {
+        fab.isEnabled = enabled
+    }
+
     override fun showDoneButton() {
         fab.show()
     }
@@ -266,6 +270,10 @@ class AddGeofenceActivity : AppCompatActivity(),
         showShortToast(msgId)
     }
 
+    override fun showLocationPermissionRationaleSnackbar() {
+        TODO()
+    }
+
     // AddGeofenceContract.Navigator
 
     override fun showLocationResolutionDialog(status: AvailableStatus) {
@@ -280,7 +288,9 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun finish(result: Geofence) {
+        Timber.d("finish($result)")
         setResult(RESULT_OK, Intent().apply { putExtra(EXTRA_GEOFENCE, result) })
+        finish()
     }
 
     // AddGeofenceContract.RuntimePermission

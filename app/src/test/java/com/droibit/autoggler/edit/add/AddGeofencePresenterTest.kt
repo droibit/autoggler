@@ -9,6 +9,7 @@ import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
 import com.google.android.gms.maps.model.LatLng
@@ -400,23 +401,41 @@ class AddGeofencePresenterTest {
 
     @Test
     fun onDoneButtonClicked_registerGeofencing() {
-        whenever(view.canRegisterGeofencing()).thenReturn(true)
+        whenever(view.hasGeofenceGeometory()).thenReturn(true)
+        whenever(geofence.name).thenReturn("test-1")
         whenever(registerGeofencingTask.register(any())).thenReturn(Single.just(true))
 
         presenter.onDoneButtonClicked()
 
         verify(registerGeofencingTask).register(geofence)
+        verify(view).setDoneButtonEnabled(false)
         verify(view, never()).showErrorToast(any())
     }
 
     @Test
     fun onDoneButtonClicked_showErrorToast() {
-        whenever(view.canRegisterGeofencing()).thenReturn(false)
+        run {
+            whenever(view.hasGeofenceGeometory()).thenReturn(false)
 
-        presenter.onDoneButtonClicked()
+            presenter.onDoneButtonClicked()
 
-        verify(view).showErrorToast(R.string.add_geofence_not_yet_add_marker)
-        verify(registerGeofencingTask, never()).register(any())
+            verify(view).showErrorToast(R.string.add_geofence_not_yet_add_marker)
+            verify(view, never()).showErrorToast(R.string.add_geofence_not_entered_name)
+            verify(registerGeofencingTask, never()).register(any())
+        }
+
+        reset(view, registerGeofencingTask)
+
+        run {
+            whenever(view.hasGeofenceGeometory()).thenReturn(true)
+            whenever(geofence.name).thenReturn("")
+
+            presenter.onDoneButtonClicked()
+
+            verify(view).showErrorToast(R.string.add_geofence_not_entered_name)
+            verify(view, never()).showErrorToast(R.string.add_geofence_not_yet_add_marker)
+            verify(registerGeofencingTask, never()).register(any())
+        }
     }
 
     // Navigator
@@ -462,5 +481,62 @@ class AddGeofencePresenterTest {
         verify(view).showErrorToast(R.string.add_geofence_get_current_location_error)
         verify(view, never()).enableMyLocationButton(true)
         verify(getCurrentLocationTask, never()).requestLocation()
+    }
+
+    @Test
+    fun onLocationPermissionsResult_registerGeofencing() {
+        whenever(view.hasGeofenceGeometory()).thenReturn(true)
+        whenever(registerGeofencingTask.register(any())).thenReturn(Single.just(true))
+
+        presenter.onLocationPermissionsResult(usage = GEOFENCING, granted = true)
+
+        verify(registerGeofencingTask).register(geofence)
+        verify(view, never()).showLocationPermissionRationaleSnackbar()
+    }
+
+    @Test
+    fun onLocationPermissionsResult_showLocationPermissionRationaleSnackbar() {
+        presenter.onLocationPermissionsResult(usage = GEOFENCING, granted = false)
+
+        verify(view).showLocationPermissionRationaleSnackbar()
+        verify(view).setDoneButtonEnabled(true)
+        verify(registerGeofencingTask, never()).register(geofence)
+    }
+
+    // internal
+
+    @Test
+    fun subscribeRegisterGeofencing_onSuccess() {
+        // register successful
+        run {
+            whenever(registerGeofencingTask.register(any())).thenReturn(Single.just(true))
+            presenter.subscribeRegisterGeofencing()
+
+            verify(navigator).finish(geofence)
+            verify(view, never()).showErrorToast(R.string.add_geofence_failed_register_geofence)
+        }
+
+        reset(view, navigator)
+
+        // register failed
+        run {
+            whenever(registerGeofencingTask.register(any())).thenReturn(Single.just(false))
+            presenter.subscribeRegisterGeofencing()
+
+            verify(view).showErrorToast(R.string.add_geofence_failed_register_geofence)
+            verify(view).setDoneButtonEnabled(true)
+            verify(navigator, never()).finish(any())
+        }
+    }
+
+    @Test
+    fun subscribeRegisterGeofencing_onError() {
+        // permission denied
+        val error: Single<Boolean> = Single.error(UnavailableLocationException(status = PERMISSION_DENIED))
+        whenever(registerGeofencingTask.register(any())).thenReturn(error)
+        presenter.subscribeRegisterGeofencing()
+
+        verify(permissions).requestLocationPermission(usage = GEOFENCING)
+        verify(view).setDoneButtonEnabled(true)
     }
 }

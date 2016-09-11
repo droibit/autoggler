@@ -1,12 +1,14 @@
 package com.droibit.autoggler.edit.add
 
 import android.location.Location
+import android.support.annotation.VisibleForTesting
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException
 import com.droibit.autoggler.data.repository.location.UnavailableLocationException.ErrorStatus.*
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions
+import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -102,17 +104,14 @@ class AddGeofencePresenter(
     }
 
     override fun onDoneButtonClicked() {
-        if (!view.canRegisterGeofencing()) {
-            view.showErrorToast(R.string.add_geofence_not_yet_add_marker)
-            return
+        when {
+            !view.hasGeofenceGeometory() -> view.showErrorToast(R.string.add_geofence_not_yet_add_marker)
+            geofence.name.isEmpty() -> view.showErrorToast(R.string.add_geofence_not_entered_name)
+            else -> {
+                view.setDoneButtonEnabled(false)
+                subscribeRegisterGeofencing()
+            }
         }
-
-        registerGeofencingTask.register(geofence)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { v -> onRegisterGeofencingResult(registered = v) },
-                        { e -> onRegisterGeofencingError(e as UnavailableLocationException) }
-                )
     }
 
     // Navigator
@@ -133,8 +132,8 @@ class AddGeofencePresenter(
 
     override fun onLocationPermissionsResult(usage: RuntimePermissions.Usage, granted: Boolean) {
         when (usage) {
-            RuntimePermissions.Usage.GET_LOCATION -> onLocationPermissionsResultForGetLocation(granted)
-            RuntimePermissions.Usage.GEOFENCING -> onLocationPermissionsResultForGeofencing(granted)
+            GET_LOCATION -> onLocationPermissionsResultForGetLocation(granted)
+            GEOFENCING -> onLocationPermissionsResultForGeofencing(granted)
         }
     }
 
@@ -151,6 +150,13 @@ class AddGeofencePresenter(
 
     fun onLocationPermissionsResultForGeofencing(granted: Boolean) {
         Timber.d("onLocationPermissionsResultForGeofencing($granted)")
+
+        if (granted) {
+            subscribeRegisterGeofencing()
+        } else {
+            view.setDoneButtonEnabled(true)
+            view.showLocationPermissionRationaleSnackbar()
+        }
     }
 
     // Private
@@ -188,11 +194,34 @@ class AddGeofencePresenter(
         }
     }
 
+    @VisibleForTesting
+    internal fun subscribeRegisterGeofencing() {
+        registerGeofencingTask.register(geofence)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { v -> onRegisterGeofencingResult(registered = v) },
+                        { e -> onRegisterGeofencingError(e as UnavailableLocationException) }
+                )
+    }
+
     private fun onRegisterGeofencingResult(registered: Boolean) {
         Timber.d("onRegisterGeofencingResult($registered)")
+
+        if (registered) {
+            navigator.finish(result = geofence)
+        } else {
+            view.setDoneButtonEnabled(true)
+            view.showErrorToast(R.string.add_geofence_failed_register_geofence)
+        }
     }
 
     private fun onRegisterGeofencingError(e: UnavailableLocationException) {
         Timber.d("onRegisterGeofencingError(${e.status})")
+
+        when (e.status) {
+            PERMISSION_DENIED -> permissions.requestLocationPermission(usage = GEOFENCING)
+            else -> IllegalArgumentException("Unknown error: ${e.status}")
+        }
+        view.setDoneButtonEnabled(true)
     }
 }

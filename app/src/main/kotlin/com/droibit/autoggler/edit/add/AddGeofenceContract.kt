@@ -15,7 +15,7 @@ interface AddGeofenceContract {
 
     interface View {
 
-        fun canRegisterGeofencing(): Boolean
+        fun hasGeofenceGeometory(): Boolean
 
         fun canDropMarker(): Boolean
 
@@ -39,6 +39,8 @@ interface AddGeofenceContract {
 
         fun setLocation(location: LatLng)
 
+        fun setDoneButtonEnabled(enabled: Boolean)
+
         fun showDoneButton()
 
         fun hideDoneButton()
@@ -50,6 +52,8 @@ interface AddGeofenceContract {
         fun setGeofenceRadius(radius: Double)
 
         fun showErrorToast(@StringRes msgId: Int)
+
+        fun showLocationPermissionRationaleSnackbar()
     }
 
     interface Navigator {
