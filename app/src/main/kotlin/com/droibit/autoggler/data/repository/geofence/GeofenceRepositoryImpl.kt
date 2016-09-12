@@ -1,20 +1,21 @@
 package com.droibit.autoggler.data.repository.geofence
 
 import android.support.annotation.WorkerThread
-import com.droibit.autoggler.data.repository.source.*
+import com.droibit.autoggler.data.provider.time.TimeProvider
 import com.droibit.autoggler.data.repository.source.db.*
 import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
-import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_NAME
+import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.CREATED_AT
 import io.realm.RealmObject
 
 class GeofenceRepositoryImpl(
         private val realmProvider: RealmProvider,
-        private val autoIncrementor: AutoIncrementor) : GeofenceRepository {
+        private val autoIncrementor: AutoIncrementor,
+        private val timeProvider: TimeProvider) : GeofenceRepository {
 
     @WorkerThread
     override fun loadGeofences(): List<Geofence> {
         return realmProvider.use { realm ->
-            val managedGeofences = realm.where<Geofence>().findAllSorted(COLUMN_NAME)
+            val managedGeofences = realm.where<Geofence>().findAllSorted(CREATED_AT)
             realm.copyFromRealm(managedGeofences)
         }
     }
@@ -40,6 +41,7 @@ class GeofenceRepositoryImpl(
                     this.circle = realm.copyToRealm(circle)
                     this.toggle = realm.copyToRealm(toggle)
                     this.enabled = true
+                    this.createdAt = timeProvider.currentTimeMillis
                 }
             }
             realm.copyFromRealm(managedGeofence)

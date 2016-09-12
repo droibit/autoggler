@@ -30,30 +30,33 @@ fun repositoryModule() = Kodein.Module {
     bind<AutoIncrementor>("geofence") with singleton { AutoIncrementor(COLUMN_ID) }
 
     bind<GeofenceRepository>() with singleton {
-        GeofenceRepositoryImpl(realmProvider = instance(), autoIncrementor = instance("geofence")).apply {
+        GeofenceRepositoryImpl(
+                realmProvider = instance(),
+                autoIncrementor = instance("geofence"),
+                timeProvider = instance()).apply {
             _deleteGeofences()
             listOf(
-                    Geofence(name = "テスト",
+                    Geofence(name = "テスト1",
                             enabled = true,
                             circle = Circle(35.7121228, 139.7740507, 500.0),
                             toggle = Toggle()
                     ),
-                    Geofence(name = "テスト",
+                    Geofence(name = "テスト2",
                             enabled = false,
                             circle = Circle(35.3121228, 139.7740507, 500.0),
                             toggle = Toggle()
                     ),
-                    Geofence(name = "テスト",
+                    Geofence(name = "テスト3",
                             enabled = true,
                             circle = Circle(35.4121228, 139.7740507, 500.0),
                             toggle = Toggle()
                     ),
-                    Geofence(name = "テスト",
+                    Geofence(name = "テスト4",
                             enabled = true,
                             circle = Circle(35.5121228, 139.7740507, 500.0),
                             toggle = Toggle()
                     ),
-                    Geofence(name = "テスト",
+                    Geofence(name = "テスト5",
                             enabled = false,
                             circle = Circle(35.6121228, 139.7740507, 500.0),
                             toggle = Toggle()

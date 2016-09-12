@@ -89,7 +89,8 @@ open class Geofence(
         @Required open var name: String = "",
         open var enabled: Boolean = true,
         open var circle: Circle = Circle(),
-        open var toggle: Toggle = Toggle()
+        open var toggle: Toggle = Toggle(),
+        open var createdAt: Long = 0L
 ) : RealmModel, Serializable {
 
     val radius: Double
@@ -98,11 +99,11 @@ open class Geofence(
     val latLong: LatLng
         get() = circle.latLng
 
-    override fun toString(): String {
-        return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, toggle=$toggle)"
+    override fun toString(): String{
+        return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, toggle=$toggle, createdAt=$createdAt)"
     }
 
-    override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean{
         if (this === other) return true
         if (other !is Geofence) return false
 
@@ -111,16 +112,18 @@ open class Geofence(
         if (enabled != other.enabled) return false
         if (circle != other.circle) return false
         if (toggle != other.toggle) return false
+        if (createdAt != other.createdAt) return false
 
         return true
     }
 
-    override fun hashCode(): Int {
+    override fun hashCode(): Int{
         var result = id.hashCode()
         result = 31 * result + name.hashCode()
         result = 31 * result + enabled.hashCode()
         result = 31 * result + circle.hashCode()
         result = 31 * result + toggle.hashCode()
+        result = 31 * result + createdAt.hashCode()
         return result
     }
 }

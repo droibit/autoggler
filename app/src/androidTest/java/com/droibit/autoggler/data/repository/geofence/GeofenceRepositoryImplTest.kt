@@ -2,9 +2,12 @@ package com.droibit.autoggler.data.repository.geofence
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import com.droibit.autoggler.data.provider.time.TimeProvider
 import com.droibit.autoggler.data.repository.source.TestRealmProvider
 import com.droibit.autoggler.data.repository.source.db.AutoIncrementor
 import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -29,11 +32,14 @@ class GeofenceRepositoryImplTest {
 
     private lateinit var repository: GeofenceRepositoryImpl
 
+    private lateinit var timeProvider: TimeProvider
+
     @Before
     fun setUp() {
         realmProvider = TestRealmProvider(context)
         autoIncrementor = AutoIncrementor(COLUMN_ID)
-        repository = GeofenceRepositoryImpl(realmProvider, autoIncrementor)
+        timeProvider = mock()
+        repository = GeofenceRepositoryImpl(realmProvider, autoIncrementor, timeProvider)
     }
 
     @After
@@ -48,12 +54,15 @@ class GeofenceRepositoryImplTest {
                 toggle = Toggle(wifi = true, vibration = false)
         )
         val expectName = "test"
+        val expectCreatedAt = 1L
+        whenever(timeProvider.currentTimeMillis).thenReturn(expectCreatedAt)
 
         val actual = repository.addGeofence(expectName, expect.circle, expect.toggle)
         assertThat(actual.id).isEqualTo(1L)
         assertThat(actual.name).isEqualTo(expectName)
         assertThat(actual.circle).isEqualTo(expect.circle)
         assertThat(actual.toggle).isEqualTo(expect.toggle)
+        assertThat(actual.createdAt).isEqualTo(expectCreatedAt)
     }
 
     @Test
@@ -62,6 +71,8 @@ class GeofenceRepositoryImplTest {
                 circle = Circle(1.0, 2.0, 3.0),
                 toggle = Toggle(wifi = true, vibration = false)
         )
+        whenever(timeProvider.currentTimeMillis).thenReturn(1L)
+
         val addedGeofence = repository.addGeofence("test", newGeofence.circle, newGeofence.toggle)
         assertThat(addedGeofence).isNotNull()
 
@@ -93,6 +104,8 @@ class GeofenceRepositoryImplTest {
         )
 
         expectGeofences.forEachIndexed { i, expect ->
+            whenever(timeProvider.currentTimeMillis).thenReturn((i+1).toLong())
+
             val actual = repository.addGeofence("test-$i", expect.circle, expect.toggle)
             assertThat(actual).isNotNull()
         }
@@ -121,6 +134,8 @@ class GeofenceRepositoryImplTest {
                 circle = Circle(1.0, 2.0, 3.0),
                 toggle = Toggle(wifi = true, vibration = false)
         )
+        whenever(timeProvider.currentTimeMillis).thenReturn(1L)
+
         val addedGeofence = repository.addGeofence("test", newGeofence.circle, newGeofence.toggle)
         assertThat(addedGeofence).isNotNull()
 
