@@ -77,6 +77,8 @@ class GeofenceRepositoryImpl(
         realmProvider.use { realm ->
             realm.executeTransaction {
                 realm.delete<Geofence>()
+                realm.delete<Circle>()
+                realm.delete<Toggle>()
             }
         }
     }
