@@ -35,7 +35,11 @@ fun repositoryModule() = Kodein.Module {
     bind<AutoIncrementor>("geofence") with singleton { AutoIncrementor(COLUMN_ID) }
 
     bind<GeofenceRepository>() with singleton {
-        GeofenceRepositoryImpl(instance(), instance("geofence")).apply {
+        GeofenceRepositoryImpl(
+                realmProvider = instance(),
+                autoIncrementor = instance("geofence"),
+                timeProvider = instance()).apply {
+            // FIXME:
             _deleteGeofences()
         }
     }
