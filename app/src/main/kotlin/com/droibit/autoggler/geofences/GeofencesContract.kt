@@ -82,4 +82,9 @@ interface GeofencesContract {
 
         fun deleteGeofence(targetId: Long): Single<Geofence>
     }
+
+    sealed class EditGeofenceEvent(val geofence: Geofence) {
+        class OnAdd(geofence: Geofence) : EditGeofenceEvent(geofence)
+        class OnUpdate(geofence: Geofence) : EditGeofenceEvent(geofence)
+    }
 }

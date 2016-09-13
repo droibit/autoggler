@@ -55,7 +55,7 @@ class GeofencesPresenterTest {
             whenever(mockList.isEmpty()).thenReturn(false)
             whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
 
-            presenter.loadGeofences()
+            presenter.onCreate()
 
             verify(view).showGeofences(mockList)
             verify(view, never()).showNoGeofences()
@@ -69,7 +69,7 @@ class GeofencesPresenterTest {
             whenever(mockList.isEmpty()).thenReturn(true)
             whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
 
-            presenter.loadGeofences()
+            presenter.onCreate()
 
             verify(view).showNoGeofences()
             verify(view, never()).showGeofences(anyList())
@@ -82,7 +82,7 @@ class GeofencesPresenterTest {
             val error: Single<List<Geofence>> = Single.error(RealmException(""))
             whenever(loadTask.loadGeofences()).thenReturn(error)
 
-            presenter.loadGeofences()
+            presenter.onCreate()
 
             verify(view).showNoGeofences()
             verify(view, never()).showGeofences(anyList())
