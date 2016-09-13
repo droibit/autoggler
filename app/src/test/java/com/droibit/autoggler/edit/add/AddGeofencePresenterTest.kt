@@ -198,6 +198,7 @@ class AddGeofencePresenterTest {
     fun onMarkerDropped_showInfoWindow() {
         val mockInternal: zzf = mock()
         whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+        doNothing().whenever(geofence).latlng(any())
 
         val marker = Marker(mockInternal)
         presenter.onMarkerDropped(marker)
@@ -206,9 +207,23 @@ class AddGeofencePresenterTest {
     }
 
     @Test
+    fun onMarkerDropped_updateGeofenceLocation() {
+        val mockInternal: zzf = mock()
+        val expectLatLng = LatLng(1.0, 2.0)
+        whenever(mockInternal.position).thenReturn(expectLatLng)
+        doNothing().whenever(geofence).latlng(any())
+
+        val marker = Marker(mockInternal)
+        presenter.onMarkerDropped(marker)
+
+        verify(geofence).latlng(expectLatLng)
+    }
+
+    @Test
     fun onMarkerDropped_shouldMoveMarkerPosition() {
         val mockInternal: zzf = mock()
         whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+        doNothing().whenever(geofence).latlng(any())
 
         val marker = Marker(mockInternal)
         presenter.onMarkerDropped(marker)
@@ -344,6 +359,7 @@ class AddGeofencePresenterTest {
     fun onFinishedDragMode_showDoneButton() {
         val mockInternal: zzf = mock()
         whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+        doNothing().whenever(geofence).latlng(any())
 
         val marker = Marker(mockInternal)
         presenter.onFinishedDragMode(marker)
@@ -353,9 +369,23 @@ class AddGeofencePresenterTest {
     }
 
     @Test
+    fun onFinishedDragMode_updateGeofenceLocation() {
+        val mockInternal: zzf = mock()
+        val expectLatLng = LatLng(1.0, 2.0)
+        whenever(mockInternal.position).thenReturn(expectLatLng)
+        doNothing().whenever(geofence).latlng(any())
+
+        val marker = Marker(mockInternal)
+        presenter.onMarkerDropped(marker)
+
+        verify(geofence).latlng(expectLatLng)
+    }
+
+    @Test
     fun onFinishedDragMode_shouldMoveMarkerPosition() {
         val mockInternal: zzf = mock()
         whenever(mockInternal.position).thenReturn(LatLng(1.0, 2.0))
+        doNothing().whenever(geofence).latlng(any())
 
         val marker = Marker(mockInternal)
         presenter.onFinishedDragMode(marker)

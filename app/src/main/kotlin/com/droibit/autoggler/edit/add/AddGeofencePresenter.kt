@@ -56,6 +56,8 @@ class AddGeofencePresenter(
     override fun onMarkerDropped(marker: Marker) {
         view.showMarkerInfoWindow(marker)
         view.setLocation(marker.position)
+
+        geofence.latlng(marker.position)
     }
 
     override fun onMarkerClicked(marker: Marker) {
@@ -91,6 +93,8 @@ class AddGeofencePresenter(
     override fun onFinishedDragMode(marker: Marker) {
         view.showDoneButton()
         view.setLocation(marker.position)
+
+        geofence.latlng(marker.position)
     }
 
     override fun onGeofenceUpdated(updated: Geofence) {

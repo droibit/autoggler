@@ -99,6 +99,14 @@ open class Geofence(
     val latLong: LatLng
         get() = circle.latLng
 
+    // TODO: setter
+    open fun latlng(latLng: LatLng) {
+        circle.apply {
+            lat = latLng.latitude
+            lng = latLng.longitude
+        }
+    }
+
     override fun toString(): String{
         return "Geofence(id=$id, name='$name', enabled=$enabled, circle=$circle, toggle=$toggle, createdAt=$createdAt)"
     }
