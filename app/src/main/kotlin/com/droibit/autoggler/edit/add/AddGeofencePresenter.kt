@@ -215,6 +215,7 @@ class AddGeofencePresenter(
         }
     }
 
+    // TODO: Add validation error
     private fun onRegisterGeofencingError(e: UnavailableLocationException) {
         Timber.d("onRegisterGeofencingError(${e.status})")
 

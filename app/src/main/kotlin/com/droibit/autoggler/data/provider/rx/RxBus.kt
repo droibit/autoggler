@@ -16,6 +16,3 @@ class RxBus {
 
     fun call(value: Any) = subject.call(value)
 }
-
-inline fun <reified R : Any> Observable<*>.castIf(): Observable<R>
-        = filter { it is R }.cast(R::class.java)

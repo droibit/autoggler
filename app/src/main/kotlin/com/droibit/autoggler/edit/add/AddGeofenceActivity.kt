@@ -13,7 +13,6 @@ import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.provider.rx.RxBus
-import com.droibit.autoggler.data.provider.rx.castIf
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
 import com.droibit.autoggler.edit.*
@@ -271,7 +270,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun showLocationPermissionRationaleSnackbar() {
-        TODO()
+        //TODO()
     }
 
     // AddGeofenceContract.Navigator
@@ -346,8 +345,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private fun subscribeEditGeofence() {
         rxBus.asObservable()
-                .castIf<EditGeofenceEvent>()
-                .observeOn(AndroidSchedulers.mainThread())
+                .ofType(EditGeofenceEvent::class.java)
                 .subscribe { event ->
                     when (event) {
                         is EditGeofenceEvent.OnUpdate -> presenter.onGeofenceUpdated(updated = event.geofence)
