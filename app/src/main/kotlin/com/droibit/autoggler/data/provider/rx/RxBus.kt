@@ -11,7 +11,7 @@ class RxBus {
 
     fun asObservable(): Observable<Any> {
         return subject.filter { it != Nothing }
-                .doOnSubscribe { subject.call(Nothing) }
+                .doOnNext { subject.call(Nothing) }
     }
 
     fun call(value: Any) = subject.call(value)
