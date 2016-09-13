@@ -1,5 +1,6 @@
 package com.droibit.autoggler.geofences
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
@@ -12,6 +13,7 @@ import android.widget.Toast
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.edit.EditGeofenceContract.Companion.EXTRA_GEOFENCE
 import com.droibit.autoggler.edit.add.AddGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.github.droibit.chopstick.bindView
@@ -39,7 +41,7 @@ class GeofencesActivity : AppCompatActivity(),
 
     private val geofencesView: RecyclerView by bindView(R.id.list)
 
-    private val activityLauncher: RxActivityLauncher by injector.instance()
+    private val rxActivityLauncher: RxActivityLauncher by injector.instance()
 
     private val emptyView: View by bindView(R.id.empty)
 
@@ -54,18 +56,20 @@ class GeofencesActivity : AppCompatActivity(),
         injector.inject(Kodein {
             extend(appKodein())
 
-            import(geofencesModule(
-                    view = this@GeofencesActivity,
-                    navigator = this@GeofencesActivity
-            ))
+            val self = this@GeofencesActivity
+            import(geofencesModule(view = self, navigator = self))
         })
 
         fab.apply {
             val intent = AddGeofenceActivity.createIntent(this@GeofencesActivity)
-            activityLauncher.from(this@GeofencesActivity)
-                .on(PublishRelay.create<Any>().apply { fab.tag = this })
-                .startActivityForResult(intent, REQUEST_ADD_GEOFENCE, null)
-                .subscribe {  }
+            rxActivityLauncher.from(this@GeofencesActivity)
+                    .on(PublishRelay.create<Any>().apply { fab.tag = this })
+                    .startActivityForResult(intent, REQUEST_ADD_GEOFENCE, null)
+                    .subscribe {
+                        val geofence = it.data?.getSerializableExtra(EXTRA_GEOFENCE) as? Geofence
+                                ?: throw IllegalStateException("Not exist EXTRA_GEOFENCE")
+                        presenter.onAddGeofenceResult(newGeofence = geofence)
+                    }
 
             setOnClickListener { presenter.onGeofenceAddButtonClicked() }
         }
@@ -84,6 +88,13 @@ class GeofencesActivity : AppCompatActivity(),
             adapter = geofenceAdapter
             setHasFixedSize(true)
         }
+
+        presenter.onCreate()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        rxActivityLauncher.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onResume() {
@@ -118,6 +129,12 @@ class GeofencesActivity : AppCompatActivity(),
         emptyView.visibility = View.VISIBLE
         geofencesView.visibility = View.GONE
         geofenceAdapter.clear()
+    }
+
+    override fun showGeofence(geofence: Geofence) {
+        emptyView.visibility = View.GONE
+        geofencesView.visibility = View.VISIBLE
+        geofenceAdapter.add(geofence)
     }
 
     override fun hideGeofence(geofence: Geofence) {

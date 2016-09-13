@@ -30,6 +30,8 @@ interface GeofencesContract {
 
         fun showNoGeofences()
 
+        fun showGeofence(geofence: Geofence)
+
         fun hideGeofence(geofence: Geofence)
 
         fun showDeleteConfirmDialog(targetId: Long)
@@ -50,6 +52,8 @@ interface GeofencesContract {
 
     interface Presenter {
 
+        fun onCreate()
+
         fun subscribe()
 
         fun unsubscribe()
@@ -63,6 +67,10 @@ interface GeofencesContract {
         fun onGeofenceMenuItemSelected(menuItem: GeofenceMenuItem, targetId: Long)
 
         fun onDeleteConfirmDialogOkClicked(targetId: Long)
+
+        // Navigator
+
+        fun onAddGeofenceResult(newGeofence: Geofence)
     }
 
     interface LoadTask {

@@ -47,8 +47,46 @@ class GeofencesPresenterTest {
         presenter = GeofencesPresenter(view, navigator, loadTask, deleteTask, subscriptions)
     }
 
-    //@Test
-    fun subscribe() {
+    @Test
+    fun onCreate_loadGeofence() {
+        // Returned geofences
+        run {
+            val mockList: List<Geofence> = mock()
+            whenever(mockList.isEmpty()).thenReturn(false)
+            whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
+
+            presenter.loadGeofences()
+
+            verify(view).showGeofences(mockList)
+            verify(view, never()).showNoGeofences()
+        }
+
+        reset(view)
+
+        // Returned empty geofences
+        run {
+            val mockList: List<Geofence> = mock()
+            whenever(mockList.isEmpty()).thenReturn(true)
+            whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
+
+            presenter.loadGeofences()
+
+            verify(view).showNoGeofences()
+            verify(view, never()).showGeofences(anyList())
+        }
+
+        reset(view)
+
+        // error occur
+        run {
+            val error: Single<List<Geofence>> = Single.error(RealmException(""))
+            whenever(loadTask.loadGeofences()).thenReturn(error)
+
+            presenter.loadGeofences()
+
+            verify(view).showNoGeofences()
+            verify(view, never()).showGeofences(anyList())
+        }
     }
 
     @Test
@@ -119,44 +157,10 @@ class GeofencesPresenterTest {
     }
 
     @Test
-    fun loadGeofences_showGeofences() {
-        // Returned geofences
-        run {
-            val mockList: List<Geofence> = mock()
-            whenever(mockList.isEmpty()).thenReturn(false)
-            whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
+    fun onAddGeofenceResult_showGeofence() {
+        val geofence: Geofence = mock()
+        presenter.onAddGeofenceResult(geofence)
 
-            presenter.loadGeofences()
-
-            verify(view).showGeofences(mockList)
-            verify(view, never()).showNoGeofences()
-        }
-
-        reset(view)
-
-        // Returned empty geofences
-        run {
-            val mockList: List<Geofence> = mock()
-            whenever(mockList.isEmpty()).thenReturn(true)
-            whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
-
-            presenter.loadGeofences()
-
-            verify(view).showNoGeofences()
-            verify(view, never()).showGeofences(anyList())
-        }
-
-        reset(view)
-
-        // error occur
-        run {
-            val error: Single<List<Geofence>> = Single.error(RealmException(""))
-            whenever(loadTask.loadGeofences()).thenReturn(error)
-
-            presenter.loadGeofences()
-
-            verify(view).showNoGeofences()
-            verify(view, never()).showGeofences(anyList())
-        }
+        verify(view).showGeofence(geofence)
     }
 }

@@ -64,9 +64,23 @@ class GeofenceAdapter(context: Context, private val geometryProvider: GeometryPr
         this.notifyDataSetChanged()
     }
 
+    fun add(geofence: Geofence) {
+        geofences.add(geofence)
+        notifyItemInserted(geofences.size-1)
+    }
+
+    fun remove(geofence: Geofence) {
+        val index = geofences.indexOfFirst { it.id == geofence.id }
+        if (index == -1) {
+            return
+        }
+        geofences.removeAt(index)
+        notifyItemRemoved(index)
+    }
+
     fun clear() {
-        this.geofences.clear()
-        this.notifyDataSetChanged()
+        geofences.clear()
+        notifyDataSetChanged()
     }
 }
 

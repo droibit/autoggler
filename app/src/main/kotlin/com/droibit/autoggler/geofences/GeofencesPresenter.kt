@@ -16,8 +16,11 @@ class GeofencesPresenter(
         private val deleteTask: GeofencesContract.DeleteTask,
         private val subscriptions: CompositeSubscription) : GeofencesContract.Presenter {
 
-    override fun subscribe() {
+    override fun onCreate() {
         loadGeofences()
+    }
+
+    override fun subscribe() {
     }
 
     override fun unsubscribe() {
@@ -63,23 +66,31 @@ class GeofencesPresenter(
         // TODO: need addTo(subscriptions) ...?
     }
 
-    @VisibleForTesting
-    internal fun loadGeofences() {
+    override fun onAddGeofenceResult(newGeofence: Geofence) {
+        Timber.d("onAddGeofenceResult($newGeofence)")
+        view.showGeofence(newGeofence)
+    }
+
+    private fun loadGeofences() {
         loadTask.loadGeofences()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { geofences ->
-                            if (geofences.isNotEmpty()) {
-                                view.showGeofences(geofences)
-                            } else {
-                                view.showNoGeofences()
-                            }
-                            Timber.d("Loaded geofence count: ${geofences.size}")
-                        },
-                        { e ->
-                            Timber.d(e, "Load geofence:")
-                            view.showNoGeofences()
-                        }
-                ).addTo(subscriptions)
+                        { v -> onLoadGeofencesSuccess(geofences = v) },
+                        { e -> onLoadGeofenceError(error = e) }
+                )
+    }
+
+    private fun onLoadGeofencesSuccess(geofences: List<Geofence>) {
+        if (geofences.isNotEmpty()) {
+            view.showGeofences(geofences)
+        } else {
+            view.showNoGeofences()
+        }
+        Timber.d("Loaded geofence count: ${geofences.size}")
+    }
+
+    private fun onLoadGeofenceError(error: Throwable) {
+        Timber.d(error, "Load geofence:")
+        view.showNoGeofences()
     }
 }
