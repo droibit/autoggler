@@ -30,7 +30,7 @@ class LocationRepositoryImpl(
     @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
     @WorkerThread
     override fun getCurrentLocation(maxLastLocationElapsedTimeMillis: Long, timeoutMillis: Long): Location? {
-        googleApiProvider.newLocationClient().use {
+        googleApiProvider.newClient().use {
             val connectionResult = blockingConnect(config.googleApiTimeoutMillis)
             if (!connectionResult.isSuccess) {
                 return null
@@ -52,7 +52,7 @@ class LocationRepositoryImpl(
     @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
     @WorkerThread
     override fun getLocationAvailableStatus(): AvailableStatus {
-        googleApiProvider.newLocationClient().use {
+        googleApiProvider.newClient().use {
             val connectionResult = blockingConnect(config.googleApiTimeoutMillis)
             if (!connectionResult.isSuccess) {
                 return LocationAvailableStatus(connectionResult)

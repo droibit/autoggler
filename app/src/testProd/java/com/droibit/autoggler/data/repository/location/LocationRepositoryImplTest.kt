@@ -51,7 +51,7 @@ class LocationRepositoryImplTest {
     @Test
     fun getCurrentLocation_connectGoogleApiFailed() {
         val mockClient: GoogleApiClient = mock()
-        whenever(googleApiProvider.newLocationClient()).thenReturn(mockClient)
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
         val connectionResult = ConnectionResult(CommonStatusCodes.ERROR)
         whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
@@ -68,7 +68,7 @@ class LocationRepositoryImplTest {
     @Test
     fun getCurrentLocation_shouldUseLastLocation() {
         val mockClient: GoogleApiClient = mock()
-        whenever(googleApiProvider.newLocationClient()).thenReturn(mockClient)
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
         val connectionResult = ConnectionResult(CommonStatusCodes.SUCCESS)
         whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
@@ -142,7 +142,7 @@ class LocationRepositoryImplTest {
     @Test
     fun getCurrentLocation_requestCurrentLocation() {
         val mockClient: GoogleApiClient = mock()
-        whenever(googleApiProvider.newLocationClient()).thenReturn(mockClient)
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
         val connectionResult = ConnectionResult(CommonStatusCodes.SUCCESS)
         whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)

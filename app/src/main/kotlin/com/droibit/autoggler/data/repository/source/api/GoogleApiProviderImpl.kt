@@ -15,7 +15,7 @@ class GoogleApiProviderImpl(private val context: Context) : GoogleApiProvider {
 
     override val geofencingApi = LocationServices.GeofencingApi
 
-    override fun newLocationClient(): GoogleApiClient {
+    override fun newClient(): GoogleApiClient {
         return GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .build()

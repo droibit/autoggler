@@ -13,7 +13,7 @@ interface GoogleApiProvider {
 
     val geofencingApi: GeofencingApi
 
-    fun newLocationClient(): GoogleApiClient
+    fun newClient(): GoogleApiClient
 
     fun newSyncLocationHolder(): SyncLocationHolder
 }
