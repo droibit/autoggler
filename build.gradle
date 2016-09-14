@@ -4,7 +4,7 @@ buildscript {
     ext {
         kotlinVersion = '1.0.3'
         realmVersion = '1.2.0'
-        supportLibraryVersion = '24.2.0'
+        supportLibraryVersion = '24.2.1'
         playServicesVersion = '9.2.1'
         firebaseVersion = '9.2.1'
         stethoVersion = '1.3.1'
@@ -25,7 +25,6 @@ buildscript {
         assertjAndroidVersion = '1.1.1'
         mockitoVersion = '2.0.42-beta'
         mockitoKotinVersion = '0.5.2'
-        espressoVersion = '2.2.2'
         supportTestRunnerVersion = '0.5'
     }
 
