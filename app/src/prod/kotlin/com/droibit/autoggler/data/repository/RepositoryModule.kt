@@ -14,6 +14,7 @@ import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContra
 import com.droibit.autoggler.data.repository.source.db.RealmProvider
 import com.droibit.autoggler.data.repository.source.db.RealmProvider.Companion.FILE_NAME
 import com.droibit.autoggler.data.repository.source.db.RealmProviderImpl
+import com.droibit.autoggler.geofencing.GeofencingIntentService
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
@@ -44,7 +45,13 @@ fun repositoryModule() = Kodein.Module {
         }
     }
 
-    bind<GeofencingRepository>() with singleton { GeofencingRepositoryImpl() }
+    bind<GeofencingRepository>() with singleton {
+        GeofencingRepositoryImpl(
+                config = instance(),
+                googleApiProvider = instance(),
+                intentCreator = { GeofencingIntentService.createIntent(context = instance(), id = it) }
+        )
+    }
 
     bind<GoogleApiProvider>() with singleton { GoogleApiProviderImpl(instance()) }
 
