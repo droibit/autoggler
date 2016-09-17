@@ -8,4 +8,11 @@ object MockGeofencingRepository {
 
         override fun unregister(geofence: Geofence) = true
     }
+
+    class Failed : GeofencingRepository {
+
+        override fun register(geofence: Geofence) = false
+
+        override fun unregister(geofence: Geofence) = false
+    }
 }
