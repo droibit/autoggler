@@ -11,6 +11,8 @@ import com.droibit.autoggler.data.repository.source.api.GoogleApiProvider
 import com.droibit.autoggler.data.repository.source.api.await
 import com.droibit.autoggler.data.repository.source.api.blockingConnect
 import com.droibit.autoggler.data.repository.source.api.use
+import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.Geofence.*
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.GeofencingRequest.INITIAL_TRIGGER_ENTER
@@ -32,10 +34,8 @@ class GeofencingRepositoryImpl(
                 return false
             }
 
-            val request = createGeofencingRequest(geofence)
-            val pendingIntent = PendingIntent.getService(context, 0, intentCreator(geofence.id), FLAG_UPDATE_CURRENT)
-            val statusResult = googleApiProvider.geofencingApi.addGeofences(this, request, pendingIntent)
-                    .await(config.googleApiTimeoutMillis)
+
+            val statusResult = addGeofence(client = this, geofence = geofence)
             Timber.d("addGeofences($geofence): ${statusResult.status}")
 
             return statusResult.isSuccess
@@ -50,17 +50,39 @@ class GeofencingRepositoryImpl(
                 return false
             }
 
-            val statusResult = googleApiProvider.geofencingApi.removeGeofences(this, singletonList("${geofence.id}"))
-                    .await(config.googleApiTimeoutMillis)
+            val statusResult = removeGeofence(client = this, geofence = geofence)
             Timber.d("removeGeofences($geofence): ${statusResult.status}")
 
             return statusResult.isSuccess
         }
     }
 
+    @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION))
+    override fun update(geofence: Geofence): Boolean {
+        googleApiProvider.newClient().use {
+            val connectionResult = blockingConnect(config.googleApiTimeoutMillis)
+            if (!connectionResult.isSuccess) {
+                Timber.d("Google api connect failed: ${connectionResult.status}")
+                return false
+            }
+
+            val removeResult = removeGeofence(client = this, geofence = geofence)
+            Timber.d("removeGeofences($geofence): ${removeResult.status}")
+
+            if (!removeResult.isSuccess) {
+                return false
+            }
+
+            val addResult = addGeofence(client = this, geofence = geofence)
+            Timber.d("addGeofences($geofence): ${addResult.status}")
+
+            return addResult.isSuccess
+        }
+    }
+
     @VisibleForTesting
     internal fun createGeofencingRequest(geofence: Geofence): GeofencingRequest {
-        val builder = GeofencingRequest.Builder().run {
+        val builder = GeofencingRequest.Builder().apply {
             val gmsGeofence = GmsGeofence.Builder()
                     .setRequestId("${geofence.id}")
                     .setTransitionTypes(GEOFENCE_TRANSITION_ENTER or GEOFENCE_TRANSITION_EXIT)
@@ -71,6 +93,18 @@ class GeofencingRepositoryImpl(
             setInitialTrigger(INITIAL_TRIGGER_ENTER)
         }
         return builder.build()
+    }
+
+    private fun addGeofence(client: GoogleApiClient, geofence: Geofence): Status {
+        val request = createGeofencingRequest(geofence)
+        val pendingIntent = PendingIntent.getService(client.context, 0, intentCreator(geofence.id), FLAG_UPDATE_CURRENT)
+        return googleApiProvider.geofencingApi.addGeofences(client, request, pendingIntent)
+                .await(config.googleApiTimeoutMillis)
+    }
+
+    private fun removeGeofence(client: GoogleApiClient, geofence: Geofence): Status {
+        return googleApiProvider.geofencingApi.removeGeofences(client, singletonList("${geofence.id}"))
+                .await(config.googleApiTimeoutMillis)
     }
 }
 

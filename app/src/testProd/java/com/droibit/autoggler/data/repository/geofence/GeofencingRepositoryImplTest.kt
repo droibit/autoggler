@@ -184,4 +184,9 @@ class GeofencingRepositoryImplTest {
             assertThat(longitude).isEqualTo(expectGeofence.circle.lng)
         }
     }
+
+    @Test
+    fun update() {
+        TODO()
+    }
 }
