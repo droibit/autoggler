@@ -42,7 +42,6 @@ class GeofencingRepositoryImpl(
         }
     }
 
-    @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION))
     override fun unregister(geofence: Geofence): Boolean {
         googleApiProvider.newClient().use {
             val connectionResult = blockingConnect(config.googleApiTimeoutMillis)

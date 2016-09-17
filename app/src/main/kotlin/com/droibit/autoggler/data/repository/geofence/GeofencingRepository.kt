@@ -11,7 +11,6 @@ interface GeofencingRepository {
     @WorkerThread
     fun register(geofence: Geofence): Boolean
 
-    @RequiresPermission(anyOf = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
     @WorkerThread
     fun unregister(geofence: Geofence): Boolean
 }
