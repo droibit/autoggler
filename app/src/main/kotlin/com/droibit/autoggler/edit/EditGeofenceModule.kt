@@ -2,6 +2,7 @@ package com.droibit.autoggler.edit
 
 import android.app.Activity
 import com.droibit.autoggler.data.provider.rx.RxBus
+import com.github.droibit.rxactivitylauncher.PendingLaunchAction
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
@@ -19,7 +20,7 @@ fun editGeofenceModule(activity: Activity, interactionCallback: GoogleMapView.Ca
         GoogleMapView(interactionCallback = instance(), bounceDropAnimator = instance(), permissionChecker = instance())
     }
 
-    bind<LocationResolutionSource>() with provider { LocationResolutionSource() }
+    bind<PendingLaunchAction>() with provider { PendingLaunchAction() }
 
     bind<BounceDropAnimator>() with provider { BounceDropAnimator(config = instance(), timeProvider = instance()) }
 

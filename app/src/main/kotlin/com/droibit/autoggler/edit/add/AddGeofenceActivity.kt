@@ -26,6 +26,7 @@ import com.droibit.autoggler.utils.showShortToast
 import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
+import com.github.droibit.rxactivitylauncher.PendingLaunchAction
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.*
@@ -33,7 +34,6 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import rx.android.schedulers.AndroidSchedulers
 import rx.lang.kotlin.addTo
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -64,7 +64,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val googleMapView: GoogleMapView by injector.instance()
 
-    private val locationResolutionSource: LocationResolutionSource by injector.instance()
+    private val pendingLocationResolution: PendingLaunchAction by injector.instance()
 
     private val pendingGetLocationPermission: PendingRuntimePermissions by injector.instance()
 
@@ -276,8 +276,8 @@ class AddGeofenceActivity : AppCompatActivity(),
     // AddGeofenceContract.Navigator
 
     override fun showLocationResolutionDialog(status: AvailableStatus) {
-        locationResolutionSource.prepareStartResolution {
-            Timber.d("prepareStartResolution")
+        pendingLocationResolution {
+            Timber.d("pendingLocationResolutionAction")
             status.startResolutionForResult(this@AddGeofenceActivity, REQUEST_LOCATION_RESOLUTION)
         }
     }
@@ -365,9 +365,8 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private fun subscribeLocationResolution() {
         rxActivityLauncher
-                .from { locationResolutionSource.startResolutionForResult() }
-                .on(locationResolutionSource.trigger)
-                .startActivityForResult(Intent(), REQUEST_LOCATION_RESOLUTION, null)
+                .from(pendingLocationResolution)
+                .startActivityForResult(REQUEST_LOCATION_RESOLUTION)
                 .subscribe {
                     presenter.onLocationResolutionResult(it.isOk)
                 }
