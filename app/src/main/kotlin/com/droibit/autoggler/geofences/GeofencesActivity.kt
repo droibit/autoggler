@@ -16,15 +16,19 @@ import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.EditGeofenceContract.Companion.EXTRA_GEOFENCE
 import com.droibit.autoggler.edit.add.AddGeofenceActivity
+import com.droibit.autoggler.edit.update.UpdateGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.EditGeofenceEvent
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import com.github.droibit.chopstick.bindView
+import com.github.droibit.rxactivitylauncher.ActivityResult
+import com.github.droibit.rxactivitylauncher.PendingLaunchAction
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import com.jakewharton.rxrelay.PublishRelay
+import rx.Observable
 import rx.lang.kotlin.addTo
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
@@ -36,6 +40,9 @@ class GeofencesActivity : AppCompatActivity(),
     companion object {
         @JvmStatic
         private val REQUEST_ADD_GEOFENCE = 1
+
+        @JvmStatic
+        private val REQUEST_UPDATE_GEOFENCE = 2
     }
 
     private val injector = KodeinInjector()
@@ -47,6 +54,8 @@ class GeofencesActivity : AppCompatActivity(),
     private val geofencesView: RecyclerView by bindView(R.id.list)
 
     private val rxActivityLauncher: RxActivityLauncher by injector.instance()
+
+    private val pendingGeofenceUpdate: PendingLaunchAction by injector.instance()
 
     private val rxBus: RxBus by injector.instance()
 
@@ -70,35 +79,28 @@ class GeofencesActivity : AppCompatActivity(),
         })
 
         fab.apply {
-            val intent = AddGeofenceActivity.createIntent(this@GeofencesActivity)
-            rxActivityLauncher.from(this@GeofencesActivity)
-                    .on(PublishRelay.create<Any>().apply { fab.tag = this })
-                    .startActivityForResult(intent, REQUEST_ADD_GEOFENCE, null)
-                    .filter { it.isOk }
-                    .map { it.data?.getSerializableExtra(EXTRA_GEOFENCE) as Geofence }
-                    .subscribe {
-                        Timber.d("result=$it")
-                        rxBus.call(EditGeofenceEvent.OnAdd(geofence = it))
-                    }
-
             setOnClickListener { presenter.onGeofenceAddButtonClicked() }
         }
+        subscribeAddGeofence()
 
         geofenceAdapter = GeofenceAdapter(this, geometryProvider).apply {
             itemClickListener = { geofence ->
-                Toast.makeText(this@GeofencesActivity, "$geofence", Toast.LENGTH_SHORT).show()
+                pendingGeofenceUpdate {
+                    val intent = UpdateGeofenceActivity.createIntent(this@GeofencesActivity, geofence.id)
+                    startActivityForResult(intent, REQUEST_UPDATE_GEOFENCE)
+                }
             }
             popupItemClickListener = { menuItem, geofence ->
                 Toast.makeText(this@GeofencesActivity, "Delete: ${geofence.id}", Toast.LENGTH_SHORT).show()
             }
         }
+        subscribeUpdateGeofence()
 
         geofencesView.apply {
             layoutManager = LinearLayoutManager(this@GeofencesActivity)
             adapter = geofenceAdapter
             setHasFixedSize(true)
         }
-
         presenter.onCreate()
     }
 
@@ -179,6 +181,27 @@ class GeofencesActivity : AppCompatActivity(),
 
     // Private
 
+    private fun subscribeAddGeofence() {
+        val intent = AddGeofenceActivity.createIntent(this)
+        rxActivityLauncher.from(this)
+                .on(PublishRelay.create<Any>().apply { fab.tag = this })
+                .startActivityForResult(intent, REQUEST_ADD_GEOFENCE, null)
+                .mapGeofence()
+                .subscribe {
+                    rxBus.call(EditGeofenceEvent.OnAdd(geofence = it))
+                }
+    }
+
+    private fun subscribeUpdateGeofence() {
+        rxActivityLauncher
+                .from(pendingGeofenceUpdate)
+                .startActivityForResult(REQUEST_UPDATE_GEOFENCE)
+                .mapGeofence()
+                .subscribe {
+                    rxBus.call(EditGeofenceEvent.OnUpdate(geofence = it))
+                }
+    }
+
     private fun subscribeEditGeofence() {
         rxBus.asObservable()
                 .ofType(EditGeofenceEvent::class.java)
@@ -190,3 +213,6 @@ class GeofencesActivity : AppCompatActivity(),
                 }.addTo(subscriptions)
     }
 }
+
+private fun Observable<ActivityResult>.mapGeofence() =
+        filter { it.isOk }.map { it.data?.getSerializableExtra(EXTRA_GEOFENCE) as Geofence }
