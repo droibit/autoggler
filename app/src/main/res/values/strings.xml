@@ -4,7 +4,7 @@
     <string name="toggles_menu_title_settings">Settings</string>
     <string name="no_geofences">No Geofences</string>
     <string name="item_geofence_menu_delete">Delete</string>
-    <string name="activity_label_add_geofence">New Geofence</string>
+    <string name="activity_label_add_geofence">New Area</string>
     <string name="add_geofence_get_current_location_failed">Failed to get the current location</string>
     <string name="add_geofence_get_current_location_error">Can not get the current location</string>
     <string name="add_geofence_marker_title">Edit by tap.</string>
@@ -22,4 +22,5 @@
     <string name="add_geofence_not_yet_add_marker">You can add a new area when you long-tap the map.</string>
     <string name="add_geofence_failed_register_geofence">Failed to register a new area.</string>
     <string name="add_geofence_not_entered_name">Enter new area name.</string>
+    <string name="activity_label_update_geofence">Update Area</string>
 </resources>

@@ -54,6 +54,7 @@
         <activity
                 android:name=".edit.update.UpdateGeofenceActivity"
                 android:exported="false"
+                android:label="@string/activity_label_update_geofence"
                 android:parentActivityName=".geofences.GeofencesActivity"
                 />
         <activity
