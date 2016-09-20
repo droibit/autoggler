@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+            android:id="@+id/enabled"
+            android:title="@string/updage_geofence_menu_title_enabled"
+            android:checkable="true"
+            android:checked="true"
+            app:showAsAction="never" />
+
+</menu>

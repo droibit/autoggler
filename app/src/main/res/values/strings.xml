@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">AutoToggler</string>
 
-    <string name="toggles_menu_title_settings">Settings</string>
+    <string name="geofences_menu_title_settings">Settings</string>
     <string name="no_geofences">No Geofences</string>
     <string name="item_geofence_menu_delete">Delete</string>
     <string name="activity_label_add_geofence">New Area</string>
@@ -23,4 +23,5 @@
     <string name="add_geofence_failed_register_geofence">Failed to register a new area.</string>
     <string name="add_geofence_not_entered_name">Enter new area name.</string>
     <string name="activity_label_update_geofence">Update Area</string>
+    <string name="updage_geofence_menu_title_enabled">Enabled</string>
 </resources>

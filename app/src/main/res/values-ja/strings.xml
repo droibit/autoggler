@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="toggles_menu_title_settings">設定</string>
+    <string name="geofences_menu_title_settings">設定</string>
     <string name="no_geofences">ジオフェンスがありません</string>
     <string name="item_geofence_menu_delete">削除</string>
     <string name="activity_label_add_geofence">新しいエリア</string>
@@ -21,4 +21,5 @@
     <string name="add_geofence_failed_register_geofence">新しいエリアの登録に失敗しました</string>
     <string name="add_geofence_not_entered_name">エリア名を入力して下さい</string>
     <string name="activity_label_update_geofence">エリアの更新</string>
+    <string name="updage_geofence_menu_title_enabled">有効化</string>
 </resources>
