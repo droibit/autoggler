@@ -37,6 +37,6 @@ interface UpdateGeofenceContract {
 
         class Event(val editableGeofence: Geofence, val uneditableGeofences: List<Geofence>)
 
-        fun loadGeofence(id: Long): Single<Event>
+        fun loadGeofences(editableId: Long): Single<Event>
     }
 }
