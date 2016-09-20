@@ -12,6 +12,7 @@ interface GeofencesContract {
         SETTINGS(R.id.settings);
 
         companion object {
+            @JvmStatic
             fun from(@IdRes id: Int) = values().first { it.id == id }
         }
     }
@@ -20,6 +21,7 @@ interface GeofencesContract {
         DELETE(R.id.delete);
 
         companion object {
+            @JvmStatic
             fun from(@IdRes id: Int) = values().first { it.id == id }
         }
     }
