@@ -1,6 +1,5 @@
 package com.droibit.autoggler.edit.add
 
-import android.app.Activity
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.add.AddGeofenceContract.GetCurrentLocationTask.GetCurrentLocationEvent

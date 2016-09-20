@@ -19,8 +19,4 @@ interface GeofenceRepository {
 
     @WorkerThread
     fun deleteGeofence(targetId: Long): Geofence
-
-    // TODO: registerGeofenceing
-
-    // TODO: unregisterGeofencing
 }
