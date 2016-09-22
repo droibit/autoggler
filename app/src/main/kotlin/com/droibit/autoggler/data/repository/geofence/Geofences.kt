@@ -91,7 +91,7 @@ open class Geofence(
         open var circle: Circle = Circle(),
         open var toggle: Toggle = Toggle(),
         open var createdAt: Long = 0L
-) : RealmModel, Serializable {
+) : RealmModel, Serializable, Cloneable {
 
     val radius: Double
         get() = circle.radius
@@ -133,5 +133,17 @@ open class Geofence(
         result = 31 * result + toggle.hashCode()
         result = 31 * result + createdAt.hashCode()
         return result
+    }
+
+    public override fun clone(): Geofence {
+        try {
+            val v = super.clone() as Geofence
+            return v.apply {
+                circle = this@Geofence.circle.clone()
+                toggle = this@Geofence.toggle.clone()
+            }
+        } catch (e: CloneNotSupportedException) {
+            throw RuntimeException(e)
+        }
     }
 }
