@@ -84,11 +84,8 @@ class GeofencesActivity : AppCompatActivity(),
         subscribeAddGeofence()
 
         geofenceAdapter = GeofenceAdapter(this, geometryProvider).apply {
-            itemClickListener = { geofence ->
-                pendingGeofenceUpdate {
-                    val intent = UpdateGeofenceActivity.createIntent(this@GeofencesActivity, geofence.id)
-                    startActivityForResult(intent, REQUEST_UPDATE_GEOFENCE)
-                }
+            itemClickListener = {
+                presenter.onGeofenceSelected(geofence = it)
             }
             popupItemClickListener = { menuItem, geofence ->
                 Toast.makeText(this@GeofencesActivity, "Delete: ${geofence.id}", Toast.LENGTH_SHORT).show()
@@ -175,8 +172,11 @@ class GeofencesActivity : AppCompatActivity(),
         subject.call(null)
     }
 
-    override fun navigateUpdateGeofence(id: Long) {
-        TODO()
+    override fun navigateUpdateGeofence(geofence: Geofence) {
+        pendingGeofenceUpdate {
+            val intent = UpdateGeofenceActivity.createIntent(this@GeofencesActivity, geofence)
+            startActivityForResult(intent, REQUEST_UPDATE_GEOFENCE)
+        }
     }
 
     // Private

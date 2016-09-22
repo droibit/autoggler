@@ -41,7 +41,7 @@ class GeofencesPresenter(
     }
 
     override fun onGeofenceSelected(geofence: Geofence) {
-        navigator.navigateUpdateGeofence(geofence.id)
+        navigator.navigateUpdateGeofence(geofence)
     }
 
     override fun onGeofenceMenuItemSelected(menuItem: GeofenceMenuItem, targetId: Long) {

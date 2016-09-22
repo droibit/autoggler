@@ -49,7 +49,7 @@ interface GeofencesContract {
 
         fun navigateAddGeofence()
 
-        fun navigateUpdateGeofence(id: Long)
+        fun navigateUpdateGeofence(geofence: Geofence)
     }
 
     interface Presenter {

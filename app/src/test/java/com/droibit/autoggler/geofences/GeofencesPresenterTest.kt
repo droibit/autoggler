@@ -116,7 +116,7 @@ class GeofencesPresenterTest {
         val geofence: Geofence = mock()
         presenter.onGeofenceSelected(geofence)
 
-        verify(navigator).navigateUpdateGeofence(geofence.id)
+        verify(navigator).navigateUpdateGeofence(geofence)
     }
 
     @Test
