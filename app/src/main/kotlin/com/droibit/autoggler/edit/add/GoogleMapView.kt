@@ -1,9 +1,10 @@
-package com.droibit.autoggler.edit
+package com.droibit.autoggler.edit.add
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import android.os.Bundle
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.edit.BounceDropAnimator
 import com.droibit.autoggler.utils.toLatLng
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

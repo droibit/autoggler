@@ -90,7 +90,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         extend(appKodein())
 
         val self = this@AddGeofenceActivity
-        import(editGeofenceModule(activity = self, interactionCallback = self, dragCallback = self))
+        import(editGeofenceModule(activity = self, dragCallback = self))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +102,13 @@ class AddGeofenceActivity : AppCompatActivity(),
 
             val self = this@AddGeofenceActivity
             val geofence = savedInstanceState?.getSerializable(KEY_GEOFENCE) as? Geofence ?: Geofence()
-            import(addGeofenceModule(view = self, navigator = self, permissions = self, initialGeofence = geofence))
+            import(addGeofenceModule(
+                    view = self,
+                    navigator = self,
+                    permissions = self,
+                    interactionCallback = self,
+                    initialGeofence = geofence
+            ))
         })
 
         val mapView: MapView = findView(R.id.map)
