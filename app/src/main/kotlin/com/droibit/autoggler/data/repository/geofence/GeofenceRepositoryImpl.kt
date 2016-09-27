@@ -35,8 +35,8 @@ class GeofenceRepositoryImpl(
     override fun addGeofence(name: String, circle: Circle, toggle: Toggle): Geofence {
         return realmProvider.use { realm ->
             val managedGeofence = realm.runTransaction {
-                realm.createObject<Geofence>().apply {
-                    this.id = autoIncrementor.newId<Geofence>(realm)
+                val id = autoIncrementor.newId<Geofence>(realm)
+                realm.createObject<Geofence>(primaryKey = id).apply {
                     this.name = name
                     this.circle = realm.copyToRealm(circle)
                     this.toggle = realm.copyToRealm(toggle)

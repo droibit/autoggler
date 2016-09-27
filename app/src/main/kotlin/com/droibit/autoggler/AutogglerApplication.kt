@@ -9,6 +9,7 @@ import com.droibit.autoggler.stetho.Stetho
 import com.droibit.autoggler.stetho.stethoModule
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
+import io.realm.Realm
 import timber.log.Timber
 
 class AutogglerApplication : Application(), KodeinAware {
@@ -38,5 +39,7 @@ class AutogglerApplication : Application(), KodeinAware {
 
         Timber.plant(timberTree)
         stetho.initialize()
+
+        Realm.init(this)
     }
 }

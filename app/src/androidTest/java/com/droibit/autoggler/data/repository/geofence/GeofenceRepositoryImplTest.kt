@@ -8,9 +8,11 @@ import com.droibit.autoggler.data.repository.source.db.AutoIncrementor
 import com.droibit.autoggler.data.repository.source.db.GeofencePersistenceContract.COLUMN_ID
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import io.realm.Realm
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -21,10 +23,17 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class GeofenceRepositoryImplTest {
 
-    private class ExpectGeofence(val circle: Circle, val toggle: Toggle) {
+    companion object {
+
+        @BeforeClass
+        @JvmStatic
+        fun initRealm() {
+            Realm.init(InstrumentationRegistry.getContext())
+        }
     }
 
-    private val context = InstrumentationRegistry.getContext()
+    private class ExpectGeofence(val circle: Circle, val toggle: Toggle) {
+    }
 
     private lateinit var realmProvider: TestRealmProvider
 
@@ -36,7 +45,7 @@ class GeofenceRepositoryImplTest {
 
     @Before
     fun setUp() {
-        realmProvider = TestRealmProvider(context)
+        realmProvider = TestRealmProvider()
         autoIncrementor = AutoIncrementor(COLUMN_ID)
         timeProvider = mock()
         repository = GeofenceRepositoryImpl(realmProvider, autoIncrementor, timeProvider)
@@ -104,7 +113,7 @@ class GeofenceRepositoryImplTest {
         )
 
         expectGeofences.forEachIndexed { i, expect ->
-            whenever(timeProvider.currentTimeMillis).thenReturn((i+1).toLong())
+            whenever(timeProvider.currentTimeMillis).thenReturn((i + 1).toLong())
 
             val actual = repository.addGeofence("test-$i", expect.circle, expect.toggle)
             assertThat(actual).isNotNull()
@@ -114,7 +123,7 @@ class GeofenceRepositoryImplTest {
         assertThat(actualGeofences.size).isEqualTo(expectGeofences.size)
 
         actualGeofences.forEachIndexed { i, actual ->
-            assertThat(actual.id).isEqualTo((i+1).toLong())
+            assertThat(actual.id).isEqualTo((i + 1).toLong())
             assertThat(actual.name).isEqualTo("test-$i")
             assertThat(actual.circle).isEqualTo(expectGeofences[i].circle)
             assertThat(actual.toggle).isEqualTo(expectGeofences[i].toggle)

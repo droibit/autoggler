@@ -9,5 +9,5 @@ interface RealmProvider {
         const val FILE_NAME = "autoggler.realm"
     }
 
-    fun <T> use(block: (Realm)->T): T
+    fun <T> use(block: (Realm) -> T): T
 }

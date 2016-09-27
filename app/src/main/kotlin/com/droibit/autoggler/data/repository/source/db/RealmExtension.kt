@@ -5,7 +5,7 @@ import io.realm.RealmModel
 
 inline fun <reified T : RealmModel> Realm.where() = where(T::class.java)
 
-inline fun <reified T : RealmModel> Realm.createObject() = createObject(T::class.java)
+inline fun <reified T : RealmModel> Realm.createObject(primaryKey: Long) = createObject(T::class.java, primaryKey)
 
 inline fun <reified T : RealmModel> Realm.delete() = delete(T::class.java)
 

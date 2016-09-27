@@ -1,6 +1,5 @@
 package com.droibit.autoggler.data.repository.source
 
-import android.content.Context
 import com.droibit.autoggler.data.repository.source.db.RealmProvider
 import io.realm.Realm
 import io.realm.RealmConfiguration
@@ -12,8 +11,8 @@ class TestRealmProvider : RealmProvider, Closeable {
 
     private val realm: Realm
 
-    constructor(context: Context) {
-        config = RealmConfiguration.Builder(context)
+    constructor() {
+        config = RealmConfiguration.Builder()
                 .name("test.realm")
                 .build()
         realm = Realm.getInstance(config)

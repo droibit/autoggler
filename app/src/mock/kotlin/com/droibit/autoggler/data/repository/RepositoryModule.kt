@@ -1,6 +1,5 @@
 package com.droibit.autoggler.data.repository
 
-import android.content.Context
 import com.droibit.autoggler.data.repository.geofence.*
 import com.droibit.autoggler.data.repository.location.LocationRepository
 import com.droibit.autoggler.data.repository.location.MockLocationRepository
@@ -19,8 +18,7 @@ import rx.subscriptions.CompositeSubscription
 fun repositoryModule() = Kodein.Module {
 
     bind<RealmConfiguration>() with singleton {
-        val context: Context = instance()
-        RealmConfiguration.Builder(context)
+        RealmConfiguration.Builder()
                 .name(FILE_NAME)
                 .build()
     }
