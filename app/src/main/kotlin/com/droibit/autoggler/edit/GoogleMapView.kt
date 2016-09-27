@@ -36,7 +36,7 @@ class GoogleMapView(
     fun onCreate(rawMapView: MapView, savedInstanceState: Bundle?) {
         this.mapView = rawMapView
         this.mapView.getMapAsync(this)
-        this.mapView.onCreate(savedInstanceState)
+        this.mapView.onCreate(null)
     }
 
     fun onResume() = mapView.onResume()
@@ -48,7 +48,9 @@ class GoogleMapView(
         mapView.onDestroy()
     }
 
-    fun onSaveInstanceState(outState: Bundle) = mapView.onSaveInstanceState(outState)
+    fun onSaveInstanceState(outState: Bundle) {
+
+    }
 
     fun updateMyLocation(location: Location) = updateMyLocation(location.toLatLng())
 
@@ -60,9 +62,7 @@ class GoogleMapView(
     }
 
     fun enableMyLocationButton(enabled: Boolean) {
-        googleMap?.let {
-            it.enabledMyLocationIfAllowed(enabled)
-        }
+        googleMap?.let { it.enabledMyLocationIfAllowed(enabled) }
     }
 
     fun addCircle(circleOptions: CircleOptions): Circle {
