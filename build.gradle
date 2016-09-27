@@ -15,7 +15,7 @@ buildscript {
         rxRelayVersion = '1.1.0'
         rxActivitylauncherVersion = '0.5.0'
         rxRuntimePermissionsVersion = '0.0.2'
-        kodeinAndroidVersion = '3.0.0'
+        kodeinAndroidVersion = '3.1.0'
         timberVersion = '4.3.0'
         chopsticksVersion = '0.4.1'
         linearListViewVersion = '1.0.1'
