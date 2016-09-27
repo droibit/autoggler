@@ -15,10 +15,18 @@ import timber.log.Timber
 
 private val DEFAULT_ZOOM = 16f
 
+private val KEY_LOCATION = "KEY_LOCATION"
+private val KEY_ZOOM = "KEY_ZOOM"
+
 class GoogleMapView(
         private val interactionCallback: Callback,
         private val bounceDropAnimator: BounceDropAnimator,
         private val permissionChecker: RuntimePermissionChecker) : OnMapReadyCallback {
+
+    private sealed class LocationEvent(val location: LatLng, val zoom: Float) {
+        class Move(location: LatLng, zoom: Float) : LocationEvent(location, zoom)
+        class Restore(location: LatLng, zoom: Float) : LocationEvent(location, zoom)
+    }
 
     interface Callback :
             GoogleMap.OnMapLongClickListener,
@@ -28,7 +36,7 @@ class GoogleMapView(
 
     private lateinit var mapView: MapView
 
-    private var currentLocation: LatLng? = null
+    private var currentLocation: LocationEvent? = null
 
     private var mapReady = false
 
@@ -38,6 +46,13 @@ class GoogleMapView(
         this.mapView = rawMapView
         this.mapView.getMapAsync(this)
         this.mapView.onCreate(null)
+
+        if (savedInstanceState != null) {
+            currentLocation = LocationEvent.Restore(
+                    location = savedInstanceState.getParcelable(KEY_LOCATION),
+                    zoom = savedInstanceState.getFloat(KEY_ZOOM)
+            )
+        }
     }
 
     fun onResume() = mapView.onResume()
@@ -50,16 +65,19 @@ class GoogleMapView(
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-
+        googleMap?.let {
+            outState.putParcelable(KEY_LOCATION, it.cameraPosition.target)
+            outState.putFloat(KEY_ZOOM, it.cameraPosition.zoom)
+        }
     }
 
     fun updateMyLocation(location: Location) = updateMyLocation(location.toLatLng())
 
     fun updateMyLocation(location: LatLng) {
+        val event = LocationEvent.Move(location, zoom = DEFAULT_ZOOM).apply { currentLocation = this }
         if (mapReady) {
-            moveCameraTo(location)
+            moveCamera(event)
         }
-        currentLocation = location
     }
 
     fun enableMyLocationButton(enabled: Boolean) {
@@ -70,7 +88,7 @@ class GoogleMapView(
         return checkNotNull(googleMap).addCircle(circleOptions)
     }
 
-    fun addMarker(markerOptions: MarkerOptions, callback: (Marker)->Unit) {
+    fun addMarker(markerOptions: MarkerOptions, callback: (Marker) -> Unit) {
         val marker = checkNotNull(googleMap).addMarker(markerOptions)
         bounceDropAnimator.start(target = marker, dropCallback = callback)
     }
@@ -89,14 +107,19 @@ class GoogleMapView(
             setOnInfoWindowClickListener(interactionCallback)
         }
         this.mapReady = true
-        this.currentLocation?.let { moveCameraTo(location = it) }
+        this.currentLocation?.let { moveCamera(event = it) }
     }
 
-    private fun moveCameraTo(location: LatLng) {
-        Timber.d("moveCameraTo=$location")
+    // Private
 
-        val newCamera = CameraUpdateFactory.newLatLngZoom(location, DEFAULT_ZOOM)
-        checkNotNull(googleMap).animateCamera(newCamera)
+    private fun moveCamera(event: LocationEvent) {
+        Timber.d("moveCamera(location=${event.location}, zoom=${event.zoom})")
+
+        val newCamera = CameraUpdateFactory.newLatLngZoom(event.location, event.zoom)
+        when (event) {
+            is LocationEvent.Move -> checkNotNull(googleMap).animateCamera(newCamera)
+            is LocationEvent.Restore -> checkNotNull(googleMap).moveCamera(newCamera)
+        }
     }
 
     private fun GoogleMap.enabledMyLocationIfAllowed(enabled: Boolean) {
