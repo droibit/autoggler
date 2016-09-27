@@ -3,23 +3,27 @@ package com.droibit.autoggler.edit.update
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.provider.geometory.GeometryProvider
+import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.DragActionMode
-import com.droibit.autoggler.edit.GoogleMapView
+import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions
 import com.droibit.autoggler.utils.intent
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.KodeinAware
-import com.github.salomonbrys.kodein.KodeinInjector
+import com.github.droibit.chopstick.bindIntArray
+import com.github.droibit.chopstick.bindView
+import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
+import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.lazy
-import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.Marker
+import rx.subscriptions.CompositeSubscription
 
 class UpdateGeofenceActivity : AppCompatActivity(),
         UpdateGeofenceContract.View,
@@ -32,26 +36,50 @@ class UpdateGeofenceActivity : AppCompatActivity(),
     companion object {
 
         @JvmStatic
-        private val EXTRA_GEOFENCE_ID = "EXTRA_GEOFENCE_ID"
+        private val EXTRA_GEOFENCE = "EXTRA_GEOFENCE"
 
         @JvmStatic
         private val KEY_GEOFENCE = "KEY_GEOFENCE"
 
         @JvmStatic
-        fun createIntent(context: Context, geofenceId: Long): Intent {
+        fun createIntent(context: Context, geofence: Geofence): Intent {
             return intent<UpdateGeofenceActivity>(context).apply {
-                putExtra(EXTRA_GEOFENCE_ID, geofenceId)
+                putExtra(EXTRA_GEOFENCE, geofence)
             }
         }
     }
 
     private val injector = KodeinInjector()
 
+    private val presenter: UpdateGeofenceContract.Presenter by injector.instance()
+
+    private val initialGeofence: Geofence by injector.instance("initialGeofence")
+
+    private val googleMapView: GoogleMapView by injector.instance()
+
+    private val pendingGetLocationPermission: PendingRuntimePermissions by injector.instance()
+
+    private val geometryProvider: GeometryProvider by injector.instance()
+
+    private val dragActionMode: DragActionMode by injector.instance()
+
+    private val rxRuntimePermissions: RxRuntimePermissions by injector.instance()
+
+    private val rxBus: RxBus by injector.instance()
+
+    private val subscriptions: CompositeSubscription by injector.instance()
+
+    private val mapView: MapView by bindView(R.id.map)
+
+    private val fab: FloatingActionButton by bindView(R.id.fab)
+
+    private val geofenceRadiusList: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
+
     override val kodein: Kodein by Kodein.lazy {
         extend(appKodein())
 
         val self = this@UpdateGeofenceActivity
-        import(editGeofenceModule(activity = self, interactionCallback = self, dragCallback = self))
+        import(editGeofenceModule(activity = self, dragCallback = self))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,12 +90,45 @@ class UpdateGeofenceActivity : AppCompatActivity(),
             extend(kodein)
 
             val self = this@UpdateGeofenceActivity
-            val geofenceId = intent.getLongExtra(EXTRA_GEOFENCE_ID, -1L)
             val geofence = savedInstanceState?.getSerializable(KEY_GEOFENCE) as? Geofence
-                    ?: Geofence().apply { id = geofenceId }
+                    ?: intent.getSerializableExtra(EXTRA_GEOFENCE) as Geofence
 
-            import(updateGeofenceModule(view = self, navigator = self, permissions = self, initialGeofence = geofence))
+            import(updateGeofenceModule(
+                    view = self,
+                    navigator = self,
+                    permissions = self,
+                    interactionCallback = self,
+                    initialGeofence = geofence
+            ))
         })
+
+        googleMapView.getMapAsync(rawMapView = mapView)
+                .subscribe {
+                    //presenter.onMapReady()
+                }
+        googleMapView.onCreate(savedInstanceState)
+
+        //presenter.onCreate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        googleMapView.onResume()
+    }
+
+    override fun onPause() {
+        googleMapView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        googleMapView.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        googleMapView.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,6 +150,54 @@ class UpdateGeofenceActivity : AppCompatActivity(),
         TODO()
     }
 
+    override fun showMarkerInfoWindow(marker: Marker) {
+        TODO()
+    }
+
+    override fun hideMarkerInfoWindow(marker: Marker) {
+        TODO()
+    }
+
+    override fun isDragActionModeShown(): Boolean {
+        TODO()
+    }
+
+    override fun showEditDialog(target: Geofence) {
+        TODO()
+    }
+
+    override fun startMarkerDragMode() {
+        TODO()
+    }
+
+    override fun setDoneButtonEnabled(enabled: Boolean) {
+        TODO()
+    }
+
+    override fun showDoneButton() {
+        TODO()
+    }
+
+    override fun hideDoneButton() {
+        TODO()
+    }
+
+    override fun showGeofenceCircle() {
+        TODO()
+    }
+
+    override fun hideGeofenceCircle() {
+        TODO()
+    }
+
+    override fun setGeofenceRadius(radius: Double) {
+        TODO()
+    }
+
+    override fun showErrorToast(msgId: Int) {
+        TODO()
+    }
+
     // UpdateGeofenceContract.Navigator
 
     override fun navigationToUp() {
@@ -100,15 +209,12 @@ class UpdateGeofenceActivity : AppCompatActivity(),
     }
 
     // UpdateGeofenceContract.RuntimePermissions
+
     override fun requestLocationPermission(usage: RuntimePermissions.Usage) {
         TODO()
     }
 
     // GoogleMapView.Callback
-
-    override fun onMapLongClick(point: LatLng) {
-        TODO()
-    }
 
     override fun onMarkerClick(marker: Marker): Boolean {
         TODO()
