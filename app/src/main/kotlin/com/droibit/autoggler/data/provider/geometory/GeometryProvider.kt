@@ -6,6 +6,7 @@ import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED
+import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -48,5 +49,14 @@ class GeometryProvider(private val context: Context) {
                 .title(context.getString(R.string.add_geofence_marker_title))
                 .snippet(context.getString(R.string.add_geofence_marker_subtitle))
                 .icon(BitmapDescriptorFactory.defaultMarker(HUE_RED))
+    }
+
+    fun newUneditableMarkerOptions(position: LatLng): MarkerOptions {
+        Timber.d("newUneditableMarkerOptions($position)")
+
+        return MarkerOptions()
+                .position(position)
+                .draggable(false)
+                .icon(BitmapDescriptorFactory.defaultMarker(HUE_GREEN))
     }
 }
