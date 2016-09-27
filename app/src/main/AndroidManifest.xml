@@ -34,10 +34,6 @@
                 android:value="@string/google_maps_key"
                 />
 
-        <meta-data
-                android:name="com.google.android.awareness.API_KEY"
-                android:value="@string/google_awareness_key"/>
-
         <activity android:name=".geofences.GeofencesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
