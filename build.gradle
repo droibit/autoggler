@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        kotlinVersion = '1.0.3'
+        kotlinVersion = '1.0.4'
         realmVersion = '2.0.0'
         supportLibraryVersion = '24.2.1'
         playServicesVersion = '9.4.0'
@@ -19,12 +19,11 @@ buildscript {
         timberVersion = '4.3.0'
         chopsticksVersion = '0.4.1'
         linearListViewVersion = '1.0.1'
-        robolectricVersion = '3.1.2'
         junitVersion = '4.12'
         assertjVersion = '3.4.1'
         assertjAndroidVersion = '1.1.1'
-        mockitoVersion = '2.1.0-RC.1'
-        mockitoKotinVersion = '0.6.2'
+        mockitoVersion = '2.1.0'
+        mockitoKotinVersion = '0.7.0'
         supportTestRunnerVersion = '0.5'
     }
 
