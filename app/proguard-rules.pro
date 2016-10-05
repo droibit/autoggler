@@ -31,7 +31,3 @@
 
 # For Kodein
 -keepattributes Signature
-
-# For Setho
--keep class com.facebook.stetho.** { *; }
--keep class com.uphyca.** { *; }

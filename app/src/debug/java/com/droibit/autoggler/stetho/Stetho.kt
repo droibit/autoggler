@@ -12,8 +12,7 @@ class Stetho(private val context: Context) {
     }
 
     private fun buildInitializer(): StethoOrigin.Initializer {
-        val inspector = RealmInspectorModulesProvider.builder(context)
-                .build()
+        val inspector = RealmInspectorModulesProvider.builder(context).build()
         return StethoOrigin.newInitializerBuilder(context)
                 .enableDumpapp(StethoOrigin.defaultDumperPluginsProvider(context))
                 .enableWebKitInspector(inspector)
