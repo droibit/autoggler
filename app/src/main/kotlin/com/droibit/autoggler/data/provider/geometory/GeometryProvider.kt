@@ -4,12 +4,10 @@ import android.content.Context
 import android.support.v4.content.ContextCompat
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Circle
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.Circle as GmsCircle
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import timber.log.Timber
 
 class GeometryProvider(private val context: Context) {
@@ -40,6 +38,18 @@ class GeometryProvider(private val context: Context) {
                 .fillColor(ContextCompat.getColor(context, R.color.colorCircleFill))
     }
 
+    // For save to bundle
+    fun newCircleOptions(circle: GmsCircle): CircleOptions {
+        return circle.run {
+            CircleOptions()
+                .center(circle.center)
+                .radius(circle.radius)
+                .strokeColor(circle.strokeColor)
+                .strokeWidth(circle.strokeWidth)
+                .fillColor(circle.fillColor)
+        }
+    }
+
     fun newMarkerOptions(position: LatLng): MarkerOptions {
         Timber.d("newMarkerOptions($position)")
 
@@ -48,7 +58,7 @@ class GeometryProvider(private val context: Context) {
                 .draggable(true)
                 .title(context.getString(R.string.add_geofence_marker_title))
                 .snippet(context.getString(R.string.add_geofence_marker_subtitle))
-                .icon(BitmapDescriptorFactory.defaultMarker(HUE_RED))
+                .icon(getMarkerBitmapDescriptor(isDraggable = true))
     }
 
     fun newUneditableMarkerOptions(position: LatLng): MarkerOptions {
@@ -57,6 +67,23 @@ class GeometryProvider(private val context: Context) {
         return MarkerOptions()
                 .position(position)
                 .draggable(false)
-                .icon(BitmapDescriptorFactory.defaultMarker(HUE_GREEN))
+                .icon(getMarkerBitmapDescriptor(isDraggable = false))
     }
+
+    // For save to bundle
+    fun newMarkerOptions(marker: Marker): MarkerOptions {
+        Timber.d("newUneditableMarkerOptions($marker)")
+        return marker.run {
+            MarkerOptions()
+                .position(position)
+                .draggable(marker.isDraggable)
+                .icon(getMarkerBitmapDescriptor(isDraggable = marker.isDraggable))
+                .title(marker.title)
+                .snippet(marker.snippet)
+
+        }
+    }
+
+    private fun getMarkerBitmapDescriptor(isDraggable: Boolean)
+            = BitmapDescriptorFactory.defaultMarker(if (isDraggable) HUE_RED else HUE_GREEN)
 }
