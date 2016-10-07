@@ -31,3 +31,6 @@
 
 # For Kodein
 -keepattributes Signature
+
+# For GoogleMaps
+-keep class com.google.android.gms.maps.GoogleMapOptions
