@@ -15,12 +15,15 @@ import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
-import com.droibit.autoggler.edit.*
+import com.droibit.autoggler.edit.DragActionMode
 import com.droibit.autoggler.edit.EditGeofenceContract.Companion.EXTRA_GEOFENCE
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
+import com.droibit.autoggler.edit.EditGeofenceDialogFragment
+import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
+import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
 import com.droibit.autoggler.utils.showShortToast
 import com.github.droibit.chopstick.bindIntArray
@@ -112,7 +115,9 @@ class AddGeofenceActivity : AppCompatActivity(),
         })
 
         val mapView: MapView = findView(R.id.map)
-        googleMapView.onCreate(mapView, savedInstanceState)
+        googleMapView.onCreate(mapView, savedInstanceState) { marker, circle ->
+            compositeGeometry = CompositeGeometory(marker, circle)
+        }
 
         fab.apply {
             PendingRuntimePermissions(this@AddGeofenceActivity).apply {
@@ -163,8 +168,8 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        googleMapView.onSaveInstanceState(outState)
-        // TODO: save current geofence
+
+        presenter.onSavedInstanceState { outState }
     }
 
     @SuppressWarnings("PrivateResource")
@@ -178,6 +183,22 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     // AddGeofenceContract.View
+
+    override fun saveInstanceState(outStateWrapper: ()->Bundle, geofence: Geofence) {
+        val outState = outStateWrapper()
+        outState.putSerializable(KEY_GEOFENCE, geofence)
+
+        val compositeGeometry = compositeGeometry
+        val options = if (compositeGeometry != null) {
+            CompositeGeometory.Options(
+                    marker = geometryProvider.newMarkerOptions(compositeGeometry.marker),
+                    circle = geometryProvider.newCircleOptions(compositeGeometry.circle)
+            )
+        } else {
+            null
+        }
+        googleMapView.onSaveInstanceState(outState, options)
+    }
 
     override fun hasGeofenceGeometory(): Boolean {
         return compositeGeometry != null

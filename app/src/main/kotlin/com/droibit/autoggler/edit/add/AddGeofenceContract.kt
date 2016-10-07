@@ -1,6 +1,7 @@
 package com.droibit.autoggler.edit.add
 
 import android.location.Location
+import android.os.Bundle
 import android.support.annotation.StringRes
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.data.repository.location.AvailableStatus
@@ -14,6 +15,8 @@ import rx.Single
 interface AddGeofenceContract {
 
     interface View {
+
+        fun saveInstanceState(outStateWrapper: ()->Bundle, geofence: Geofence)
 
         fun hasGeofenceGeometory(): Boolean
 
@@ -82,6 +85,8 @@ interface AddGeofenceContract {
         fun subscribe()
 
         fun unsubscribe()
+
+        fun onSavedInstanceState(outStateWrapper: ()->Bundle)
 
         // View
 

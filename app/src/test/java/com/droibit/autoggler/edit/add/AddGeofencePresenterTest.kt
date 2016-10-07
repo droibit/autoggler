@@ -1,6 +1,7 @@
 package com.droibit.autoggler.edit.add
 
 import android.location.Location
+import android.os.Bundle
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
@@ -171,6 +172,14 @@ class AddGeofencePresenterTest {
 
             verify(view, never()).dropMarker(any())
         }
+    }
+
+    @Test
+    fun onSavedInstanceState_saveInstanceState() {
+        val wrapper: ()->Bundle = mock()
+        presenter.onSavedInstanceState(wrapper)
+
+        verify(view).saveInstanceState(wrapper, geofence)
     }
 
     @Test

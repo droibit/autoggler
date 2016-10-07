@@ -1,6 +1,7 @@
 package com.droibit.autoggler.edit.add
 
 import android.location.Location
+import android.os.Bundle
 import android.support.annotation.VisibleForTesting
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Geofence
@@ -37,6 +38,10 @@ class AddGeofencePresenter(
     override fun unsubscribe() {
         Timber.d("unsubscribe")
         subscriptions.clear()
+    }
+
+    override fun onSavedInstanceState(outStateWrapper: ()->Bundle) {
+        view.saveInstanceState(outStateWrapper, geofence)
     }
 
     // View

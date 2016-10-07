@@ -55,8 +55,14 @@ fun addGeofenceModule(
     }
 
     bind<GoogleMapView>() with provider {
-        GoogleMapView(interactionCallback, bounceDropAnimator = instance(), permissionChecker = instance())
+        GoogleMapView(interactionCallback,
+                bounceDropAnimator = instance(),
+                restorer = instance(),
+                permissionChecker = instance()
+        )
     }
 
     bind<BounceDropAnimator>() with provider { BounceDropAnimator(config = instance(), timeProvider = instance()) }
+
+    bind<GoogleMapView.Restorer>() with provider { GoogleMapView.Restorer() }
 }
