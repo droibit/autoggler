@@ -47,132 +47,111 @@ class GeofencingRepositoryImplTest {
 
     @Test
     fun register_connectGoogleApiFailed() {
-        val mockClient: GoogleApiClient = mock()
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.ERROR)
+        }
         whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
-        val connectionResult = ConnectionResult(CommonStatusCodes.ERROR)
-        whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
-
         val registered = repository.register(mock())
-
         assertThat(registered).isFalse()
+
         verify(googleApiProvider, never()).geofencingApi
     }
 
     @Test
     fun register_addGeofenceSuccessful() {
-        val mockClient: GoogleApiClient = mock()
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
         whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
-        val connectionResult = ConnectionResult(CommonStatusCodes.SUCCESS)
-        whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
-
-        val mockStatus = Status(CommonStatusCodes.SUCCESS)
-        val mockPendingResult: PendingResult<Status> = mock()
-        whenever(mockPendingResult.await()).thenReturn(mockStatus)
-
-        val geofencingApi: GeofencingApi = mock()
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.SUCCESS)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { addGeofences(any(), any<GeofencingRequest>(), anyOrNull()) } doReturn mockPendingResult
+        }
         whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
-        whenever(geofencingApi.addGeofences(any(), any<GeofencingRequest>(), any()))
-                .thenReturn(mockPendingResult)
 
-        val geofence = Geofence(
-                id = 1, circle = Circle(1.0, 2.0, 3.0)
-        )
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
         val registered = repository.register(geofence)
         assertThat(registered).isTrue()
     }
 
-    @Test
-    fun register_addGeofenceError() {
-        val mockClient: GoogleApiClient = mock()
+    @Test(expected = GeofencingException::class)
+    fun register_addGeofenceFailed() {
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
         whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
-        val connectionResult = ConnectionResult(CommonStatusCodes.SUCCESS)
-        whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
-
-        val mockStatus = Status(CommonStatusCodes.ERROR)
-        val mockPendingResult: PendingResult<Status> = mock()
-        whenever(mockPendingResult.await()).thenReturn(mockStatus)
-
-        val geofencingApi: GeofencingApi = mock()
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.ERROR)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { addGeofences(any(), any<GeofencingRequest>(), anyOrNull()) } doReturn mockPendingResult
+        }
         whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
-        whenever(geofencingApi.addGeofences(any(), any<GeofencingRequest>(), any()))
-                .thenReturn(mockPendingResult)
 
-        val geofence = Geofence(
-                id = 1, circle = Circle(1.0, 2.0, 3.0)
-        )
-        val registered = repository.register(geofence)
-        assertThat(registered).isFalse()
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
+        repository.register(geofence)
     }
 
     @Test
     fun unregister_connectGoogleApiFailed() {
-        val mockClient: GoogleApiClient = mock()
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.ERROR)
+        }
         whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
-        val connectionResult = ConnectionResult(CommonStatusCodes.ERROR)
-        whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
-
         val unregistered = repository.unregister(mock())
-
         assertThat(unregistered).isFalse()
+
         verify(googleApiProvider, never()).geofencingApi
     }
 
     @Test
     fun unregister_removeGeofenceSuccessful() {
-        val mockClient: GoogleApiClient = mock()
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
         whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
-        val connectionResult = ConnectionResult(CommonStatusCodes.SUCCESS)
-        whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
-
-        val mockStatus = Status(CommonStatusCodes.SUCCESS)
-        val mockPendingResult: PendingResult<Status> = mock()
-        whenever(mockPendingResult.await()).thenReturn(mockStatus)
-
-        val geofencingApi: GeofencingApi = mock()
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.SUCCESS)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { removeGeofences(any(), any<List<String>>()) } doReturn mockPendingResult
+        }
         whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
-        whenever(geofencingApi.removeGeofences(any(), anyList())).thenReturn(mockPendingResult)
 
-        val geofence = Geofence(
-                id = 1, circle = Circle(1.0, 2.0, 3.0)
-        )
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
         val registered = repository.unregister(geofence)
         assertThat(registered).isTrue()
     }
 
-    @Test
-    fun unregister_removeGeofenceError() {
-        val mockClient: GoogleApiClient = mock()
+    @Test(expected = GeofencingException::class)
+    fun unregister_removeGeofenceFailed() {
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
         whenever(googleApiProvider.newClient()).thenReturn(mockClient)
 
-        val connectionResult = ConnectionResult(CommonStatusCodes.SUCCESS)
-        whenever(mockClient.blockingConnect(any(), any())).thenReturn(connectionResult)
-
-        val mockStatus = Status(CommonStatusCodes.ERROR)
-        val mockPendingResult: PendingResult<Status> = mock()
-        whenever(mockPendingResult.await()).thenReturn(mockStatus)
-
-        val geofencingApi: GeofencingApi = mock()
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.ERROR)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { removeGeofences(any(), any<List<String>>()) } doReturn mockPendingResult
+        }
         whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
-        whenever(geofencingApi.removeGeofences(any(), anyList())).thenReturn(mockPendingResult)
 
-        val geofence = Geofence(
-                id = 1, circle = Circle(1.0, 2.0, 3.0)
-        )
-        val registered = repository.unregister(geofence)
-        assertThat(registered).isFalse()
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
+        repository.unregister(geofence)
     }
 
     @Test
     fun createGeofencingRequest_shouldCreateFromGeofence() {
-        val expectGeofence = Geofence(
-                id = 1234,
-                circle = Circle(1.0, 2.0, 3.0)
-        )
+        val expectGeofence = Geofence(id = 1234, circle = Circle(1.0, 2.0, 3.0))
         val request = repository.createGeofencingRequest(expectGeofence)
         assertThat(request.geofences).hasSize(1)
 
@@ -186,7 +165,74 @@ class GeofencingRepositoryImplTest {
     }
 
     @Test
-    fun update() {
-        TODO()
+    fun update_connectGoogleApiFailed() {
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.ERROR)
+        }
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
+
+        val registered = repository.update(mock())
+        assertThat(registered).isFalse()
+
+        verify(googleApiProvider, never()).geofencingApi
+    }
+
+    @Test
+    fun update_successful() {
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
+
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.SUCCESS)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { removeGeofences(any(), any<List<String>>()) } doReturn mockPendingResult
+            on { addGeofences(any(), any<GeofencingRequest>(), anyOrNull()) } doReturn mockPendingResult
+        }
+        whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
+
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
+        val registered = repository.update(geofence)
+        assertThat(registered).isTrue()
+    }
+
+    @Test(expected = GeofencingException::class)
+    fun update_removeGeofenceFailed() {
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
+
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.ERROR)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { removeGeofences(any(), any<List<String>>()) } doReturn mockPendingResult
+        }
+        whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
+
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
+        repository.unregister(geofence)
+    }
+
+    @Test(expected = GeofencingException::class)
+    fun update_addGeofenceFailed() {
+        val mockClient: GoogleApiClient = mock() {
+            on { blockingConnect(any(), any()) } doReturn ConnectionResult(CommonStatusCodes.SUCCESS)
+        }
+        whenever(googleApiProvider.newClient()).thenReturn(mockClient)
+
+        val mockPendingResult: PendingResult<Status> = mock() {
+            on { await() } doReturn Status(CommonStatusCodes.ERROR)
+        }
+        val geofencingApi: GeofencingApi = mock() {
+            on { addGeofences(any(), any<GeofencingRequest>(), anyOrNull()) } doReturn mockPendingResult
+        }
+        whenever(googleApiProvider.geofencingApi).thenReturn(geofencingApi)
+
+        val geofence = Geofence(id = 1, circle = Circle(1.0, 2.0, 3.0))
+        repository.register(geofence)
     }
 }

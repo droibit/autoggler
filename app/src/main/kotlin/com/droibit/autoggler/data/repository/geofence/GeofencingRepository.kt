@@ -9,12 +9,15 @@ interface GeofencingRepository {
 
     @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION))
     @WorkerThread
+    @Throws(GeofencingException::class)
     fun register(geofence: Geofence): Boolean
 
     @WorkerThread
+    @Throws(GeofencingException::class)
     fun unregister(geofence: Geofence): Boolean
 
     @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION))
     @WorkerThread
+    @Throws(GeofencingException::class)
     fun update(geofence: Geofence): Boolean
 }

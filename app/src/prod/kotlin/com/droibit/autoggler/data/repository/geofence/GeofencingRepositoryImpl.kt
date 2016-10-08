@@ -34,11 +34,13 @@ class GeofencingRepositoryImpl(
                 return false
             }
 
-
             val statusResult = addGeofence(client = this, geofence = geofence)
             Timber.d("addGeofences($geofence): ${statusResult.status}")
 
-            return statusResult.isSuccess
+            if (!statusResult.isSuccess) {
+                throw GeofencingException(status = GeofencingException.Status.FAILED_ADD)
+            }
+            return true
         }
     }
 
@@ -53,11 +55,15 @@ class GeofencingRepositoryImpl(
             val statusResult = removeGeofence(client = this, geofence = geofence)
             Timber.d("removeGeofences($geofence): ${statusResult.status}")
 
-            return statusResult.isSuccess
+            if (!statusResult.isSuccess) {
+                throw GeofencingException(status = GeofencingException.Status.FAILED_REMOVE)
+            }
+            return true
         }
     }
 
     @RequiresPermission(anyOf = arrayOf(ACCESS_FINE_LOCATION))
+    @Throws(GeofencingException::class)
     override fun update(geofence: Geofence): Boolean {
         googleApiProvider.newClient().use {
             val connectionResult = blockingConnect(config.googleApiTimeoutMillis)
@@ -70,19 +76,23 @@ class GeofencingRepositoryImpl(
             Timber.d("removeGeofences($geofence): ${removeResult.status}")
 
             if (!removeResult.isSuccess) {
-                return false
+                throw GeofencingException(status = GeofencingException.Status.FAILED_REMOVE)
             }
 
             val addResult = addGeofence(client = this, geofence = geofence)
             Timber.d("addGeofences($geofence): ${addResult.status}")
 
-            return addResult.isSuccess
+            if (!addResult.isSuccess) {
+                throw GeofencingException(status = GeofencingException.Status.FAILED_ADD)
+            }
+            return true
         }
     }
 
     @VisibleForTesting
     internal fun createGeofencingRequest(geofence: Geofence): GeofencingRequest {
         val builder = GeofencingRequest.Builder().apply {
+            // TODO: requestId -> hashCode?
             val gmsGeofence = GmsGeofence.Builder()
                     .setRequestId("${geofence.id}")
                     .setTransitionTypes(GEOFENCE_TRANSITION_ENTER or GEOFENCE_TRANSITION_EXIT)
