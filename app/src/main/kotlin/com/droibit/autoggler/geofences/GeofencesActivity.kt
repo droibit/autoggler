@@ -19,6 +19,7 @@ import com.droibit.autoggler.edit.add.AddGeofenceActivity
 import com.droibit.autoggler.edit.update.UpdateGeofenceActivity
 import com.droibit.autoggler.geofences.GeofencesContract.EditGeofenceEvent
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
+import com.droibit.autoggler.utils.self
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.rxactivitylauncher.ActivityResult
 import com.github.droibit.rxactivitylauncher.PendingLaunchAction
@@ -74,7 +75,6 @@ class GeofencesActivity : AppCompatActivity(),
         injector.inject(Kodein {
             extend(appKodein())
 
-            val self = this@GeofencesActivity
             import(geofencesModule(view = self, navigator = self))
         })
 
@@ -88,13 +88,13 @@ class GeofencesActivity : AppCompatActivity(),
                 presenter.onGeofenceSelected(geofence = it)
             }
             popupItemClickListener = { menuItem, geofence ->
-                Toast.makeText(this@GeofencesActivity, "Delete: ${geofence.id}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(self, "Delete: ${geofence.id}", Toast.LENGTH_SHORT).show()
             }
         }
         subscribeUpdateGeofence()
 
         geofencesView.apply {
-            layoutManager = LinearLayoutManager(this@GeofencesActivity)
+            layoutManager = LinearLayoutManager(self)
             adapter = geofenceAdapter
             setHasFixedSize(true)
         }

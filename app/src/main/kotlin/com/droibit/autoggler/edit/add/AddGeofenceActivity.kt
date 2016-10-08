@@ -25,6 +25,7 @@ import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usa
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.utils.intent
+import com.droibit.autoggler.utils.self
 import com.droibit.autoggler.utils.showShortToast
 import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
@@ -92,7 +93,6 @@ class AddGeofenceActivity : AppCompatActivity(),
     override val kodein: Kodein by Kodein.lazy {
         extend(appKodein())
 
-        val self = this@AddGeofenceActivity
         import(editGeofenceModule(activity = self, dragCallback = self))
     }
 
@@ -103,8 +103,8 @@ class AddGeofenceActivity : AppCompatActivity(),
         injector.inject(Kodein {
             extend(kodein)
 
-            val self = this@AddGeofenceActivity
-            val geofence = savedInstanceState?.getSerializable(KEY_GEOFENCE) as? Geofence ?: Geofence()
+            val geofence = savedInstanceState?.getSerializable(KEY_GEOFENCE)
+                    as? Geofence ?: Geofence()
             import(addGeofenceModule(
                     view = self,
                     navigator = self,
@@ -120,15 +120,14 @@ class AddGeofenceActivity : AppCompatActivity(),
         }
 
         fab.apply {
-            PendingRuntimePermissions(this@AddGeofenceActivity).apply {
+            val pendingGeofencingPermissions = PendingRuntimePermissions(self).apply {
                 fab.tag = this
-                subscribeLocationPermission(usage = GEOFENCING, pendingPermissions = this)
             }
+            subscribeLocationPermission(usage = GEOFENCING, pendingPermissions = pendingGeofencingPermissions)
             setOnClickListener { presenter.onDoneButtonClicked() }
         }
 
         subscribeLocationPermission(usage = GET_LOCATION, pendingPermissions = pendingGetLocationPermission)
-
         subscribeLocationResolution()
 
         // TODO: Review necessary
@@ -184,7 +183,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     // AddGeofenceContract.View
 
-    override fun saveInstanceState(outStateWrapper: ()->Bundle, geofence: Geofence) {
+    override fun saveInstanceState(outStateWrapper: () -> Bundle, geofence: Geofence) {
         val outState = outStateWrapper()
         outState.putSerializable(KEY_GEOFENCE, geofence)
 
@@ -232,15 +231,17 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun setMarkerInfoWindow(title: String, snippet: String?) {
-        compositeGeometry?.let {
-            it.marker.title = title
-            it.marker.snippet = snippet
-            it.marker.showInfoWindow()
+        checkNotNull(compositeGeometry).apply {
+            marker.title = title
+            marker.snippet = snippet
+            marker.showInfoWindow()
         }
     }
 
     override fun showEditDialog(target: Geofence) {
-        val df = EditGeofenceDialogFragment.newInstance(target).apply { isCancelable = false }
+        val df = EditGeofenceDialogFragment.newInstance(target).apply {
+            isCancelable = false
+        }
         df.show(supportFragmentManager)
     }
 
@@ -273,22 +274,22 @@ class AddGeofenceActivity : AppCompatActivity(),
     }
 
     override fun showGeofenceCircle() {
-        compositeGeometry?.let {
-            it.circle.center = it.marker.position
-            it.circle.isVisible = true
-        } ?: throw IllegalStateException("Not exist #compositeGeometry")
+        checkNotNull(compositeGeometry).apply {
+            circle.center = marker.position
+            circle.isVisible = true
+        }
     }
 
     override fun hideGeofenceCircle() {
-        compositeGeometry?.let {
-            it.circle.center = it.marker.position
-            it.circle.isVisible = false
-        } ?: throw IllegalStateException("Not exist #compositeGeometry")
+        checkNotNull(compositeGeometry).apply {
+            circle.center = marker.position
+            circle.isVisible = false
+        }
     }
 
     override fun setGeofenceRadius(radius: Double) {
-        compositeGeometry?.let {
-            it.circle.radius = radius
+        checkNotNull(compositeGeometry).apply {
+            circle.radius = radius
         }
     }
 
@@ -305,7 +306,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     override fun showLocationResolutionDialog(status: AvailableStatus) {
         pendingLocationResolution {
             Timber.d("pendingLocationResolutionAction")
-            status.startResolutionForResult(this@AddGeofenceActivity, REQUEST_LOCATION_RESOLUTION)
+            status.startResolutionForResult(activity = self, requestCode = REQUEST_LOCATION_RESOLUTION)
         }
     }
 
@@ -359,13 +360,13 @@ class AddGeofenceActivity : AppCompatActivity(),
     // MoveActionMode.Callback
 
     override fun onPrepareDragMode() {
-        compositeGeometry?.let { presenter.onPrepareDragMode(it.marker) }
-                ?: throw IllegalStateException("Not exist #compositeGeometry")
+        val marker = checkNotNull(compositeGeometry).marker
+        presenter.onPrepareDragMode(marker)
     }
 
     override fun onFinishedDragMode() {
-        compositeGeometry?.let { presenter.onFinishedDragMode(it.marker) }
-                ?: throw IllegalStateException("Not exist #compositeGeometry")
+        val marker = checkNotNull(compositeGeometry).marker
+        presenter.onFinishedDragMode(marker)
     }
 
     // private

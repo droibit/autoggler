@@ -1,6 +1,7 @@
 @file:JvmName("Extensions")
 package com.droibit.autoggler.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.location.Location
@@ -11,5 +12,8 @@ import com.google.android.gms.maps.model.LatLng
 inline fun <reified T: Context> intent(context: Context) = Intent(context, T::class.java)
 
 fun Context.showShortToast(@StringRes resId: Int) = Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
+
+val <T: Activity> T.self: T
+    get() = this
 
 fun Location.toLatLng() = LatLng(latitude, longitude)
