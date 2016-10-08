@@ -1,11 +1,9 @@
 package com.droibit.autoggler.geofences
 
-import android.support.annotation.VisibleForTesting
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.geofences.GeofencesContract.GeofenceMenuItem
 import com.droibit.autoggler.geofences.GeofencesContract.NavItem
 import rx.android.schedulers.AndroidSchedulers
-import rx.lang.kotlin.addTo
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 

@@ -11,7 +11,6 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnit
 import rx.observers.TestSubscriber
-import com.droibit.autoggler.edit.update.UpdateGeofenceContract.LoadTask.Event as LoadTaskEvent
 
 class LoadTaskTest {
 
@@ -34,27 +33,26 @@ class LoadTaskTest {
     }
 
     @Test
-    fun loadGeofences_onlyEditableGeofence() {
+    fun loadGeofences_hasOnlyEditableGeofence() {
         val expectGeofence = Geofence(id = 1L)
         whenever(repository.loadGeofences()).thenReturn(listOf(expectGeofence))
 
         val id = 1L
-        val subscriber = TestSubscriber<LoadTaskEvent>()
-        task.loadGeofences(editableId = id).subscribe(subscriber)
+        val subscriber = TestSubscriber<List<Geofence>>()
+        task.loadGeofences(ignoreId = id).subscribe(subscriber)
 
         subscriber.run {
             assertNoErrors()
             assertValueCount(1)
             assertCompleted()
 
-            val event = onNextEvents.first()
-            assertThat(event.editableGeofence).isSameAs(expectGeofence)
-            assertThat(event.uneditableGeofences).isEmpty()
+            val geofences = onNextEvents.first()
+            assertThat(geofences).isEmpty()
         }
     }
 
     @Test
-    fun loadGeofences_bothGeofences() {
+    fun loadGeofences_hasMultipleGeofences() {
         val editableGeofence = Geofence(id = 1L)
         val uneditableGeofences = arrayOf(
                 Geofence(id = 2L),
@@ -64,18 +62,17 @@ class LoadTaskTest {
         whenever(repository.loadGeofences()).thenReturn(listOf(editableGeofence, *uneditableGeofences))
 
         val id = 1L
-        val subscriber = TestSubscriber<LoadTaskEvent>()
-        task.loadGeofences(editableId = id).subscribe(subscriber)
+        val subscriber = TestSubscriber<List<Geofence>>()
+        task.loadGeofences(ignoreId = id).subscribe(subscriber)
 
         subscriber.run {
             assertNoErrors()
             assertValueCount(1)
             assertCompleted()
 
-            val event = onNextEvents.first()
-            assertThat(event.editableGeofence).isSameAs(editableGeofence)
-            assertThat(event.uneditableGeofences).hasSize(uneditableGeofences.size)
-            assertThat(event.uneditableGeofences).containsExactly(*uneditableGeofences)
+            val geofences = onNextEvents.first()
+            assertThat(geofences).hasSize(uneditableGeofences.size)
+            assertThat(geofences).containsExactly(*uneditableGeofences)
         }
     }
 }

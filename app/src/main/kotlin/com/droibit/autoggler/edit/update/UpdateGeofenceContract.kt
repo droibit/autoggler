@@ -90,8 +90,6 @@ interface UpdateGeofenceContract {
 
     interface LoadTask {
 
-        class Event(val editableGeofence: Geofence, val uneditableGeofences: List<Geofence>)
-
-        fun loadGeofences(editableId: Long): Single<Event>
+        fun loadGeofences(ignoreId: Long): Single<List<Geofence>>
     }
 }
