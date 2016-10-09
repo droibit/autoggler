@@ -57,6 +57,7 @@ fun addGeofenceModule(
     bind<GoogleMapView>() with provider {
         GoogleMapView(interactionCallback,
                 bounceDropAnimator = instance(),
+                appConfig = instance(),
                 restorer = instance(),
                 permissionChecker = instance()
         )

@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.location.Location
 import android.os.Bundle
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
+import com.droibit.autoggler.data.config.ApplicationConfig
 import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
 import com.droibit.autoggler.edit.BounceDropAnimator
 import com.droibit.autoggler.utils.toLatLng
@@ -14,14 +15,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import timber.log.Timber
 
-private val DEFAULT_ZOOM = 16f
-
 private val KEY_LOCATION = "KEY_LOCATION"
 private val KEY_ZOOM = "KEY_ZOOM"
 private val KEY_GEOMETORY_OPTIONS = "KEY_GEOMETORY_OPTIONS"
 
 class GoogleMapView(
         private val interactionCallback: Callback,
+        private val appConfig: ApplicationConfig,
         private val restorer: Restorer,
         private val bounceDropAnimator: BounceDropAnimator,
         private val permissionChecker: RuntimePermissionChecker) : OnMapReadyCallback {
@@ -99,7 +99,7 @@ class GoogleMapView(
     fun updateMyLocation(location: Location) = updateMyLocation(location.toLatLng())
 
     fun updateMyLocation(location: LatLng) {
-        val event = LocationEvent.Move(location, zoom = DEFAULT_ZOOM)
+        val event = LocationEvent.Move(location, zoom = appConfig.googleMapDefaultZoom)
         if (mapReady) {
             moveCamera(event)
         } else {

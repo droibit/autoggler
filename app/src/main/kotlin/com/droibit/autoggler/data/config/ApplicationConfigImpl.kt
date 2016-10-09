@@ -16,4 +16,6 @@ object ApplicationConfigImpl : ApplicationConfig {
 
     // 1.5sec
     override val bounceDropAnimateDurationMillis = 1500L
+
+    override val googleMapDefaultZoom = 16f
 }

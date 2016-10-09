@@ -10,4 +10,6 @@ interface ApplicationConfig {
     val currentLocationTimeoutMillis: Long
 
     val bounceDropAnimateDurationMillis: Long
+
+    val googleMapDefaultZoom: Float
 }
