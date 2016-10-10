@@ -86,7 +86,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val fab: FloatingActionButton by bindView(R.id.fab)
 
-    private val geofenceRadiusList: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
+    private val geofenceRadiuses: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
 
     private var compositeGeometry: CompositeGeometory? = null
 
@@ -115,8 +115,8 @@ class AddGeofenceActivity : AppCompatActivity(),
         })
 
         val mapView: MapView = findView(R.id.map)
-        googleMapView.onCreate(mapView, savedInstanceState) { marker, circle ->
-            compositeGeometry = CompositeGeometory(marker, circle)
+        googleMapView.onCreate(mapView, savedInstanceState) { compositeGeometory ->
+            this.compositeGeometry = compositeGeometry
         }
 
         fab.apply {
@@ -210,7 +210,7 @@ class AddGeofenceActivity : AppCompatActivity(),
     override fun dropMarker(point: LatLng) {
         val markerOptions = geometryProvider.newMarkerOptions(point)
         googleMapView.addMarker(markerOptions) { marker ->
-            val circleOptions = geometryProvider.newCircleOptions(marker.position, geofenceRadiusList.first().toDouble())
+            val circleOptions = geometryProvider.newCircleOptions(marker.position, geofenceRadiuses.first().toDouble())
             val circle = googleMapView.addCircle(circleOptions)
             compositeGeometry = CompositeGeometory(marker, circle)
 

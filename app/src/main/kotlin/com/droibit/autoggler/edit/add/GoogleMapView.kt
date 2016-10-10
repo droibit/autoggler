@@ -63,7 +63,7 @@ class GoogleMapView(
             GoogleMap.OnMarkerDragListener,
             GoogleMap.OnInfoWindowClickListener
 
-    private var restoreCallback: ((Marker, Circle)->Unit)? = null
+    private var restoreCallback: ((CompositeGeometory)->Unit)? = null
 
     private lateinit var mapView: MapView
 
@@ -71,7 +71,7 @@ class GoogleMapView(
 
     private var googleMap: GoogleMap? = null
 
-    fun onCreate(rawMapView: MapView, savedInstanceState: Bundle?, restoreCallback: (Marker, Circle) -> Unit) {
+    fun onCreate(rawMapView: MapView, savedInstanceState: Bundle?, restoreCallback: (CompositeGeometory) -> Unit) {
         this.mapView = rawMapView
         this.mapView.getMapAsync(this)
         this.mapView.onCreate(null)
@@ -99,11 +99,10 @@ class GoogleMapView(
     fun updateMyLocation(location: Location) = updateMyLocation(location.toLatLng())
 
     fun updateMyLocation(location: LatLng) {
-        val event = LocationEvent.Move(location, zoom = appConfig.googleMapDefaultZoom)
         if (mapReady) {
-            moveCamera(event)
+            moveCamera(LocationEvent.Move(location, zoom = checkNotNull(googleMap).cameraPosition.zoom))
         } else {
-            restorer.storedLocation = event
+            restorer.storedLocation = LocationEvent.Move(location, zoom = appConfig.googleMapDefaultZoom)
         }
     }
 
@@ -120,16 +119,11 @@ class GoogleMapView(
         bounceDropAnimator.start(target = marker, dropCallback = callback)
     }
 
-    fun addCompositeGeometory(markerOptions: MarkerOptions, circleOptions: CircleOptions) {
-        val googleMap = checkNotNull(this.googleMap)
-        val marker = googleMap.addMarker(markerOptions)
-        val circle = googleMap.addCircle(circleOptions)
-        checkNotNull(restoreCallback).invoke(marker, circle)
-    }
-
     // OnMapReadyCallback
 
     override fun onMapReady(googleMap: GoogleMap) {
+        Timber.d("onMapReady")
+
         this.googleMap = googleMap.apply {
             enabledMyLocationIfAllowed(true)
 
@@ -141,13 +135,13 @@ class GoogleMapView(
         this.mapReady = true
 
         this.restorer.storedLocation?.let { moveCamera(event = it) }
-        Timber.d("onMapReady, storedLocation=${restorer.storedLocation}")
+        Timber.d("storedLocation=${restorer.storedLocation}")
 
         val (marker, circle) = this.restorer.storedGeometoryOptions
         if (marker != null && circle != null) {
             this.addCompositeGeometory(markerOptions = marker, circleOptions = circle)
         }
-        Timber.d("onMapReady, addCompositeGeometory(marker=[$marker], circle=[$circle])")
+        Timber.d("addCompositeGeometory(marker=[$marker], circle=[$circle])")
     }
 
     // Private
@@ -160,6 +154,13 @@ class GoogleMapView(
             is LocationEvent.Move -> checkNotNull(googleMap).animateCamera(newCamera)
             is LocationEvent.Restore -> checkNotNull(googleMap).moveCamera(newCamera)
         }
+    }
+
+    private fun addCompositeGeometory(markerOptions: MarkerOptions, circleOptions: CircleOptions) {
+        val googleMap = checkNotNull(this.googleMap)
+        val marker = googleMap.addMarker(markerOptions)
+        val circle = googleMap.addCircle(circleOptions)
+        checkNotNull(restoreCallback).invoke(CompositeGeometory(marker, circle))
     }
 
     private fun GoogleMap.enabledMyLocationIfAllowed(enabled: Boolean) {
