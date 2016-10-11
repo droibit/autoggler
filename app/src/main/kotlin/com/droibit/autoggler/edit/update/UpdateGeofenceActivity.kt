@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.droibit.autoggler.R
+import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
@@ -16,6 +17,7 @@ import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions
 import com.droibit.autoggler.utils.intent
+import com.droibit.autoggler.utils.self
 import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
@@ -53,8 +55,6 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     private val presenter: UpdateGeofenceContract.Presenter by injector.instance()
 
-    private val initialGeofence: Geofence by injector.instance("initialGeofence")
-
     private val googleMapView: GoogleMapView by injector.instance()
 
     private val pendingGetLocationPermission: PendingRuntimePermissions by injector.instance()
@@ -73,12 +73,15 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     private val fab: FloatingActionButton by bindView(R.id.fab)
 
-    private val geofenceRadiusList: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
+    private val geofenceRadiuses: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
+
+    private lateinit var editableCompositeGeometory: CompositeGeometory
+
+    private var uneditableCompositeGeometories: List<CompositeGeometory>? = null
 
     override val kodein: Kodein by Kodein.lazy {
         extend(appKodein())
 
-        val self = this@UpdateGeofenceActivity
         import(editGeofenceModule(activity = self, dragCallback = self))
     }
 
@@ -89,7 +92,6 @@ class UpdateGeofenceActivity : AppCompatActivity(),
         injector.inject(Kodein {
             extend(kodein)
 
-            val self = this@UpdateGeofenceActivity
             val geofence = savedInstanceState?.getSerializable(KEY_GEOFENCE) as? Geofence
                     ?: intent.getSerializableExtra(EXTRA_GEOFENCE) as Geofence
 
@@ -102,11 +104,16 @@ class UpdateGeofenceActivity : AppCompatActivity(),
             ))
         })
 
-        googleMapView.getMapAsync(rawMapView = mapView)
-                .subscribe {
-                    //presenter.onMapReady()
-                }
-        googleMapView.onCreate(savedInstanceState)
+        googleMapView.apply {
+            getMapAsync(rawMapView = mapView)
+                    .subscribe { restoredCompositeGeometory ->
+                        if (restoredCompositeGeometory != null) {
+                            editableCompositeGeometory = restoredCompositeGeometory
+                        }
+                        presenter.onMapReady(isRestoredGeometory = restoredCompositeGeometory != null)
+                    }
+            onCreate(savedInstanceState)
+        }
 
         //presenter.onCreate()
     }
@@ -128,7 +135,6 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        googleMapView.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -141,6 +147,10 @@ class UpdateGeofenceActivity : AppCompatActivity(),
     }
 
     // UpdateGeofenceContract.View
+
+    override fun saveInstanceState(outStateWrapper: () -> Bundle, geofence: Geofence) {
+        TODO()
+    }
 
     override fun showEditableGeofence(geofence: Geofence) {
         TODO()

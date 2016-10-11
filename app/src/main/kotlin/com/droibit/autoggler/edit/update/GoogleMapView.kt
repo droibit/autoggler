@@ -7,9 +7,11 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.*
-import rx.Completable
+import rx.AsyncEmitter
+import rx.Observable
+import rx.Single
+import rx.functions.Action1
 import timber.log.Timber
-import java.util.*
 
 private val KEY_CAMERA_POSITION = "KEY_CAMERA_POSITION"
 private val KEY_GEOMETORY_OPTIONS = "KEY_GEOMETORY_OPTIONS"
@@ -28,19 +30,19 @@ class GoogleMapView(
 
         var storedCameraPosition: CameraPosition? = null
 
-        var storedGeometoryOptions = ArrayList<CompositeGeometory.Options>()
+        var storedGeometoryOptions: CompositeGeometory.Options = CompositeGeometory.Options()
 
         fun storeLocation(outState: Bundle, cameraPosition: CameraPosition) {
             outState.putParcelable(KEY_CAMERA_POSITION, cameraPosition)
         }
 
-        fun storeGeometoryOptions(outState: Bundle, geometoryOptions: List<CompositeGeometory.Options>) {
-            outState.putParcelableArrayList(KEY_GEOMETORY_OPTIONS, ArrayList(geometoryOptions))
+        fun storeGeometoryOptions(outState: Bundle, geometoryOptions: CompositeGeometory.Options?) {
+            outState.putParcelable(KEY_GEOMETORY_OPTIONS, geometoryOptions ?: CompositeGeometory.Options())
         }
 
         fun restore(savedInstanceState: Bundle) {
             storedCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION)
-            storedGeometoryOptions = savedInstanceState.getParcelableArrayList(KEY_GEOMETORY_OPTIONS)
+            storedGeometoryOptions = savedInstanceState.getParcelable(KEY_GEOMETORY_OPTIONS)
         }
     }
 
@@ -50,28 +52,28 @@ class GoogleMapView(
 
     private var googleMap: GoogleMap? = null
 
-    private var restoreCallback: ((List<CompositeGeometory>) -> Unit)? = null
-
-    fun onCreate(savedInstanceState: Bundle?, restoreCallback: (List<CompositeGeometory>) -> Unit) {
+    fun onCreate(savedInstanceState: Bundle?) {
         checkNotNull(mapView) { "Need to call #getMapAsync" }
         mapView.onCreate(null)
 
         if (savedInstanceState != null) {
             this.restorer.restore(savedInstanceState)
-            this.restoreCallback = restoreCallback
         }
     }
 
-    fun getMapAsync(rawMapView: MapView): Completable {
+    fun getMapAsync(rawMapView: MapView): Observable<CompositeGeometory?> {
         Timber.d("getMapAsync")
 
         mapView = rawMapView
-        return Completable.fromEmitter { emitter ->
+        return Observable.fromEmitter({ emitter ->
             mapView.getMapAsync {
                 onMapReady(googleMap = it)
+
+                val compositeGeometory = restoreInstanceState()
+                emitter.onNext(compositeGeometory)
                 emitter.onCompleted()
             }
-        }
+        }, AsyncEmitter.BackpressureMode.LATEST)
     }
 
     fun onResume() = mapView.onResume()
@@ -80,7 +82,7 @@ class GoogleMapView(
 
     fun onDestroy() = mapView.onDestroy()
 
-    fun onSaveInstanceState(outState: Bundle, geometoryOptions: ArrayList<CompositeGeometory.Options>) {
+    fun onSaveInstanceState(outState: Bundle, geometoryOptions: CompositeGeometory.Options) {
         restorer.storeLocation(outState, checkNotNull(googleMap).cameraPosition)
         restorer.storeGeometoryOptions(outState, geometoryOptions)
     }
@@ -112,11 +114,19 @@ class GoogleMapView(
             setOnInfoWindowClickListener(interactionCallback)
         }
         this.mapReady = true
+    }
 
+    private fun restoreInstanceState(): CompositeGeometory? {
         this.restorer.storedCameraPosition?.let { moveCamera(cameraPosition = it) }
         Timber.d("storedLocation=${restorer.storedCameraPosition}")
 
-        this.restorer
+        val (marker, circle) = this.restorer.storedGeometoryOptions
+        Timber.d("addCompositeGeometory(marker=[$marker], circle=[$circle])")
+        return if (marker != null && circle != null) {
+            addCompositeGeometory(markerOptions = marker, circleOptions = circle)
+        } else {
+            null
+        }
     }
 
     private fun moveCamera(cameraPosition: CameraPosition) {
@@ -124,14 +134,10 @@ class GoogleMapView(
         checkNotNull(googleMap).moveCamera(newCameraPosition)
     }
 
-    private fun addCompositeGeometory(geometoryOptions: List<CompositeGeometory.Options>) {
+    private fun addCompositeGeometory(markerOptions: MarkerOptions, circleOptions: CircleOptions): CompositeGeometory {
         val googleMap = checkNotNull(googleMap)
-        val geometories = geometoryOptions.map { options ->
-            CompositeGeometory(
-                    marker = googleMap.addMarker(options.marker),
-                    circle = googleMap.addCircle(options.circle)
-            )
-        }
-        checkNotNull(restoreCallback).invoke(geometories)
+        val marker = googleMap.addMarker(markerOptions)
+        val circle = googleMap.addCircle(circleOptions)
+        return CompositeGeometory(marker, circle)
     }
 }
