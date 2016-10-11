@@ -160,6 +160,11 @@ class UpdateGeofenceActivity : AppCompatActivity(),
         TODO()
     }
 
+    override fun isEditableMarker(marker: Marker): Boolean {
+        // TODO: marker.tag as String == editableCompositeGeometory.marker
+        TODO()
+    }
+
     override fun showMarkerInfoWindow(marker: Marker) {
         TODO()
     }

@@ -1,5 +1,6 @@
 package com.droibit.autoggler.edit.update
 
+import android.os.Bundle
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions
 import com.google.android.gms.maps.model.Marker
@@ -9,18 +10,19 @@ import rx.subscriptions.CompositeSubscription
 class UpdateGeofencePresenter(
         private val view: UpdateGeofenceContract.View,
         private val navigator: UpdateGeofenceContract.Navigator,
-        private val permissions: RuntimePermissions,
+        private val permissions: UpdateGeofenceContract.RuntimePermissions,
         private val loadTask: UpdateGeofenceContract.LoadTask,
+        private val updateGeofencingTask: UpdateGeofenceContract.UpdateGeofencingTask,
         private val subscriptions: CompositeSubscription,
         private val editableGeofence: Geofence) : UpdateGeofenceContract.Presenter {
 
-    override fun onCreate() {
+    override fun onSavedInstanceState(outStateWrapper: () -> Bundle) {
         TODO()
     }
 
     // View
 
-    override fun onMapReady() {
+    override fun onMapReady(isRestoredGeometory: Boolean) {
         TODO()
     }
 
@@ -52,7 +54,7 @@ class UpdateGeofencePresenter(
         TODO()
     }
 
-    override fun onDoneButtonClicked(initial: Geofence) {
+    override fun onDoneButtonClicked() {
         TODO()
     }
 

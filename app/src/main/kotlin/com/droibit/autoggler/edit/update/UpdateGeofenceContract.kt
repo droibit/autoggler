@@ -1,5 +1,6 @@
 package com.droibit.autoggler.edit.update
 
+import android.os.Bundle
 import android.support.annotation.StringRes
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.google.android.gms.maps.model.Marker
@@ -9,9 +10,13 @@ interface UpdateGeofenceContract {
 
     interface View {
 
+        fun saveInstanceState(outStateWrapper: ()->Bundle, geofence: Geofence)
+
         fun showEditableGeofence(geofence: Geofence)
 
         fun showUneditableGeofences(geofences: List<Geofence>)
+
+        fun isEditableMarker(marker: Marker): Boolean
 
         fun showMarkerInfoWindow(marker: Marker)
 
@@ -56,11 +61,11 @@ interface UpdateGeofenceContract {
 
     interface Presenter {
 
-        fun onCreate()
+        fun onSavedInstanceState(outStateWrapper: ()-> Bundle)
 
         // View
 
-        fun onMapReady()
+        fun onMapReady(isRestoredGeometory: Boolean)
 
         fun onMarkerInfoWindowClicked()
 
@@ -76,7 +81,7 @@ interface UpdateGeofenceContract {
 
         fun onGeofenceUpdated(updated: Geofence)
 
-        fun onDoneButtonClicked(initial: Geofence)
+        fun onDoneButtonClicked()
 
         // Navigator
 
@@ -91,5 +96,10 @@ interface UpdateGeofenceContract {
     interface LoadTask {
 
         fun loadGeofences(ignoreId: Long): Single<List<Geofence>>
+    }
+
+    interface UpdateGeofencingTask {
+
+        fun update(geofence: Geofence): Single<Boolean>
     }
 }

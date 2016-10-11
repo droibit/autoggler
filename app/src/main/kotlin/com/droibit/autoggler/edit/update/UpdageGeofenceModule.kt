@@ -19,11 +19,14 @@ fun updateGeofenceModule(
 
     bind<UpdateGeofenceContract.RuntimePermissions>() with instance(permissions)
 
-    bind<Geofence>("initialGeofence") with instance(initialGeofence)
 
     bind<Geofence>("editableGeofence") with provider { initialGeofence.clone() }
 
-    bind<GoogleMapView>() with provider { GoogleMapView(callback = interactionCallback) }
+    bind<GoogleMapView>() with provider {
+        GoogleMapView(interactionCallback = interactionCallback, restorer = instance(), appConfig = instance())
+    }
+
+    bind<GoogleMapView.Restorer>() with provider { GoogleMapView.Restorer() }
 
     bind<UpdateGeofenceContract.Presenter>() with provider {
         UpdateGeofencePresenter(
@@ -31,10 +34,15 @@ fun updateGeofenceModule(
                 navigator = instance(),
                 permissions = instance(),
                 loadTask = instance(),
+                updateGeofencingTask = instance(),
                 subscriptions = instance(),
                 editableGeofence = instance("editableGeofence")
         )
     }
 
     bind<UpdateGeofenceContract.LoadTask>() with provider { LoadTask(geofenceRepository = instance()) }
+
+    bind<UpdateGeofenceContract.UpdateGeofencingTask>() with provider {
+        UpdateGeofencingTask(permissionChecker = instance(), geofencingRepository = instance())
+    }
 }
