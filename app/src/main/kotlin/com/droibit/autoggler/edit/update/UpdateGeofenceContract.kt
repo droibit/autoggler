@@ -10,7 +10,7 @@ interface UpdateGeofenceContract {
 
     interface View {
 
-        fun saveInstanceState(outStateWrapper: ()->Bundle, geofence: Geofence)
+        fun saveInstanceState(target: Geofence, outStateWrapper: () -> Bundle)
 
         fun showEditableGeofence(geofence: Geofence)
 
@@ -67,9 +67,9 @@ interface UpdateGeofenceContract {
 
         fun onMapReady(isRestoredGeometory: Boolean)
 
-        fun onMarkerInfoWindowClicked()
-
         fun onMarkerClicked(marker: Marker)
+
+        fun onMarkerInfoWindowClicked(marker: Marker)
 
         fun onMarkerDragStart(marker: Marker)
 

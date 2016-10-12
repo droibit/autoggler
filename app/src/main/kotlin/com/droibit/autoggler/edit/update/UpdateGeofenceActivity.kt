@@ -148,7 +148,7 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     // UpdateGeofenceContract.View
 
-    override fun saveInstanceState(outStateWrapper: () -> Bundle, geofence: Geofence) {
+    override fun saveInstanceState(target: Geofence, outStateWrapper: () -> Bundle) {
         TODO()
     }
 
