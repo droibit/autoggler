@@ -7,6 +7,7 @@ import android.content.Intent
 import android.support.annotation.RequiresPermission
 import android.support.annotation.VisibleForTesting
 import com.droibit.autoggler.data.config.ApplicationConfig
+import com.droibit.autoggler.data.repository.geofence.GeofencingException.ErrorStatus
 import com.droibit.autoggler.data.repository.source.api.GoogleApiProvider
 import com.droibit.autoggler.data.repository.source.api.await
 import com.droibit.autoggler.data.repository.source.api.blockingConnect
@@ -38,7 +39,7 @@ class GeofencingRepositoryImpl(
             Timber.d("addGeofences($geofence): ${statusResult.status}")
 
             if (!statusResult.isSuccess) {
-                throw GeofencingException(status = GeofencingException.Status.FAILED_ADD)
+                throw GeofencingException(status = ErrorStatus.FAILED_ADD)
             }
             return true
         }
@@ -56,7 +57,7 @@ class GeofencingRepositoryImpl(
             Timber.d("removeGeofences($geofence): ${statusResult.status}")
 
             if (!statusResult.isSuccess) {
-                throw GeofencingException(status = GeofencingException.Status.FAILED_REMOVE)
+                throw GeofencingException(status = ErrorStatus.FAILED_REMOVE)
             }
             return true
         }
@@ -76,14 +77,14 @@ class GeofencingRepositoryImpl(
             Timber.d("removeGeofences($geofence): ${removeResult.status}")
 
             if (!removeResult.isSuccess) {
-                throw GeofencingException(status = GeofencingException.Status.FAILED_REMOVE)
+                throw GeofencingException(status = ErrorStatus.FAILED_REMOVE)
             }
 
             val addResult = addGeofence(client = this, geofence = geofence)
             Timber.d("addGeofences($geofence): ${addResult.status}")
 
             if (!addResult.isSuccess) {
-                throw GeofencingException(status = GeofencingException.Status.FAILED_ADD)
+                throw GeofencingException(status = ErrorStatus.FAILED_ADD)
             }
             return true
         }
