@@ -19,7 +19,6 @@ import com.droibit.autoggler.edit.DragActionMode
 import com.droibit.autoggler.edit.EditGeofenceContract.Companion.EXTRA_GEOFENCE
 import com.droibit.autoggler.edit.EditGeofenceContract.EditGeofenceEvent
 import com.droibit.autoggler.edit.EditGeofenceDialogFragment
-import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.droibit.autoggler.edit.add.AddGeofenceContract.RuntimePermissions.Usage.GET_LOCATION
@@ -32,6 +31,7 @@ import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.PendingLaunchAction
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
+import com.github.droibit.rxruntimepermissions.PendingRequestPermissionsAction
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
@@ -70,7 +70,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val pendingLocationResolution: PendingLaunchAction by injector.instance()
 
-    private val pendingGetLocationPermission: PendingRuntimePermissions by injector.instance()
+    private val pendingGetLocationPermission: PendingRequestPermissionsAction by injector.instance()
 
     private val geometryProvider: GeometryProvider by injector.instance()
 
@@ -120,14 +120,14 @@ class AddGeofenceActivity : AppCompatActivity(),
         }
 
         fab.apply {
-            val pendingGeofencingPermissions = PendingRuntimePermissions(self).apply {
+            val pendingGeofencingPermissions = PendingRequestPermissionsAction(self).apply {
                 fab.tag = this
             }
-            subscribeLocationPermission(usage = GEOFENCING, pendingPermissions = pendingGeofencingPermissions)
+            subscribeLocationPermission(usage = GEOFENCING, pendingRequestPermissions = pendingGeofencingPermissions)
             setOnClickListener { presenter.onDoneButtonClicked() }
         }
 
-        subscribeLocationPermission(usage = GET_LOCATION, pendingPermissions = pendingGetLocationPermission)
+        subscribeLocationPermission(usage = GET_LOCATION, pendingRequestPermissions = pendingGetLocationPermission)
         subscribeLocationResolution()
 
         // TODO: Review necessary
@@ -326,9 +326,9 @@ class AddGeofenceActivity : AppCompatActivity(),
         @Suppress("UNCHECKED_CAST")
         val pendingPermission = when (usage) {
             GET_LOCATION -> pendingGetLocationPermission
-            GEOFENCING -> fab.tag as PendingRuntimePermissions
+            GEOFENCING -> fab.tag as PendingRequestPermissionsAction
         }
-        pendingPermission.trigger.call(null)
+        pendingPermission.call()
     }
 
     // GoogleMapView.Callback
@@ -381,10 +381,9 @@ class AddGeofenceActivity : AppCompatActivity(),
                 }.addTo(subscriptions)
     }
 
-    private fun subscribeLocationPermission(usage: Usage, pendingPermissions: PendingRuntimePermissions) {
+    private fun subscribeLocationPermission(usage: Usage, pendingRequestPermissions: PendingRequestPermissionsAction) {
         rxRuntimePermissions
-                .from(pendingPermissions.source)
-                .on(pendingPermissions.trigger)
+                .from(pendingRequestPermissions)
                 .requestPermissions(usage.requestCode, ACCESS_FINE_LOCATION)
                 .subscribe {
                     presenter.onLocationPermissionsResult(usage, granted = it)

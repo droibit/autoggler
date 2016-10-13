@@ -13,13 +13,13 @@ import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.DragActionMode
-import com.droibit.autoggler.edit.PendingRuntimePermissions
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions
 import com.droibit.autoggler.utils.intent
 import com.droibit.autoggler.utils.self
 import com.github.droibit.chopstick.bindIntArray
 import com.github.droibit.chopstick.bindView
+import com.github.droibit.rxruntimepermissions.PendingRequestPermissionsAction
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
@@ -57,7 +57,7 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     private val googleMapView: GoogleMapView by injector.instance()
 
-    private val pendingGetLocationPermission: PendingRuntimePermissions by injector.instance()
+    private val pendingGetLocationPermission: PendingRequestPermissionsAction by injector.instance()
 
     private val geometryProvider: GeometryProvider by injector.instance()
 

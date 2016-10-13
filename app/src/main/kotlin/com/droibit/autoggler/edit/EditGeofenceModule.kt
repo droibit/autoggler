@@ -4,6 +4,7 @@ import android.app.Activity
 import com.droibit.autoggler.data.provider.rx.RxBus
 import com.github.droibit.rxactivitylauncher.PendingLaunchAction
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
+import com.github.droibit.rxruntimepermissions.PendingRequestPermissionsAction
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.instance
@@ -18,7 +19,7 @@ fun editGeofenceModule(activity: Activity, dragCallback: DragActionMode.Callback
 
     bind<RxRuntimePermissions>() with provider { RxRuntimePermissions() }
 
-    bind<PendingRuntimePermissions>() with provider { PendingRuntimePermissions(instance()) }
+    bind<PendingRequestPermissionsAction>() with provider { PendingRequestPermissionsAction(instance()) }
 
     bind<DragActionMode>() with provider { DragActionMode(activity = instance(), callback = dragCallback) }
 
