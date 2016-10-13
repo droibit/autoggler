@@ -51,8 +51,9 @@ class GeofencesPresenterTest {
     fun onCreate_loadGeofence() {
         // Returned geofences
         run {
-            val mockList: List<Geofence> = mock()
-            whenever(mockList.isEmpty()).thenReturn(false)
+            val mockList: List<Geofence> = mock() {
+                on { isEmpty() } doReturn false
+            }
             whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
 
             presenter.onCreate()
@@ -65,27 +66,28 @@ class GeofencesPresenterTest {
 
         // Returned empty geofences
         run {
-            val mockList: List<Geofence> = mock()
-            whenever(mockList.isEmpty()).thenReturn(true)
+            val mockList: List<Geofence> = mock() {
+                on { isEmpty() } doReturn true
+            }
             whenever(loadTask.loadGeofences()).thenReturn(Single.just(mockList))
 
             presenter.onCreate()
 
             verify(view).showNoGeofences()
-            verify(view, never()).showGeofences(anyList())
+            verify(view, never()).showGeofences(any())
         }
 
         reset(view)
 
         // error occur
         run {
-            val error: Single<List<Geofence>> = Single.error(RealmException(""))
+            val error = Single.error<List<Geofence>>(RealmException(""))
             whenever(loadTask.loadGeofences()).thenReturn(error)
 
             presenter.onCreate()
 
             verify(view).showNoGeofences()
-            verify(view, never()).showGeofences(anyList())
+            verify(view, never()).showGeofences(any())
         }
     }
 
@@ -146,7 +148,7 @@ class GeofencesPresenterTest {
 
         run {
             val expectId = 1L
-            val error: Single<Geofence> = Single.error(IllegalArgumentException(""))
+            val error = Single.error<Geofence>(IllegalArgumentException(""))
             whenever(deleteTask.deleteGeofence(targetId = expectId)).thenReturn(error)
 
             presenter.onDeleteConfirmDialogOkClicked(targetId = expectId)
