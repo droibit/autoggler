@@ -197,11 +197,11 @@ class UpdateGeofenceActivity : AppCompatActivity(),
         TODO()
     }
 
-    override fun showGeofenceCircle() {
+    override fun showEditableGeofenceCircle() {
         TODO()
     }
 
-    override fun hideGeofenceCircle() {
+    override fun hideEditableGeofenceCircle() {
         TODO()
     }
 

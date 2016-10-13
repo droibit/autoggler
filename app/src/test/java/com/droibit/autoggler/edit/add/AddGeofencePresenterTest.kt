@@ -348,7 +348,7 @@ class AddGeofencePresenterTest {
     }
 
     @Test
-    fun onMarkerDragEnd_hideGeofenceCircle() {
+    fun onMarkerDragEnd_showGeofenceCircle() {
         presenter.onMarkerDragEnd()
 
         verify(view).showGeofenceCircle()

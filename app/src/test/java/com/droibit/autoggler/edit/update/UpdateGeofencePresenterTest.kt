@@ -260,10 +260,27 @@ class UpdateGeofencePresenterTest {
     }
 
     @Test
-    fun onMarkerDragStart_hideGeofenceCircle() {
+    fun onMarkerDragStart_hideEditableGeofenceCircle() {
         presenter.onMarkerDragStart(marker = Marker(mock()))
 
-        verify(view).hideGeofenceCircle()
-        verify(view, never()).showGeofenceCircle()
+        verify(view).hideEditableGeofenceCircle()
+        verify(view, never()).showEditableGeofenceCircle()
+    }
+
+    @Test
+    fun onMarkerDragEnd_showGeofenceCircle() {
+        presenter.onMarkerDragEnd()
+
+        verify(view).showEditableGeofenceCircle()
+        verify(view, never()).hideEditableGeofenceCircle()
+    }
+
+    @Test
+    fun onPrepareDragMode_hideDoneButton() {
+        val marker = Marker(mock())
+        presenter.onPrepareDragMode(marker)
+
+        verify(view).hideDoneButton()
+        verify(view, never()).showDoneButton()
     }
 }

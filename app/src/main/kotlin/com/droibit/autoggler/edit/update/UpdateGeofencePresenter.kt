@@ -60,11 +60,11 @@ class UpdateGeofencePresenter(
         if (marker.isInfoWindowShown) {
             view.hideMarkerInfoWindow(marker)
         }
-        view.hideGeofenceCircle()
+        view.hideEditableGeofenceCircle()
     }
 
     override fun onMarkerDragEnd() {
-        TODO()
+        view.showEditableGeofenceCircle()
     }
 
     override fun onPrepareDragMode(marker: Marker) {

@@ -34,9 +34,9 @@ interface UpdateGeofenceContract {
 
         fun hideDoneButton()
 
-        fun showGeofenceCircle()
+        fun showEditableGeofenceCircle()
 
-        fun hideGeofenceCircle()
+        fun hideEditableGeofenceCircle()
 
         fun setGeofenceRadius(radius: Double)
 
