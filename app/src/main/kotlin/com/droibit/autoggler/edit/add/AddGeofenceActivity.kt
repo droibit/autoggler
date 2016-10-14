@@ -31,8 +31,10 @@ import com.github.droibit.chopstick.bindView
 import com.github.droibit.chopstick.findView
 import com.github.droibit.rxactivitylauncher.PendingLaunchAction
 import com.github.droibit.rxactivitylauncher.RxActivityLauncher
+import com.github.droibit.rxruntimepermissions.GrantResult
 import com.github.droibit.rxruntimepermissions.PendingRequestPermissionsAction
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
+import com.github.droibit.rxruntimepermissions.Transforms.toSingleGrantResult
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
 import com.google.android.gms.maps.MapView
@@ -385,8 +387,9 @@ class AddGeofenceActivity : AppCompatActivity(),
         rxRuntimePermissions
                 .from(pendingRequestPermissions)
                 .requestPermissions(usage.requestCode, ACCESS_FINE_LOCATION)
+                .map(toSingleGrantResult())
                 .subscribe {
-                    presenter.onLocationPermissionsResult(usage, granted = it)
+                    presenter.onLocationPermissionsResult(usage, granted = (it == GrantResult.GRANTED))
                 }
     }
 
