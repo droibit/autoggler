@@ -21,7 +21,8 @@
     <string name="delete">Delete</string>
     <string name="add_geofence_not_yet_add_marker">You can add a new area when you long-tap the map.</string>
     <string name="add_geofence_failed_register_geofence">Failed to register a new area.</string>
-    <string name="add_geofence_not_entered_name">Enter new area name.</string>
+    <string name="edit_geofence_not_entered_name">Enter new area name.</string>
     <string name="activity_label_update_geofence">Update Area</string>
     <string name="updage_geofence_menu_title_enabled">Enabled</string>
+    <string name="update_geofence_failed_update_geofence">Failed to update area.</string>
 </resources>

@@ -19,7 +19,8 @@
     <string name="delete">削除</string>
     <string name="add_geofence_not_yet_add_marker">地図を長押しすると新しいエリアを追加することができます</string>
     <string name="add_geofence_failed_register_geofence">新しいエリアの登録に失敗しました</string>
-    <string name="add_geofence_not_entered_name">エリア名を入力して下さい</string>
+    <string name="edit_geofence_not_entered_name">エリア名を入力して下さい</string>
     <string name="activity_label_update_geofence">エリアの更新</string>
     <string name="updage_geofence_menu_title_enabled">有効化</string>
+    <string name="update_geofence_failed_update_geofence">エリアの更新に失敗しました</string>
 </resources>

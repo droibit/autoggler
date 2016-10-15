@@ -24,6 +24,7 @@ import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import rx.subscriptions.CompositeSubscription
 
@@ -205,7 +206,15 @@ class UpdateGeofenceActivity : AppCompatActivity(),
         TODO()
     }
 
+    override fun setMarkerInfoWindow(title: String, snippet: String?) {
+        TODO()
+    }
+
     override fun setGeofenceRadius(radius: Double) {
+        TODO()
+    }
+
+    override fun setLocation(location: LatLng) {
         TODO()
     }
 
@@ -215,7 +224,7 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     // UpdateGeofenceContract.Navigator
 
-    override fun navigationToUp() {
+    override fun navigateToUp() {
         TODO()
     }
 

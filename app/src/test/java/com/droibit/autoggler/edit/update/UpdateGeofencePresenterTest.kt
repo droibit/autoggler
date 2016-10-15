@@ -1,8 +1,15 @@
 package com.droibit.autoggler.edit.update
 
 import android.os.Bundle
+import com.droibit.autoggler.R
+import com.droibit.autoggler.data.repository.geofence.Circle
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.droibit.autoggler.data.repository.geofence.GeofencingException
+import com.droibit.autoggler.data.repository.geofence.GeofencingException.ErrorStatus.PERMISSION_DENIED
+import com.droibit.autoggler.data.repository.geofence.Toggle
+import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.droibit.autoggler.rule.RxSchedulersOverrideRule
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.internal.zzf
 import com.nhaarman.mockito_kotlin.*
@@ -40,16 +47,16 @@ class UpdateGeofencePresenterTest {
     @Mock
     lateinit var updateGeofencingTask: UpdateGeofenceContract.UpdateGeofencingTask
 
-    lateinit var subscriptions: CompositeSubscription
-
+    @Mock
     lateinit var editableGeofence: Geofence
+
+    lateinit var subscriptions: CompositeSubscription
 
     lateinit var presenter: UpdateGeofencePresenter
 
     @Before
     fun setUp() {
         subscriptions = CompositeSubscription()
-        editableGeofence = Geofence(id = 1L)
         presenter = UpdateGeofencePresenter(
                 view,
                 navigator,
@@ -282,5 +289,159 @@ class UpdateGeofencePresenterTest {
 
         verify(view).hideDoneButton()
         verify(view, never()).showDoneButton()
+    }
+
+    @Test
+    fun onFinishedDragMode_showDoneButton() {
+        val mockInternal: zzf = mock() {
+            on { position } doReturn LatLng(1.0, 2.0)
+        }
+        doNothing().whenever(editableGeofence).latlng(any())
+
+        val marker = Marker(mockInternal)
+        presenter.onFinishedDragMode(marker)
+
+        verify(view).showDoneButton()
+        verify(view, never()).hideDoneButton()
+    }
+
+    @Test
+    fun onFinishedDragMode_updateGeofenceLocation() {
+        val expectLatLng = LatLng(1.0, 2.0)
+        val mockInternal: zzf = mock() {
+            on { position } doReturn expectLatLng
+        }
+        doNothing().whenever(editableGeofence).latlng(any())
+
+        val marker = Marker(mockInternal)
+        presenter.onFinishedDragMode(marker)
+
+        verify(editableGeofence).latlng(expectLatLng)
+    }
+
+    @Test
+    fun onFinishedDragMode_shouldMoveMarkerPosition() {
+        val mockInternal: zzf = mock() {
+            on { position } doReturn LatLng(1.0, 2.0)
+        }
+        doNothing().whenever(editableGeofence).latlng(any())
+
+        val marker = Marker(mockInternal)
+        presenter.onFinishedDragMode(marker)
+
+        verify(view).setLocation(marker.position)
+    }
+
+    @Test
+    fun onGeofenceUpdated_shouldUpdateGeofence() {
+        val updatedGeofence = Geofence().apply {
+            name = "updated"
+            circle = Circle(1.0, 2.0, 3.0)
+            toggle = Toggle(true, false)
+        }
+        presenter.onGeofenceUpdated(updatedGeofence)
+
+        verify(editableGeofence).name = updatedGeofence.name
+        verify(editableGeofence).circle = updatedGeofence.circle
+        verify(editableGeofence).toggle = updatedGeofence.toggle
+    }
+
+    @Test
+    fun onGeofenceUpdated_updateMarkerInfoWindow() {
+        val updatedGeofence = Geofence().apply {
+            name = "updated"
+            circle = Circle(1.0, 2.0, 3.0)
+            toggle = Toggle(true, false)
+        }
+        presenter.onGeofenceUpdated(updatedGeofence)
+
+        verify(view).setMarkerInfoWindow(title = updatedGeofence.name, snippet = null)
+    }
+
+    @Test
+    fun onGeofenceUpdated_setGeofenceRadius() {
+        val updatedGeofence = Geofence().apply {
+            circle = Circle(1.0, 2.0, 3.0)
+        }
+        presenter.onGeofenceUpdated(updatedGeofence)
+
+        verify(view).setGeofenceRadius(updatedGeofence.radius)
+    }
+
+    @Test
+    fun onDoneButtonClicked_setDoneButtonEnabled() {
+        whenever(updateGeofencingTask.update(any())).thenReturn(Single.just(true))
+
+        presenter.onDoneButtonClicked()
+        verify(view).setDoneButtonEnabled(false)
+    }
+
+    @Test
+    fun onDoneButtonClicked_updateGeofencing() {
+        whenever(updateGeofencingTask.update(any())).thenReturn(Single.just(true))
+
+        presenter.onDoneButtonClicked()
+        verify(updateGeofencingTask).update(editableGeofence)
+    }
+
+    // Navigator
+
+    @Test
+    fun onUpNavigationButtonClicked_navigationToUp() {
+        presenter.onUpNavigationButtonClicked()
+
+        verify(navigator).navigateToUp()
+    }
+
+    // RuntimePermissions
+
+    @Test
+    fun onLocationPermissionsResult_granted() {
+        whenever(updateGeofencingTask.update(any())).thenReturn(Single.just(true))
+
+        presenter.onLocationPermissionsResult(GEOFENCING, true)
+        verify(updateGeofencingTask).update(editableGeofence)
+        verify(view, never()).setDoneButtonEnabled(any())
+    }
+
+    @Test
+    fun onLocationPermissionsResult_denied() {
+        presenter.onLocationPermissionsResult(GEOFENCING, false)
+        verify(view).setDoneButtonEnabled(any())
+        verify(updateGeofencingTask, never()).update(editableGeofence)
+    }
+
+    // Private
+
+    @Test
+    fun subscribeUpdateGeofencing_onUpdateGeofencingResult() {
+        // successful
+        run {
+            whenever(updateGeofencingTask.update(any())).thenReturn(Single.just(true))
+            presenter.subscribeUpdateGeofencing()
+
+            verify(navigator).finish(editableGeofence)
+        }
+
+        // failed
+        run {
+            whenever(updateGeofencingTask.update(any())).thenReturn(Single.just(false))
+            presenter.subscribeUpdateGeofencing()
+
+            verify(view).setDoneButtonEnabled(true)
+            verify(view).showErrorToast(R.string.update_geofence_failed_update_geofence)
+        }
+    }
+
+    @Test
+    fun subscribeUpdateGeofencing_onUpdateGeofencingError() {
+        // PERMISSION_DENIED
+        run {
+            whenever(updateGeofencingTask.update(any()))
+                    .thenReturn(Single.error(GeofencingException(PERMISSION_DENIED)))
+            presenter.subscribeUpdateGeofencing()
+
+            verify(permissions).requestLocationPermission(GEOFENCING)
+        }
     }
 }

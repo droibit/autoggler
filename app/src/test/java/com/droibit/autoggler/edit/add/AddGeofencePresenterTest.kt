@@ -385,7 +385,7 @@ class AddGeofencePresenterTest {
         doNothing().whenever(geofence).latlng(any())
 
         val marker = Marker(mockInternal)
-        presenter.onMarkerDropped(marker)
+        presenter.onFinishedDragMode(marker)
 
         verify(geofence).latlng(expectLatLng)
     }
@@ -459,7 +459,7 @@ class AddGeofencePresenterTest {
             presenter.onDoneButtonClicked()
 
             verify(view).showErrorToast(R.string.add_geofence_not_yet_add_marker)
-            verify(view, never()).showErrorToast(R.string.add_geofence_not_entered_name)
+            verify(view, never()).showErrorToast(R.string.edit_geofence_not_entered_name)
             verify(registerGeofencingTask, never()).register(any())
         }
 
@@ -471,7 +471,7 @@ class AddGeofencePresenterTest {
 
             presenter.onDoneButtonClicked()
 
-            verify(view).showErrorToast(R.string.add_geofence_not_entered_name)
+            verify(view).showErrorToast(R.string.edit_geofence_not_entered_name)
             verify(view, never()).showErrorToast(R.string.add_geofence_not_yet_add_marker)
             verify(registerGeofencingTask, never()).register(any())
         }

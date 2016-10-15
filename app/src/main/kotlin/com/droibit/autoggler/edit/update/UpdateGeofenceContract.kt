@@ -3,6 +3,7 @@ package com.droibit.autoggler.edit.update
 import android.os.Bundle
 import android.support.annotation.StringRes
 import com.droibit.autoggler.data.repository.geofence.Geofence
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import rx.Single
 
@@ -38,14 +39,18 @@ interface UpdateGeofenceContract {
 
         fun hideEditableGeofenceCircle()
 
+        fun setMarkerInfoWindow(title: String, snippet: String?)
+
         fun setGeofenceRadius(radius: Double)
+
+        fun setLocation(location: LatLng)
 
         fun showErrorToast(@StringRes msgId: Int)
     }
 
     interface Navigator {
 
-        fun navigationToUp()
+        fun navigateToUp()
 
         fun finish(result: Geofence)
     }

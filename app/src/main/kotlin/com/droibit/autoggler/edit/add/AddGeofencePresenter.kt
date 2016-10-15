@@ -115,7 +115,7 @@ class AddGeofencePresenter(
     override fun onDoneButtonClicked() {
         when {
             !view.hasGeofenceGeometory() -> view.showErrorToast(R.string.add_geofence_not_yet_add_marker)
-            geofence.name.isEmpty() -> view.showErrorToast(R.string.add_geofence_not_entered_name)
+            geofence.name.isEmpty() -> view.showErrorToast(R.string.edit_geofence_not_entered_name)
             else -> {
                 view.setDoneButtonEnabled(false)
                 subscribeRegisterGeofencing()

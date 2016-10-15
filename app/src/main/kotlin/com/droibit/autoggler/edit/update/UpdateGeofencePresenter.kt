@@ -1,11 +1,17 @@
 package com.droibit.autoggler.edit.update
 
 import android.os.Bundle
+import android.support.annotation.VisibleForTesting
+import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Geofence
-import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions
+import com.droibit.autoggler.data.repository.geofence.GeofencingException
+import com.droibit.autoggler.data.repository.geofence.GeofencingException.ErrorStatus.PERMISSION_DENIED
+import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions.Usage
+import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.google.android.gms.maps.model.Marker
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 
 class UpdateGeofencePresenter(
@@ -40,7 +46,7 @@ class UpdateGeofencePresenter(
         }
 
         if (!marker.isInfoWindowShown) {
-           view.showMarkerInfoWindow(marker)
+            view.showMarkerInfoWindow(marker)
         }
         view.showEditDialog(target = editableGeofence)
     }
@@ -68,30 +74,83 @@ class UpdateGeofencePresenter(
     }
 
     override fun onPrepareDragMode(marker: Marker) {
-        TODO()
+        view.hideDoneButton()
     }
 
     override fun onFinishedDragMode(marker: Marker) {
-        TODO()
+        view.showDoneButton()
+        view.setLocation(marker.position)
+
+        editableGeofence.latlng(marker.position)
     }
 
     override fun onGeofenceUpdated(updated: Geofence) {
-        TODO()
+        editableGeofence.apply {
+            name = updated.name
+            circle = updated.circle.clone()
+            toggle = updated.toggle.clone()
+        }
+        view.setMarkerInfoWindow(title = updated.name, snippet = null)
+        view.setGeofenceRadius(updated.radius)
+
     }
 
     override fun onDoneButtonClicked() {
-        TODO()
+        view.setDoneButtonEnabled(false)
+        subscribeUpdateGeofencing()
     }
 
     // Navigator
 
     override fun onUpNavigationButtonClicked() {
-        TODO()
+        navigator.navigateToUp()
     }
 
     // RuntimePermissions
 
-    override fun onLocationPermissionsResult(usage: RuntimePermissions.Usage, granted: Boolean) {
-        TODO()
+    override fun onLocationPermissionsResult(usage: Usage, granted: Boolean) {
+        Timber.d("onLocationPermissionsResultForGeofencing($granted)")
+
+        if (granted) {
+            subscribeUpdateGeofencing()
+        } else {
+            view.setDoneButtonEnabled(true)
+            //view.showLocationPermissionRationaleSnackbar()
+        }
+    }
+
+    // Private
+
+    @VisibleForTesting
+    internal fun subscribeUpdateGeofencing() {
+        updateGeofencingTask.update(editableGeofence)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { v -> onUpdateGeofencingResult(updated = v) },
+                        { e -> onUpdateGeofencingError(e as GeofencingException) }
+                )
+    }
+
+    private fun onUpdateGeofencingResult(updated: Boolean) {
+        Timber.d("onUpdateGeofencingResult($updated)")
+
+        if (updated) {
+            navigator.finish(result = editableGeofence)
+        } else {
+            view.setDoneButtonEnabled(true)
+            view.showErrorToast(R.string.update_geofence_failed_update_geofence)
+        }
+    }
+
+    private fun onUpdateGeofencingError(e: GeofencingException) {
+        Timber.d("onUpdateGeofencingError(${e.status})")
+
+        when (e.status) {
+            PERMISSION_DENIED -> permissions.requestLocationPermission(usage = GEOFENCING)
+            else -> {
+                // TODO
+            }
+        }
+        view.setDoneButtonEnabled(true)
     }
 }
