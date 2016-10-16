@@ -69,6 +69,11 @@ class GeofencesPresenter(
         view.showGeofence(newGeofence)
     }
 
+    override fun onUpdateGeofenceResult(updatedGeofence: Geofence) {
+        Timber.d("onUpdateGeofenceResult($updatedGeofence)")
+        view.updateGeofence(updatedGeofence)
+    }
+
     private fun loadGeofences() {
         loadTask.loadGeofences()
                 .observeOn(AndroidSchedulers.mainThread())

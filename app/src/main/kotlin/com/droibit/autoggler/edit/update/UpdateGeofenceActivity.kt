@@ -1,5 +1,6 @@
 package com.droibit.autoggler.edit.update
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,25 +9,33 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.droibit.autoggler.R
-import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
+import com.droibit.autoggler.data.provider.geometory.CompositeGeometry
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
 import com.droibit.autoggler.edit.DragActionMode
+import com.droibit.autoggler.edit.EditGeofenceContract
+import com.droibit.autoggler.edit.EditGeofenceDialogFragment
 import com.droibit.autoggler.edit.editGeofenceModule
 import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions
+import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions.Usage
+import com.droibit.autoggler.edit.update.UpdateGeofenceContract.RuntimePermissions.Usage.GEOFENCING
 import com.droibit.autoggler.utils.intent
 import com.droibit.autoggler.utils.self
-import com.github.droibit.chopstick.bindIntArray
+import com.droibit.autoggler.utils.showShortToast
 import com.github.droibit.chopstick.bindView
+import com.github.droibit.rxruntimepermissions.GrantResult
 import com.github.droibit.rxruntimepermissions.PendingRequestPermissionsAction
 import com.github.droibit.rxruntimepermissions.RxRuntimePermissions
+import com.github.droibit.rxruntimepermissions.Transforms
 import com.github.salomonbrys.kodein.*
 import com.github.salomonbrys.kodein.android.appKodein
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import rx.lang.kotlin.addTo
 import rx.subscriptions.CompositeSubscription
+import timber.log.Timber
 
 class UpdateGeofenceActivity : AppCompatActivity(),
         UpdateGeofenceContract.View,
@@ -58,8 +67,6 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     private val googleMapView: GoogleMapView by injector.instance()
 
-    private val pendingGetLocationPermission: PendingRequestPermissionsAction by injector.instance()
-
     private val geometryProvider: GeometryProvider by injector.instance()
 
     private val dragActionMode: DragActionMode by injector.instance()
@@ -74,11 +81,7 @@ class UpdateGeofenceActivity : AppCompatActivity(),
 
     private val fab: FloatingActionButton by bindView(R.id.fab)
 
-    private val geofenceRadiuses: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
-
-    private lateinit var editableCompositeGeometory: CompositeGeometory
-
-    private var uneditableCompositeGeometories: List<CompositeGeometory>? = null
+    private lateinit var editableCompositeGeometory: CompositeGeometry
 
     override val kodein: Kodein by Kodein.lazy {
         extend(appKodein())
@@ -105,6 +108,14 @@ class UpdateGeofenceActivity : AppCompatActivity(),
             ))
         })
 
+        fab.apply {
+            val pendingGeofencingPermissions = PendingRequestPermissionsAction(self).apply {
+                fab.tag = this
+            }
+            subscribeLocationPermission(usage = GEOFENCING, pendingRequestPermissions = pendingGeofencingPermissions)
+            setOnClickListener { presenter.onDoneButtonClicked() }
+        }
+
         googleMapView.apply {
             getMapAsync(rawMapView = mapView)
                     .subscribe { restoredCompositeGeometory ->
@@ -122,10 +133,12 @@ class UpdateGeofenceActivity : AppCompatActivity(),
     override fun onResume() {
         super.onResume()
         googleMapView.onResume()
+        subscribeEditGeofence()
     }
 
     override fun onPause() {
         googleMapView.onPause()
+        subscriptions.clear()
         super.onPause()
     }
 
@@ -139,7 +152,7 @@ class UpdateGeofenceActivity : AppCompatActivity(),
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.update_geofence, menu)
+        //menuInflater.inflate(R.menu.update_geofence, menu)
         return true
     }
 
@@ -150,123 +163,192 @@ class UpdateGeofenceActivity : AppCompatActivity(),
     // UpdateGeofenceContract.View
 
     override fun saveInstanceState(target: Geofence, outStateWrapper: () -> Bundle) {
-        TODO()
+        val outState = outStateWrapper()
+        outState.putSerializable(KEY_GEOFENCE, target)
+
+        val options = CompositeGeometry.Options(
+                marker = geometryProvider.newMarkerOptions(editableCompositeGeometory.marker),
+                circle = geometryProvider.newCircleOptions(editableCompositeGeometory.circle)
+        )
+        googleMapView.onSaveInstanceState(outState, options)
     }
 
     override fun showEditableGeofence(geofence: Geofence) {
-        TODO()
+        editableCompositeGeometory = addCompositeGeometory(src = geofence, editable = true).apply {
+            marker.title = geofence.name
+            marker.tag = geofence.id
+            marker.showInfoWindow()
+        }
     }
 
     override fun showUneditableGeofences(geofences: List<Geofence>) {
-        TODO()
+        geofences.forEach {
+            addCompositeGeometory(src = it, editable = false)
+        }
     }
 
     override fun isEditableMarker(marker: Marker): Boolean {
-        // TODO: marker.tag as String == editableCompositeGeometory.marker
-        TODO()
+        return editableCompositeGeometory.marker.tag == marker.tag
     }
 
     override fun showMarkerInfoWindow(marker: Marker) {
-        TODO()
+        marker.showInfoWindow()
     }
 
     override fun hideMarkerInfoWindow(marker: Marker) {
-        TODO()
+        checkNotNull(editableCompositeGeometory).apply {
+            circle.center = marker.position
+            circle.isVisible = false
+        }
     }
 
     override fun isDragActionModeShown(): Boolean {
-        TODO()
+        return dragActionMode.isShown
     }
 
     override fun showEditDialog(target: Geofence) {
-        TODO()
+        val df = EditGeofenceDialogFragment.newInstance(target).apply {
+            isCancelable = false
+        }
+        df.show(supportFragmentManager)
     }
 
     override fun startMarkerDragMode() {
-        TODO()
+        startSupportActionMode(dragActionMode)
     }
 
     override fun setDoneButtonEnabled(enabled: Boolean) {
-        TODO()
+        fab.isEnabled = enabled
     }
 
     override fun showDoneButton() {
-        TODO()
+        fab.show()
     }
 
     override fun hideDoneButton() {
-        TODO()
+        fab.hide()
     }
 
     override fun showEditableGeofenceCircle() {
-        TODO()
+        editableCompositeGeometory.apply {
+            circle.center = marker.position
+            circle.isVisible = true
+        }
     }
 
     override fun hideEditableGeofenceCircle() {
-        TODO()
+        editableCompositeGeometory.apply {
+            circle.center = marker.position
+            circle.isVisible = false
+        }
     }
 
     override fun setMarkerInfoWindow(title: String, snippet: String?) {
-        TODO()
+        editableCompositeGeometory.apply {
+            marker.title = title
+            marker.snippet = snippet
+            marker.showInfoWindow()
+        }
     }
 
     override fun setGeofenceRadius(radius: Double) {
-        TODO()
+        editableCompositeGeometory.apply {
+            circle.radius = radius
+        }
     }
 
     override fun setLocation(location: LatLng) {
-        TODO()
+        googleMapView.updateMyLocation(location)
     }
 
     override fun showErrorToast(msgId: Int) {
-        TODO()
+        showShortToast(msgId)
     }
 
     // UpdateGeofenceContract.Navigator
 
     override fun navigateToUp() {
-        TODO()
+        finish()
     }
 
     override fun finish(result: Geofence) {
-        TODO()
+        Timber.d("finish($result)")
+        setResult(RESULT_OK, Intent().apply { putExtra(EXTRA_GEOFENCE, result) })
+        finish()
     }
 
     // UpdateGeofenceContract.RuntimePermissions
 
-    override fun requestLocationPermission(usage: RuntimePermissions.Usage) {
-        TODO()
+    override fun requestLocationPermission(usage: Usage) {
+        val pendingPermission = fab.tag as PendingRequestPermissionsAction
+        pendingPermission.call()
     }
 
     // GoogleMapView.Callback
 
     override fun onMarkerClick(marker: Marker): Boolean {
-        TODO()
-    }
-
-    override fun onMarkerDragEnd(marker: Marker) {
-        TODO()
+        presenter.onMarkerClicked(marker)
+        return true
     }
 
     override fun onMarkerDragStart(marker: Marker) {
-        TODO()
+        presenter.onMarkerDragStart(marker)
+    }
+
+    override fun onMarkerDragEnd(marker: Marker) {
+        presenter.onMarkerDragEnd()
     }
 
     override fun onMarkerDrag(marker: Marker) {
-        TODO()
     }
 
     override fun onInfoWindowClick(marker: Marker) {
-        TODO()
+        presenter.onMarkerInfoWindowClicked(marker)
     }
 
     // DragActionMode.Callback
 
     override fun onPrepareDragMode() {
-        TODO()
+        presenter.onPrepareDragMode(editableCompositeGeometory.marker)
     }
 
     override fun onFinishedDragMode() {
-        TODO()
+        presenter.onFinishedDragMode(editableCompositeGeometory.marker)
+    }
+
+    // Private
+
+    private fun subscribeEditGeofence() {
+        rxBus.asObservable()
+                .ofType(EditGeofenceContract.EditGeofenceEvent::class.java)
+                .subscribe { event ->
+                    when (event) {
+                        is EditGeofenceContract.EditGeofenceEvent.OnUpdate -> presenter.onGeofenceUpdated(updated = event.geofence)
+                    }
+                }.addTo(subscriptions)
+    }
+
+    private fun addCompositeGeometory(src: Geofence, editable: Boolean): CompositeGeometry {
+        val markerOptions = if (editable) {
+            geometryProvider.newMarkerOptions(src.latLong, showSnippet = false)
+        } else {
+            geometryProvider.newUneditableMarkerOptions(src.latLong)
+        }
+        val marker = googleMapView.addMarker(markerOptions)
+
+        val circleOptions = geometryProvider.newCircleOptions(src.latLong, src.radius)
+        val circle = googleMapView.addCircle(circleOptions)
+
+        return CompositeGeometry(marker, circle)
+    }
+
+    private fun subscribeLocationPermission(usage: Usage, pendingRequestPermissions: PendingRequestPermissionsAction) {
+        rxRuntimePermissions
+                .from(pendingRequestPermissions)
+                .requestPermissions(usage.requestCode, ACCESS_FINE_LOCATION)
+                .map(Transforms.toSingleGrantResult())
+                .subscribe {
+                    presenter.onLocationPermissionsResult(usage, granted = (it == GrantResult.GRANTED))
+                }
     }
 }

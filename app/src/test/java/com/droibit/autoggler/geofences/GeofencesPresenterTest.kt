@@ -165,4 +165,12 @@ class GeofencesPresenterTest {
 
         verify(view).showGeofence(geofence)
     }
+
+    @Test
+    fun onUpdateGeofenceResult_updateGeofence() {
+        val geofence: Geofence = mock()
+        presenter.onUpdateGeofenceResult(geofence)
+
+        verify(view).updateGeofence(geofence)
+    }
 }

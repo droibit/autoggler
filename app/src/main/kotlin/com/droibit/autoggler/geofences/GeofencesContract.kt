@@ -34,6 +34,8 @@ interface GeofencesContract {
 
         fun showGeofence(geofence: Geofence)
 
+        fun updateGeofence(geofence: Geofence)
+
         fun hideGeofence(geofence: Geofence)
 
         fun showDeleteConfirmDialog(targetId: Long)
@@ -73,6 +75,8 @@ interface GeofencesContract {
         // Navigator
 
         fun onAddGeofenceResult(newGeofence: Geofence)
+
+        fun onUpdateGeofenceResult(updatedGeofence: Geofence)
     }
 
     interface LoadTask {

@@ -10,7 +10,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import com.droibit.autoggler.R
-import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
+import com.droibit.autoggler.data.provider.geometory.CompositeGeometry
 import com.droibit.autoggler.data.provider.geometory.GeometryProvider
 import com.droibit.autoggler.data.provider.rx.RxBus
 import com.droibit.autoggler.data.repository.geofence.Geofence
@@ -90,7 +90,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
     private val geofenceRadiuses: IntArray by bindIntArray(R.array.edit_geofence_circle_radius_items)
 
-    private var compositeGeometry: CompositeGeometory? = null
+    private var compositeGeometry: CompositeGeometry? = null
 
     override val kodein: Kodein by Kodein.lazy {
         extend(appKodein())
@@ -191,7 +191,7 @@ class AddGeofenceActivity : AppCompatActivity(),
 
         val compositeGeometry = compositeGeometry
         val options = if (compositeGeometry != null) {
-            CompositeGeometory.Options(
+            CompositeGeometry.Options(
                     marker = geometryProvider.newMarkerOptions(compositeGeometry.marker),
                     circle = geometryProvider.newCircleOptions(compositeGeometry.circle)
             )
@@ -214,7 +214,7 @@ class AddGeofenceActivity : AppCompatActivity(),
         googleMapView.addMarker(markerOptions) { marker ->
             val circleOptions = geometryProvider.newCircleOptions(marker.position, geofenceRadiuses.first().toDouble())
             val circle = googleMapView.addCircle(circleOptions)
-            compositeGeometry = CompositeGeometory(marker, circle)
+            compositeGeometry = CompositeGeometry(marker, circle)
 
             presenter.onMarkerDropped(marker)
         }

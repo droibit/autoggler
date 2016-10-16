@@ -97,14 +97,19 @@ class UpdateGeofencePresenterTest {
         val mockGeofences: List<Geofence> = mock()
         whenever(loadTask.loadGeofences(ignoreId = any())).thenReturn(Single.just(mockGeofences))
 
+        val location = LatLng(1.0, 2.0)
+        whenever(editableGeofence.latLong).thenReturn(location)
+
         run {
             presenter.onMapReady(isRestoredGeometory = true)
+            verify(view).setLocation(location)
             verify(view).showUneditableGeofences(mockGeofences)
         }
         reset(view)
 
         run {
             presenter.onMapReady(isRestoredGeometory = false)
+            verify(view).setLocation(location)
             verify(view).showUneditableGeofences(mockGeofences)
         }
     }

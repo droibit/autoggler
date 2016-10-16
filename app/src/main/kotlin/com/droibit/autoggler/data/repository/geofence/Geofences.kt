@@ -1,5 +1,6 @@
 package com.droibit.autoggler.data.repository.geofence
 
+import android.support.annotation.VisibleForTesting
 import com.google.android.gms.maps.model.LatLng
 import io.realm.RealmModel
 import io.realm.annotations.PrimaryKey
@@ -96,7 +97,8 @@ open class Geofence(
     val radius: Double
         get() = circle.radius
 
-    val latLong: LatLng
+    @VisibleForTesting
+    open val latLong: LatLng
         get() = circle.latLng
 
     // TODO: setter

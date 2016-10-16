@@ -33,6 +33,8 @@ class UpdateGeofencePresenter(
         if (!isRestoredGeometory) {
             view.showEditableGeofence(editableGeofence)
         }
+        view.setLocation(editableGeofence.latLong)
+
         loadTask.loadGeofences(ignoreId = editableGeofence.id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {

@@ -148,6 +148,10 @@ class GeofencesActivity : AppCompatActivity(),
         geofenceAdapter.add(geofence)
     }
 
+    override fun updateGeofence(geofence: Geofence) {
+        geofenceAdapter.update(geofence)
+    }
+
     override fun hideGeofence(geofence: Geofence) {
         TODO()
     }
@@ -209,6 +213,8 @@ class GeofencesActivity : AppCompatActivity(),
                     Timber.d("subscribeEditGeofence($it)")
                     when (it) {
                         is EditGeofenceEvent.OnAdd -> presenter.onAddGeofenceResult(newGeofence = it.geofence)
+                        is EditGeofenceEvent.OnUpdate -> presenter.onUpdateGeofenceResult(updatedGeofence = it.geofence)
+
                     }
                 }.addTo(subscriptions)
     }

@@ -69,6 +69,15 @@ class GeofenceAdapter(context: Context, private val geometryProvider: GeometryPr
         notifyItemInserted(geofences.size-1)
     }
 
+    fun update(geofence: Geofence) {
+        val index = geofences.indexOfFirst { it.id == geofence.id }
+        if (index == -1) {
+            throw IllegalArgumentException()
+        }
+        geofences[index] = geofence
+        notifyItemChanged(index)
+    }
+
     fun remove(geofence: Geofence) {
         val index = geofences.indexOfFirst { it.id == geofence.id }
         if (index == -1) {
