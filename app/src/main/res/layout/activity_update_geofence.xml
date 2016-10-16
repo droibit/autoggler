@@ -11,7 +11,7 @@
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:cameraZoom="1"
+            app:cameraZoom="16"
             app:mapType="normal"
             app:uiCompass="true"
             app:uiTiltGestures="false"
