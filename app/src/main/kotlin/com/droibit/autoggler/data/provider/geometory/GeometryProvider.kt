@@ -5,10 +5,10 @@ import android.support.v4.content.ContextCompat
 import com.droibit.autoggler.R
 import com.droibit.autoggler.data.repository.geofence.Circle
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.maps.model.Circle as GmsCircle
-import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED
 import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN
+import com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED
 import timber.log.Timber
+import com.google.android.gms.maps.model.Circle as GmsCircle
 
 class GeometryProvider(private val context: Context) {
 
@@ -42,23 +42,26 @@ class GeometryProvider(private val context: Context) {
     fun newCircleOptions(circle: GmsCircle): CircleOptions {
         return circle.run {
             CircleOptions()
-                .center(circle.center)
-                .radius(circle.radius)
-                .strokeColor(circle.strokeColor)
-                .strokeWidth(circle.strokeWidth)
-                .fillColor(circle.fillColor)
+                    .center(circle.center)
+                    .radius(circle.radius)
+                    .strokeColor(circle.strokeColor)
+                    .strokeWidth(circle.strokeWidth)
+                    .fillColor(circle.fillColor)
         }
     }
 
-    fun newMarkerOptions(position: LatLng): MarkerOptions {
+    fun newMarkerOptions(position: LatLng, showSnippet: Boolean = true): MarkerOptions {
         Timber.d("newMarkerOptions($position)")
 
-        return MarkerOptions()
-                .position(position)
-                .draggable(true)
-                .title(context.getString(R.string.add_geofence_marker_title))
-                .snippet(context.getString(R.string.add_geofence_marker_subtitle))
-                .icon(getMarkerBitmapDescriptor(isDraggable = true))
+        return MarkerOptions().apply {
+            position(position)
+            draggable(true)
+            title(context.getString(R.string.add_geofence_marker_title))
+            icon(getMarkerBitmapDescriptor(isDraggable = true))
+            if (showSnippet) {
+                snippet(context.getString(R.string.add_geofence_marker_subtitle))
+            }
+        }
     }
 
     fun newUneditableMarkerOptions(position: LatLng): MarkerOptions {
@@ -75,11 +78,11 @@ class GeometryProvider(private val context: Context) {
         Timber.d("newUneditableMarkerOptions($marker)")
         return marker.run {
             MarkerOptions()
-                .position(position)
-                .draggable(marker.isDraggable)
-                .icon(getMarkerBitmapDescriptor(isDraggable = marker.isDraggable))
-                .title(marker.title)
-                .snippet(marker.snippet)
+                    .position(position)
+                    .draggable(marker.isDraggable)
+                    .icon(getMarkerBitmapDescriptor(isDraggable = marker.isDraggable))
+                    .title(marker.title)
+                    .snippet(marker.snippet)
 
         }
     }

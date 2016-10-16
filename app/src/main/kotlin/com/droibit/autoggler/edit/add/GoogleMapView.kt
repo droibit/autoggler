@@ -5,7 +5,7 @@ import android.location.Location
 import android.os.Bundle
 import com.droibit.autoggler.data.checker.permission.RuntimePermissionChecker
 import com.droibit.autoggler.data.config.ApplicationConfig
-import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
+import com.droibit.autoggler.data.provider.geometory.CompositeGeometry
 import com.droibit.autoggler.edit.BounceDropAnimator
 import com.droibit.autoggler.utils.toLatLng
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -30,7 +30,7 @@ class GoogleMapView(
 
         var storedLocation: LocationEvent? = null
 
-        var storedGeometoryOptions: CompositeGeometory.Options = CompositeGeometory.Options()
+        var storedGeometoryOptions: CompositeGeometry.Options = CompositeGeometry.Options()
 
         fun storeLocation(outState: Bundle, googleMap: GoogleMap) {
             googleMap.apply {
@@ -39,8 +39,8 @@ class GoogleMapView(
             }
         }
 
-        fun storeGeometoryOptions(outState: Bundle, geometoryOptions: CompositeGeometory.Options?) {
-            outState.putParcelable(KEY_GEOMETORY_OPTIONS, geometoryOptions ?: CompositeGeometory.Options())
+        fun storeGeometoryOptions(outState: Bundle, geometoryOptions: CompositeGeometry.Options?) {
+            outState.putParcelable(KEY_GEOMETORY_OPTIONS, geometoryOptions ?: CompositeGeometry.Options())
         }
 
         fun restore(savedInstanceState: Bundle) {
@@ -63,7 +63,7 @@ class GoogleMapView(
             GoogleMap.OnMarkerDragListener,
             GoogleMap.OnInfoWindowClickListener
 
-    private var restoreCallback: ((CompositeGeometory)->Unit)? = null
+    private var restoreCallback: ((CompositeGeometry)->Unit)? = null
 
     private lateinit var mapView: MapView
 
@@ -71,7 +71,7 @@ class GoogleMapView(
 
     private var googleMap: GoogleMap? = null
 
-    fun onCreate(rawMapView: MapView, savedInstanceState: Bundle?, restoreCallback: (CompositeGeometory) -> Unit) {
+    fun onCreate(rawMapView: MapView, savedInstanceState: Bundle?, restoreCallback: (CompositeGeometry) -> Unit) {
         this.mapView = rawMapView
         this.mapView.getMapAsync(this)
         this.mapView.onCreate(null)
@@ -91,7 +91,7 @@ class GoogleMapView(
         mapView.onDestroy()
     }
 
-    fun onSaveInstanceState(outState: Bundle, geometoryOptions: CompositeGeometory.Options?) {
+    fun onSaveInstanceState(outState: Bundle, geometoryOptions: CompositeGeometry.Options?) {
         restorer.storeLocation(outState, checkNotNull(googleMap))
         restorer.storeGeometoryOptions(outState, geometoryOptions)
     }
@@ -160,7 +160,7 @@ class GoogleMapView(
         val googleMap = checkNotNull(this.googleMap)
         val marker = googleMap.addMarker(markerOptions)
         val circle = googleMap.addCircle(circleOptions)
-        checkNotNull(restoreCallback).invoke(CompositeGeometory(marker, circle))
+        checkNotNull(restoreCallback).invoke(CompositeGeometry(marker, circle))
     }
 
     private fun GoogleMap.enabledMyLocationIfAllowed(enabled: Boolean) {

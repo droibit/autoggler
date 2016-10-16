@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
-data class CompositeGeometory(val marker: Marker, val circle: Circle) {
+data class CompositeGeometry(val marker: Marker, val circle: Circle) {
 
     class Options(var marker: MarkerOptions? = null, var circle: CircleOptions? = null) : Parcelable {
         companion object {

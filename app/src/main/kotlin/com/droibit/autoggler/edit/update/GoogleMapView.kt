@@ -2,7 +2,7 @@ package com.droibit.autoggler.edit.update
 
 import android.os.Bundle
 import com.droibit.autoggler.data.config.ApplicationConfig
-import com.droibit.autoggler.data.provider.geometory.CompositeGeometory
+import com.droibit.autoggler.data.provider.geometory.CompositeGeometry
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -30,14 +30,14 @@ class GoogleMapView(
 
         var storedCameraPosition: CameraPosition? = null
 
-        var storedGeometoryOptions: CompositeGeometory.Options = CompositeGeometory.Options()
+        var storedGeometoryOptions: CompositeGeometry.Options = CompositeGeometry.Options()
 
         fun storeLocation(outState: Bundle, cameraPosition: CameraPosition) {
             outState.putParcelable(KEY_CAMERA_POSITION, cameraPosition)
         }
 
-        fun storeGeometoryOptions(outState: Bundle, geometoryOptions: CompositeGeometory.Options?) {
-            outState.putParcelable(KEY_GEOMETORY_OPTIONS, geometoryOptions ?: CompositeGeometory.Options())
+        fun storeGeometoryOptions(outState: Bundle, geometoryOptions: CompositeGeometry.Options?) {
+            outState.putParcelable(KEY_GEOMETORY_OPTIONS, geometoryOptions ?: CompositeGeometry.Options())
         }
 
         fun restore(savedInstanceState: Bundle) {
@@ -61,7 +61,7 @@ class GoogleMapView(
         }
     }
 
-    fun getMapAsync(rawMapView: MapView): Observable<CompositeGeometory?> {
+    fun getMapAsync(rawMapView: MapView): Observable<CompositeGeometry?> {
         Timber.d("getMapAsync")
 
         mapView = rawMapView
@@ -82,7 +82,7 @@ class GoogleMapView(
 
     fun onDestroy() = mapView.onDestroy()
 
-    fun onSaveInstanceState(outState: Bundle, geometoryOptions: CompositeGeometory.Options) {
+    fun onSaveInstanceState(outState: Bundle, geometoryOptions: CompositeGeometry.Options) {
         restorer.storeLocation(outState, checkNotNull(googleMap).cameraPosition)
         restorer.storeGeometoryOptions(outState, geometoryOptions)
     }
@@ -116,7 +116,7 @@ class GoogleMapView(
         this.mapReady = true
     }
 
-    private fun restoreInstanceState(): CompositeGeometory? {
+    private fun restoreInstanceState(): CompositeGeometry? {
         this.restorer.storedCameraPosition?.let { moveCamera(cameraPosition = it) }
         Timber.d("storedLocation=${restorer.storedCameraPosition}")
 
@@ -134,10 +134,10 @@ class GoogleMapView(
         checkNotNull(googleMap).moveCamera(newCameraPosition)
     }
 
-    private fun addCompositeGeometory(markerOptions: MarkerOptions, circleOptions: CircleOptions): CompositeGeometory {
+    private fun addCompositeGeometory(markerOptions: MarkerOptions, circleOptions: CircleOptions): CompositeGeometry {
         val googleMap = checkNotNull(googleMap)
         val marker = googleMap.addMarker(markerOptions)
         val circle = googleMap.addCircle(circleOptions)
-        return CompositeGeometory(marker, circle)
+        return CompositeGeometry(marker, circle)
     }
 }
